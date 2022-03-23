@@ -10,10 +10,13 @@ public class PlayerCtrl : MonoBehaviour
     public float dashPower;
 
     float direction;
-    bool isGround;
     float bSpeed;
     float dTime;
+
+
     bool isDash;
+    bool isSteap;
+    bool isGround;
     float h;
 
     Animator anim;
@@ -24,6 +27,7 @@ public class PlayerCtrl : MonoBehaviour
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         bSpeed = maxSpeed;
+
     }
 
     // Update is called once per frame
@@ -65,13 +69,25 @@ public class PlayerCtrl : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (dTime >= 0.3f)
+            if (dTime >= 0.1f)
             {
-                dTime = 0;
-                isDash = true;
-                maxSpeed = maxSpeed + 2;
-                anim.SetBool("isdash", true);
-
+                if (isGround == true)
+                {
+                    if (h != 0)
+                    {
+                        dTime = 0;
+                        isDash = true;
+                        maxSpeed = maxSpeed + dashPower;
+                        anim.SetBool("isdash", true);
+                    }
+                    else
+                    {
+                        dTime = 0;
+                        isSteap = true;
+                        maxSpeed = maxSpeed + dashPower;
+                        anim.SetBool("isStap", true);
+                    }
+                }
             }
         }
 
@@ -79,6 +95,11 @@ public class PlayerCtrl : MonoBehaviour
         {
             var i = new Vector2(direction, 0);
             rigid.AddForce(i, ForceMode2D.Impulse);
+        }
+        if (isSteap == true)
+        {
+            var j = new Vector2(direction*-1, 0);
+            rigid.AddForce(j, ForceMode2D.Impulse);
         }
 
         if (h != 0)
@@ -100,6 +121,16 @@ public class PlayerCtrl : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         dTime = 0;
     }
+
+    public void q()
+    {
+        maxSpeed = bSpeed;
+        isSteap = false;
+        anim.SetBool("isStap", false);
+        rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
+        dTime = 0;
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "ground")

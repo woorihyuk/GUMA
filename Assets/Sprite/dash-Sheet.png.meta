@@ -51,6 +51,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -328,6 +329,16 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      dash-Sheet_2: 740476993141492624
+      dash-Sheet_1: 4115929584165740709
+      dash-Sheet_6: 1434495811969805649
+      dash-Sheet_8: 7316766495175175877
+      dash-Sheet_4: 8516555297625513901
+      dash-Sheet_0: 2980477836156590263
+      dash-Sheet_3: -7250786075496809547
+      dash-Sheet_7: -7962453957288453887
+      dash-Sheet_5: -6592786206435890647
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

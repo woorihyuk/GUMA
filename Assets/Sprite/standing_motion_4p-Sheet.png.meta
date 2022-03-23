@@ -36,6 +36,7 @@ TextureImporter:
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -208,6 +209,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      standing_motion_4p-Sheet_3: 7303733344403783286
+      standing_motion_4p-Sheet_1: -5572625220236826980
+      standing_motion_4p-Sheet_0: -2482344022221573958
+      standing_motion_4p-Sheet_2: 7475979664556280733
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
