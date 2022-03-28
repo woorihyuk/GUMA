@@ -17,6 +17,8 @@ public class PlayerCtrl : MonoBehaviour
     bool isDash;
     bool isSteap;
     bool isGround;
+    bool isRjump;
+
     float h;
     int isJump;
 
@@ -62,11 +64,19 @@ public class PlayerCtrl : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            if (isJump<=1)
+            if (isJump < 1)
             {
                 rigid.velocity = new Vector2(0, 0);
                 rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
                 anim.SetBool("isJump", true);
+                isJump += 1;
+                isGround = false;
+            }
+            else if (isJump == 1)
+            {
+                rigid.velocity = new Vector2(0, 0);
+                rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                anim.SetBool("dJump", true);
                 isJump += 1;
                 isGround = false;
             }
@@ -138,11 +148,20 @@ public class PlayerCtrl : MonoBehaviour
         dTime = 0;
     }
 
+    public void r()
+    {
+        rigid.velocity = new Vector2(0, 0);
+        rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+        anim.SetBool("dJump", true);
+        isJump += 1;
+        isGround = false;
+    }
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "ground")
         {
             anim.SetBool("isJump", false);
+            anim.SetBool("dJump", false);
             isGround = true;
             isJump = 0;
         }
