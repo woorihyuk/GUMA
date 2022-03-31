@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class PlayerCtrl : MonoBehaviour
 {
-
     public float maxSpeed;
     public float jumpPower;
     public float dashPower;
@@ -24,11 +23,13 @@ public class PlayerCtrl : MonoBehaviour
 
     Animator anim;
     Rigidbody2D rigid;
+    BoxCollider2D box;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
+        box = GetComponent<BoxCollider2D>();
         bSpeed = maxSpeed;
 
     }
@@ -71,6 +72,7 @@ public class PlayerCtrl : MonoBehaviour
                 anim.SetBool("isJump", true);
                 isJump += 1;
                 isGround = false;
+                box.enabled = false;
             }
             else if (isJump == 1)
             {
@@ -79,6 +81,7 @@ public class PlayerCtrl : MonoBehaviour
                 anim.SetBool("dJump", true);
                 isJump += 1;
                 isGround = false;
+                box.enabled = false;
             }
         }
         if (Input.GetKeyDown(KeyCode.Space))
@@ -128,7 +131,10 @@ public class PlayerCtrl : MonoBehaviour
                 anim.SetBool("isRun", false);
             }
         }
-        
+        if (rigid.velocity.y<0)
+        {
+            box.enabled = true;
+        }
     }
     public void e()
     {
