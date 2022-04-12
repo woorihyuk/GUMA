@@ -23,13 +23,13 @@ public class PlayerCtrl : MonoBehaviour
 
     Animator anim;
     Rigidbody2D rigid;
-    BoxCollider2D box;
+    CapsuleCollider2D box;
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
-        box = GetComponent<BoxCollider2D>();
+        box = GetComponent<CapsuleCollider2D>();
         bSpeed = maxSpeed;
 
     }
@@ -37,7 +37,6 @@ public class PlayerCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(direction);
 
         dTime += Time.deltaTime;
 
