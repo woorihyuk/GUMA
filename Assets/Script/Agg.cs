@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Agg : MonoBehaviour
 {
+    public GameObject prefab;
+    public GameObject shootPoint1;
+    public GameObject shootPoint2;
+    public GameObject[] attacks;
+
     public float speed;
     public float foundRange;
 
@@ -11,6 +16,7 @@ public class Agg : MonoBehaviour
 
     int i;
     int attackCount;
+    int ifSmoking;
 
     bool isGround;
     bool isMov;
@@ -20,8 +26,8 @@ public class Agg : MonoBehaviour
     float bSpeed;
     float foundTime;
     float walkTime;
-
-    SpriteRenderer sr;
+    float direction;
+   
     PlayerCtrl player;
     Animator anim;
     private void Start()
@@ -32,8 +38,8 @@ public class Agg : MonoBehaviour
         bSpeed = speed;
         isMov = true;
         player = FindObjectOfType<PlayerCtrl>();
-        anim = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();        
+
         isAttack = true;
     }
 
@@ -41,6 +47,7 @@ public class Agg : MonoBehaviour
     {
         foundTime += Time.deltaTime;
         float dist = Vector2.Distance(transform.position, player.transform.position);
+        direction = player.transform.position.x - transform.position.x;
         Vector2 bPos = transform.position;
         Vector2 aPos = new Vector2(speed * i, 0) * Time.deltaTime;
         Vector2 gPos = new Vector2(0, gravty) * Time.deltaTime;
@@ -50,11 +57,11 @@ public class Agg : MonoBehaviour
         {
             if (i == -1)
             {
-                sr.flipX = false;
+                transform.rotation = Quaternion.Euler(0, 180, 0);
             }
             else
             {
-                sr.flipX = true;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
             }
             transform.position = bPos + aPos;
             anim.SetBool("isWalk", true);
@@ -70,10 +77,20 @@ public class Agg : MonoBehaviour
         //인식했을떄
         if (dist<=foundRange)
         {
+
             anim.SetBool("isWalk", false);
             foundTime = 0;
             if (isAttack==true)
             {
+                if (direction > 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                    
+                }
+                else if (direction < 0)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
                 if (attackType[attackCount] == 1)
                 {
                     anim.SetBool("attack1R", true);
@@ -127,6 +144,22 @@ public class Agg : MonoBehaviour
         anim.SetBool("attack1R", false);
         anim.SetBool("attack1", true);
     }
+    public void A1_1()
+    {
+        Instantiate(attacks[0], transform.position, transform.rotation);
+    }
+    public void A1_2()
+    {
+        Instantiate(attacks[1], transform.position, transform.rotation);
+    }
+    public void A1_3()
+    {
+        Instantiate(attacks[2], transform.position, transform.rotation);
+    }
+    public void A1_4()
+    {
+        //attack1_3.SetActive(false);
+    }
     public void A1End()
     {
         anim.SetBool("attack1", false);
@@ -145,14 +178,71 @@ public class Agg : MonoBehaviour
         anim.SetBool("attack2R", false);
         anim.SetBool("attack2", true);
     }
+    public void A2_1()
+    {
+        Instantiate(attacks[3], transform.position, transform.rotation);
+    }
+    public void A2_2()
+    {
+        Instantiate(attacks[4], transform.position, transform.rotation);
+    }
+    public void A2_3()
+    {
+        Instantiate(attacks[5], transform.position, transform.rotation);
+    }
+    public void A2_4()
+    {
+        Instantiate(attacks[6], transform.position, transform.rotation);
+    }
+    public void A2_5()
+    {
+        Instantiate(attacks[7], transform.position, transform.rotation);
+    }
+    public void A2_6()
+    {
+        Instantiate(attacks[8], transform.position, transform.rotation);
+    }
+    public void A2_7()
+    {
+        Instantiate(attacks[9], transform.position, transform.rotation);
+    }
+    public void A2_8()
+    {
+        Instantiate(attacks[10], transform.position, transform.rotation);
+    }
+    public void A2_9()
+    {
+        Instantiate(attacks[11], transform.position, transform.rotation);
+    }
     public void A3()
     {
         anim.SetBool("attack2", false);
         anim.SetBool("attack3", true);
     }
+    public void A3_1()
+    {
+        Instantiate(attacks[12], transform.position, transform.rotation);
+    }
+    public void A3_2()
+    {
+        Instantiate(attacks[13], transform.position, transform.rotation);
+    }
+    public void A3_3()
+    {
+        Instantiate(attacks[14], transform.position, transform.rotation);
+    }
     public void A3End()
     {
         anim.SetBool("attack3", false);
+        ifSmoking = Random.Range(0, 2);
+        if (ifSmoking==0)
+        {
+            isAttack = true;
+        }
+        else if (ifSmoking==1)
+        {
+            anim.SetBool("isSit", true);
+        }
         if (attackCount <= 14)
         {
             attackCount += 1;
@@ -161,6 +251,26 @@ public class Agg : MonoBehaviour
         {
             attackCount = 0;
         }
+    }
+    public void A4()
+    {
+        anim.SetBool("isSit", false);
+        anim.SetBool("isSmoking", true);
+    }
+    public void A4End()
+    {
+        anim.SetBool("isSmoking", false);
         isAttack = true;
+        for (int i = 0; i < 3; i++)
+        {
+            if (direction > 0)
+            {
+                Instantiate(prefab, shootPoint2.transform.position, Quaternion.identity);
+            }
+            else if (direction < 0)
+            {
+                Instantiate(prefab, shootPoint1.transform.position, Quaternion.identity);
+            }
+        }
     }
 }

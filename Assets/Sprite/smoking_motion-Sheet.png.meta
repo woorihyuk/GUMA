@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d645a1a9b78e024499b02598e47ef25f
+guid: 16b8fcfdf3b938e4fa8229fca2b8038b
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -66,7 +66,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -116,13 +116,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: attack_3_0
+      name: smoking_motion-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 300
-        height: 160
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -130,20 +130,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fc37faf5a7302c34b91718cb3f399d49
-      internalID: -1231823659
+      spriteID: d7c7b6701a123ae49a37f75b64655284
+      internalID: 166069563
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_3_1
+      name: smoking_motion-Sheet_1
       rect:
         serializedVersion: 2
-        x: 300
+        x: 80
         y: 0
-        width: 300
-        height: 160
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -151,20 +151,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9dc9113557f4e6542a4e78edc07e9212
-      internalID: 1109795430
+      spriteID: f3208bbc7e3216a41bd5e3f4dd042e60
+      internalID: -1013303764
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_3_2
+      name: smoking_motion-Sheet_2
       rect:
         serializedVersion: 2
-        x: 600
+        x: 160
         y: 0
-        width: 300
-        height: 160
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -172,20 +172,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2859bcebe46dd594c90379dfab4f8cbf
-      internalID: -317540158
+      spriteID: 4a79191a84d3a2343a1ad581dbb74be9
+      internalID: 493161662
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_3_3
+      name: smoking_motion-Sheet_3
       rect:
         serializedVersion: 2
-        x: 900
+        x: 240
         y: 0
-        width: 300
-        height: 160
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -193,20 +193,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b19b950fb4a67ba46ac026ad1986d042
-      internalID: 279006507
+      spriteID: 49266b33109ab2c4ab26084bd577ef75
+      internalID: -375313310
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_3_4
+      name: smoking_motion-Sheet_4
       rect:
         serializedVersion: 2
-        x: 1200
+        x: 320
         y: 0
-        width: 300
-        height: 160
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -214,20 +214,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4e5f43388fe3a09469eb3d63a7769483
-      internalID: 920749208
+      spriteID: 527be2bc0a796904a802a110debdd688
+      internalID: -35220106
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: attack_3_5
+      name: smoking_motion-Sheet_5
       rect:
         serializedVersion: 2
-        x: 1500
+        x: 400
         y: 0
-        width: 300
-        height: 160
+        width: 80
+        height: 80
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -235,29 +235,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7efddc3fb5d331d429d1e49c8d022db3
-      internalID: -1632886510
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: attack_3_6
-      rect:
-        serializedVersion: 2
-        x: 1800
-        y: 0
-        width: 300
-        height: 160
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 34103db8ec6be764a820840d6788ddd5
-      internalID: -39778459
+      spriteID: add43fa101fd97541b266af62a991584
+      internalID: -445062259
       vertices: []
       indices: 
       edges: []
@@ -273,13 +252,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      attack_3_6: -39778459
-      attack_3_1: 1109795430
-      attack_3_4: 920749208
-      attack_3_2: -317540158
-      attack_3_0: -1231823659
-      attack_3_3: 279006507
-      attack_3_5: -1632886510
+      smoking_motion-Sheet_2: 493161662
+      smoking_motion-Sheet_0: 166069563
+      smoking_motion-Sheet_5: -445062259
+      smoking_motion-Sheet_3: -375313310
+      smoking_motion-Sheet_4: -35220106
+      smoking_motion-Sheet_1: -1013303764
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

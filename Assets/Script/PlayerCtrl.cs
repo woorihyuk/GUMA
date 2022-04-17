@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCtrl : MonoBehaviour
 {
+    public GameObject hpUi;
+
     public float maxSpeed;
     public float jumpPower;
     public float dashPower;
+    public float hp;
+
+    public bool isHit;
 
     float direction;
     float bSpeed;
@@ -16,36 +22,45 @@ public class PlayerCtrl : MonoBehaviour
     bool isDash;
     bool isSteap;
     bool isGround;
-    bool isRjump;
 
     float h;
+    float mxHp;
+
     int isJump;
 
     Animator anim;
     Rigidbody2D rigid;
     CapsuleCollider2D box;
+    SpriteRenderer spriteRenderer;
+    Image hpBar;
+
+    Hit hit;
+    
     // Start is called before the first frame update
     void Start()
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         box = GetComponent<CapsuleCollider2D>();
+        hpBar = hpUi.GetComponent<Image>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        hit = GetComponent<Hit>();
         bSpeed = maxSpeed;
-
+        mxHp = hp;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-
+        hpBar.fillAmount = hp / mxHp;
         dTime += Time.deltaTime;
-
+        //이동
         if (isDash == false)
         {
             h = Input.GetAxisRaw("Horizontal");
             rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
         }
-
+        //속도제한
         if (rigid.velocity.x > maxSpeed)
         {
             rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
@@ -54,14 +69,16 @@ public class PlayerCtrl : MonoBehaviour
         {
             rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
         }
-
-
-
+        if (Input.GetMouseButtonDown(0))
+        {
+            anim.SetBool("isAttack", true);
+        }
+        //멈춤
         if (Input.GetButtonUp("Horizontal"))
         {
             rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         }
-
+        //점프
         if (Input.GetKeyDown(KeyCode.W))
         {
             if (isJump < 1)
@@ -83,6 +100,7 @@ public class PlayerCtrl : MonoBehaviour
                 box.enabled = false;
             }
         }
+        //구르기,백스텝
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (dTime >= 0.1f)
@@ -106,17 +124,19 @@ public class PlayerCtrl : MonoBehaviour
                 }
             }
         }
-
+        //구르기
         if (isDash == true)
         {
             var i = new Vector2(direction, 0);
             rigid.AddForce(i, ForceMode2D.Impulse);
         }
+        //스텝
         if (isSteap == true)
         {
             var j = new Vector2(direction*-1, 0);
             rigid.AddForce(j, ForceMode2D.Impulse);
         }
+        //땅에 닿았는지
         if (isGround==true)
         {
             if (h != 0)
@@ -135,7 +155,8 @@ public class PlayerCtrl : MonoBehaviour
             box.enabled = true;
         }
     }
-    public void e()
+    //구르기 끝
+    public void DashEnd()
     {
         maxSpeed = bSpeed;
         isDash = false;
@@ -143,8 +164,8 @@ public class PlayerCtrl : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         dTime = 0;
     }
-
-    public void q()
+    //스텝 끝
+    public void SteapEnd()
     {
         maxSpeed = bSpeed;
         isSteap = false;
@@ -152,15 +173,12 @@ public class PlayerCtrl : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         dTime = 0;
     }
-
-    public void r()
+    //공격끝
+    public void AttackEnd()
     {
-        rigid.velocity = new Vector2(0, 0);
-        rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-        anim.SetBool("dJump", true);
-        isJump += 1;
-        isGround = false;
+        anim.SetBool("isAttack", false);
     }
+    
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "ground")
@@ -169,6 +187,19 @@ public class PlayerCtrl : MonoBehaviour
             anim.SetBool("dJump", false);
             isGround = true;
             isJump = 0;
+        }
+       
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+         if (collision.gameObject.tag=="EnemyAttack")
+        {
+            if (isHit==false)
+            {
+                EnemyAttack enemyAttack = collision.gameObject.GetComponent<EnemyAttack>();
+                hp -= enemyAttack.dmg;
+                StartCoroutine(hit.HitAni());
+            } 
         }
     }
 }
