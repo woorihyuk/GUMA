@@ -18,10 +18,13 @@ public class PlayerCtrl : MonoBehaviour
     float bSpeed;
     float dTime;
 
-
+    bool isMove;
     bool isDash;
     bool isSteap;
     bool isGround;
+    bool isAttack1;
+    bool isAttack2;
+    bool isAttack3;
 
     float h;
     float mxHp;
@@ -47,6 +50,7 @@ public class PlayerCtrl : MonoBehaviour
         hit = GetComponent<Hit>();
         bSpeed = maxSpeed;
         mxHp = hp;
+        isMove = true;
     }
 
 
@@ -58,7 +62,10 @@ public class PlayerCtrl : MonoBehaviour
         if (isDash == false)
         {
             h = Input.GetAxisRaw("Horizontal");
-            rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
+            if (isMove)
+            {
+                rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
+            } 
         }
         //속도제한
         if (rigid.velocity.x > maxSpeed)
@@ -69,10 +76,29 @@ public class PlayerCtrl : MonoBehaviour
         {
             rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
         }
+        //공격
         if (Input.GetMouseButtonDown(0))
         {
-            anim.SetBool("isAttack", true);
+            if (isAttack2)
+            {
+                isMove = false;
+                Debug.Log("공3");
+                isAttack3 = true;
+            }
+            if (isAttack1)
+            {
+                isMove = false;
+                Debug.Log("공2");
+                isAttack2 = true;
+            }
+            if (isAttack1==false&&isAttack2==false&&isAttack3==false)
+            {
+                isMove = false;
+                isAttack1 = true;
+                anim.SetBool("isAttack", true);
+            }
         }
+
         //멈춤
         if (Input.GetButtonUp("Horizontal"))
         {
@@ -103,23 +129,26 @@ public class PlayerCtrl : MonoBehaviour
         //구르기,백스텝
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (dTime >= 0.1f)
+            if (isMove)
             {
-                if (isGround == true)
+                if (dTime >= 0.1f)
                 {
-                    if (h != 0)
+                    if (isGround == true)
                     {
-                        dTime = 0;
-                        isDash = true;
-                        maxSpeed = maxSpeed + dashPower;
-                        anim.SetBool("isdash", true);
-                    }
-                    else
-                    {
-                        dTime = 0;
-                        isSteap = true;
-                        maxSpeed = maxSpeed + dashPower;
-                        anim.SetBool("isStap", true);
+                        if (h != 0)
+                        {
+                            dTime = 0;
+                            isDash = true;
+                            maxSpeed = maxSpeed + dashPower;
+                            anim.SetBool("isdash", true);
+                        }
+                        else
+                        {
+                            dTime = 0;
+                            isSteap = true;
+                            maxSpeed = maxSpeed + dashPower;
+                            anim.SetBool("isStap", true);
+                        }
                     }
                 }
             }
@@ -174,10 +203,7 @@ public class PlayerCtrl : MonoBehaviour
         dTime = 0;
     }
     //공격끝
-    public void AttackEnd()
-    {
-        anim.SetBool("isAttack", false);
-    }
+    
     
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -194,12 +220,44 @@ public class PlayerCtrl : MonoBehaviour
     {
          if (collision.gameObject.tag=="EnemyAttack")
         {
-            if (isHit==false)
+            if (isHit==false&&!isDash&&!isSteap)
             {
                 EnemyAttack enemyAttack = collision.gameObject.GetComponent<EnemyAttack>();
                 hp -= enemyAttack.dmg;
                 StartCoroutine(hit.HitAni());
             } 
         }
+    }
+    public void Attack1End()
+    {
+        isAttack1 = false;
+        anim.SetBool("isAttack", false);
+        if (isAttack2)
+        {
+            anim.SetBool("isAttack2", true);
+        }
+        else if (!isAttack2)
+        {
+            isMove = true;
+        }
+    }
+    public void Attack2End()
+    {
+        anim.SetBool("isAttack2", false);
+        isAttack2 = false;
+        if (isAttack3)
+        {
+            anim.SetBool("isAttack3", true);
+        }
+        else if (!isAttack3)
+        {
+            isMove = true;
+        }
+    }
+    public void Attack3End()
+    {
+        isAttack3 = false;
+        anim.SetBool("isAttack3", false);
+        isMove = true;
     }
 }
