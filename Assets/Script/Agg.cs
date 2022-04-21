@@ -21,6 +21,7 @@ public class Agg : MonoBehaviour
     bool isGround;
     bool isMov;
     bool isAttack;
+    bool isFound;
 
     float gravty;
     float bSpeed;
@@ -55,29 +56,32 @@ public class Agg : MonoBehaviour
         //못찾을때
         if (foundTime>=3)
         {
-            if (i == -1)
+            if (!isFound)
             {
-                transform.rotation = Quaternion.Euler(0, 180, 0);
-            }
-            else
-            {
-                transform.rotation = Quaternion.Euler(0, 0, 0);
-            }
-            transform.position = bPos + aPos;
-            anim.SetBool("isWalk", true);
-            walkTime += Time.deltaTime;
-            if (walkTime>=2)
-            {
-                i = i * -1;
-                anim.SetBool("isWalk", false);
-                walkTime = 0;
-                foundTime = 0;
+                if (i == -1)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                else
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
+                transform.position = bPos + aPos;
+                anim.SetBool("isWalk", true);
+                walkTime += Time.deltaTime;
+                if (walkTime >= 2)
+                {
+                    i = i * -1;
+                    anim.SetBool("isWalk", false);
+                    walkTime = 0;
+                    foundTime = 0;
+                }
             }
         }
         //인식했을떄
         if (dist<=foundRange)
         {
-
+            isFound = true;
             anim.SetBool("isWalk", false);
             foundTime = 0;
             if (isAttack==true)
@@ -85,25 +89,44 @@ public class Agg : MonoBehaviour
                 if (direction > 0)
                 {
                     transform.rotation = Quaternion.Euler(0, 180, 0);
-                    
+                    if (dist > 3) 
+                    {
+                        i = 1;
+                        transform.position = bPos + aPos;
+                        anim.SetBool("isWalk", true);
+                    }
                 }
                 else if (direction < 0)
                 {
                     transform.rotation = Quaternion.Euler(0, 0, 0);
+                    if (dist > 3)
+                    {
+                        i = -1;
+                        transform.position = bPos + aPos;
+                        anim.SetBool("isWalk", true);
+                    }
                 }
-                if (attackType[attackCount] == 1)
+                if (dist<=3)
                 {
-                    anim.SetBool("attack1R", true);
-                    isAttack = false;
-                }
-                else if (attackType[attackCount] == 2)
+                    if (attackType[attackCount] == 1)
+                    {
+                        anim.SetBool("attack1R", true);
+                        isAttack = false;
+                    }
+                    else if (attackType[attackCount] == 2)
 
-                {
-                    anim.SetBool("attack2R", true);
-                    isAttack = false;
+                    {
+                        anim.SetBool("attack2R", true);
+                        isAttack = false;
+                    }
                 }
+                
                 Debug.Log(attackType[attackCount]);
             } 
+        }
+        else if (direction>=10)
+        {
+            isFound = false;
         }
         //중력
         if (isGround==false)
