@@ -11,6 +11,7 @@ public class Agg : MonoBehaviour
 
     public float speed;
     public float foundRange;
+    public float hp;
 
     int[] attackType;
 
@@ -18,7 +19,7 @@ public class Agg : MonoBehaviour
     int attackCount;
     int ifSmoking;
 
-    bool isGround;
+    public bool isGround;
     bool isMov;
     bool isAttack;
     bool isFound;
@@ -28,11 +29,13 @@ public class Agg : MonoBehaviour
     float foundTime;
     float walkTime;
     float direction;
+    float mxHp;
    
     PlayerCtrl player;
     Animator anim;
     private void Start()
     {
+        mxHp = hp;
         attackType = new int[] {1,2,1,1,2,1,2,1,1,1,2,2,1,1,1,2 };
         i = 1;
         isGround = false;
@@ -149,15 +152,19 @@ public class Agg : MonoBehaviour
     }
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.tag=="ground")
+        if (other.CompareTag("ground"))
         {
-            
             isGround = true;
+        }
+        if (other.CompareTag("PlayerAttack"))
+        {
+            Damage damage = other.gameObject.GetComponent<Damage>();
+            hp -= damage.dmg;
         }
     }
     void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.tag=="ground")
+        if (collision.CompareTag("ground"))
         {
             isGround = false;
         }

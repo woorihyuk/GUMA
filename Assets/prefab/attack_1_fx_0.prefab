@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 2779348960901061560}
   - component: {fileID: 2779348960901061562}
   - component: {fileID: 2779348960901061563}
-  - component: {fileID: 2779348960901061557}
   - component: {fileID: 2779348960901061556}
-  - component: {fileID: 7204367180329723638}
+  - component: {fileID: 4662594381439301810}
+  - component: {fileID: 2945352409782047312}
   m_Layer: 0
   m_Name: attack_1_fx_0
   m_TagString: EnemyAttack
@@ -122,19 +122,6 @@ PolygonCollider2D:
       - {x: -2.72, y: 0.28}
       - {x: -3.12, y: -0.79999995}
       - {x: -2.9199998, y: -2.08}
---- !u!114 &2779348960901061557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2779348960901061561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5cde28d90610d4cabf15c96fe9ac6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 10
 --- !u!50 &2779348960901061556
 Rigidbody2D:
   serializedVersion: 4
@@ -156,7 +143,7 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &7204367180329723638
+--- !u!114 &4662594381439301810
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,3 +155,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9480576f60de67d469268191174c2306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2945352409782047312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779348960901061561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781bcf80c38a9cc4ca5716a06c068f82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmg: 20

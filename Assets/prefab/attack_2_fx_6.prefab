@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7518916857864935425}
   - component: {fileID: 1065775579738411576}
-  - component: {fileID: -4144143152652703441}
   - component: {fileID: -2429866486337331990}
   - component: {fileID: -5105911524825308496}
   - component: {fileID: -5470218435187407753}
+  - component: {fileID: 3617943434937133321}
   m_Layer: 0
   m_Name: attack_2_fx_6
   m_TagString: EnemyAttack
@@ -88,19 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &-4144143152652703441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 978264520717134429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5cde28d90610d4cabf15c96fe9ac6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 20
 --- !u!50 &-2429866486337331990
 Rigidbody2D:
   serializedVersion: 4
@@ -187,3 +174,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9480576f60de67d469268191174c2306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3617943434937133321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 978264520717134429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781bcf80c38a9cc4ca5716a06c068f82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmg: 20

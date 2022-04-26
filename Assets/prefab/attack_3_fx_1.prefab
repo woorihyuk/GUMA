@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 2655594032348277839}
   - component: {fileID: -1276989398979065982}
   - component: {fileID: 6191130152825146501}
-  - component: {fileID: 1597202738236975424}
   - component: {fileID: -6038865004987027246}
+  - component: {fileID: -8728637658352489862}
   m_Layer: 0
   m_Name: attack_3_fx_1
   m_TagString: EnemyAttack
@@ -153,19 +153,6 @@ PolygonCollider2D:
       - {x: 0.79999995, y: -2.32}
       - {x: 0.12, y: -2.2}
       - {x: -0.48, y: -2.08}
---- !u!114 &1597202738236975424
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8020570065853400992}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5cde28d90610d4cabf15c96fe9ac6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 30
 --- !u!114 &-6038865004987027246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -178,3 +165,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9480576f60de67d469268191174c2306, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-8728637658352489862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8020570065853400992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781bcf80c38a9cc4ca5716a06c068f82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dmg: 30

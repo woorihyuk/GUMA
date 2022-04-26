@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6663192077270443842}
   - component: {fileID: -5674978140773534180}
   - component: {fileID: 2480622431164627395}
-  - component: {fileID: -7793549161265136292}
+  - component: {fileID: -2961330275369956441}
   m_Layer: 0
   m_Name: smoking_make-Sheet_4
   m_TagString: EnemyAttack
@@ -159,7 +159,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.21191514
---- !u!114 &-7793549161265136292
+--- !u!114 &-2961330275369956441
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6760010762264570268}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6a5cde28d90610d4cabf15c96fe9ac6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 781bcf80c38a9cc4ca5716a06c068f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dmg: 5
+  dmg: 10

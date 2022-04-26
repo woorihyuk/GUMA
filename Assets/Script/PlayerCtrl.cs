@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class PlayerCtrl : MonoBehaviour
 {
     public GameObject hpUi;
+    public GameObject attack1;
+    public GameObject attack2;
+    public GameObject attack3;
 
     public float maxSpeed;
     public float jumpPower;
@@ -30,7 +33,7 @@ public class PlayerCtrl : MonoBehaviour
     float mxHp;
 
     int isJump;
-
+    
     Animator anim;
     Rigidbody2D rigid;
     CapsuleCollider2D box;
@@ -65,6 +68,14 @@ public class PlayerCtrl : MonoBehaviour
             if (isMove)
             {
                 rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
+                if (h==1)
+                {
+                    transform.rotation = Quaternion.Euler(0, 0, 0);
+                }
+                else if (h==-1)
+                {
+                    transform.rotation = Quaternion.Euler(0, 180, 0);
+                }
             } 
         }
         //속도제한
@@ -171,7 +182,7 @@ public class PlayerCtrl : MonoBehaviour
             if (h != 0)
             {
                 anim.SetBool("isRun", true);
-                transform.localScale = new Vector3(h, 1, 1);
+                //transform.localScale = new Vector3(h, 1, 1);
                 direction = h;
             }
             else
@@ -207,7 +218,7 @@ public class PlayerCtrl : MonoBehaviour
     
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "ground")
+        if (collision.gameObject.CompareTag("ground"))
         {
             anim.SetBool("isJump", false);
             anim.SetBool("dJump", false);
@@ -218,12 +229,12 @@ public class PlayerCtrl : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-         if (collision.gameObject.tag=="EnemyAttack")
+         if (collision.CompareTag("EnemyAttack"))
         {
             if (isHit==false&&!isDash&&!isSteap)
             {
-                EnemyAttack enemyAttack = collision.gameObject.GetComponent<EnemyAttack>();
-                hp -= enemyAttack.dmg;
+                Damage damage = collision.gameObject.GetComponent<Damage>();
+                hp -= damage.dmg;
                 StartCoroutine(hit.HitAni());
             } 
         }
@@ -240,6 +251,18 @@ public class PlayerCtrl : MonoBehaviour
         {
             isMove = true;
         }
+    }
+    public void Attack1Fx()
+    {
+        Instantiate(attack1, transform.position, transform.rotation);
+    }
+    public void Attack2Fx()
+    {
+        Instantiate(attack2, transform.position, transform.rotation);
+    }
+    public void Attack3Fx()
+    {
+        Instantiate(attack3, transform.position, transform.rotation);
     }
     public void Attack2End()
     {

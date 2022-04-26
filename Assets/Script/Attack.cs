@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAttackFx : MonoBehaviour
+public class Attack : MonoBehaviour
 {
     float attackTime;
     // Start is called before the first frame update
