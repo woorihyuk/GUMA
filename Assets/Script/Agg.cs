@@ -1,12 +1,14 @@
 ﻿using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Agg : MonoBehaviour
 {
     public GameObject prefab;
     public GameObject shootPoint1;
     public GameObject shootPoint2;
+    public GameObject hpBar;
     public GameObject[] attacks;
 
     public float speed;
@@ -33,8 +35,10 @@ public class Agg : MonoBehaviour
    
     PlayerCtrl player;
     Animator anim;
+    Image hpGauge;
     private void Start()
     {
+        hpBar.SetActive(false);
         mxHp = hp;
         attackType = new int[] {1,2,1,1,2,1,2,1,1,1,2,2,1,1,1,2 };
         i = 1;
@@ -42,8 +46,8 @@ public class Agg : MonoBehaviour
         bSpeed = speed;
         isMov = true;
         player = FindObjectOfType<PlayerCtrl>();
-        anim = GetComponent<Animator>();        
-
+        anim = GetComponent<Animator>();
+        hpGauge = hpBar.GetComponent<Image>();
         isAttack = true;
     }
 
@@ -55,12 +59,18 @@ public class Agg : MonoBehaviour
         Vector2 bPos = transform.position;
         Vector2 aPos = new Vector2(speed * i, 0) * Time.deltaTime;
         Vector2 gPos = new Vector2(0, gravty) * Time.deltaTime;
+        hpGauge.fillAmount = hp / mxHp;
         transform.position = bPos + gPos;
         //못찾을때
+        if (hp<=0)
+        {
+            anim.SetBool("isDie", true);
+        }
         if (foundTime>=3)
         {
             if (!isFound)
             {
+                hpBar.SetActive(false);
                 if (i == -1)
                 {
                     transform.rotation = Quaternion.Euler(0, 0, 0);
@@ -85,17 +95,26 @@ public class Agg : MonoBehaviour
         if (dist<=foundRange)
         {
             isFound = true;
+            
+        }
+        else if (direction>=10)
+        {
+            isFound = false;
+        }
+        if (isFound)
+        {
+            hpBar.SetActive(true);
             anim.SetBool("isWalk", false);
             foundTime = 0;
-            if (isAttack==true)
+            if (isAttack == true)
             {
                 if (direction > 0)
                 {
                     transform.rotation = Quaternion.Euler(0, 180, 0);
-                    if (dist > 3) 
+                    if (dist > 3)
                     {
                         i = 1;
-                        transform.position = bPos + aPos;
+                        transform.position = bPos + aPos + gPos;
                         anim.SetBool("isWalk", true);
                     }
                 }
@@ -105,11 +124,11 @@ public class Agg : MonoBehaviour
                     if (dist > 3)
                     {
                         i = -1;
-                        transform.position = bPos + aPos;
+                        transform.position = bPos + aPos + gPos;
                         anim.SetBool("isWalk", true);
                     }
                 }
-                if (dist<=3)
+                if (dist <= 3)
                 {
                     if (attackType[attackCount] == 1)
                     {
@@ -123,13 +142,9 @@ public class Agg : MonoBehaviour
                         isAttack = false;
                     }
                 }
-                
+
                 Debug.Log(attackType[attackCount]);
-            } 
-        }
-        else if (direction>=10)
-        {
-            isFound = false;
+            }
         }
         //중력
         if (isGround==false)
@@ -160,6 +175,7 @@ public class Agg : MonoBehaviour
         {
             Damage damage = other.gameObject.GetComponent<Damage>();
             hp -= damage.dmg;
+            Debug.Log("맞음");
         }
     }
     void OnTriggerExit2D(Collider2D collision)
@@ -302,5 +318,9 @@ public class Agg : MonoBehaviour
                 Instantiate(prefab, shootPoint1.transform.position, Quaternion.identity);
             }
         }
+    }
+    public void Die()
+    {
+        Destroy(gameObject);
     }
 }

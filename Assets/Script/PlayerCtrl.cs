@@ -61,6 +61,10 @@ public class PlayerCtrl : MonoBehaviour
     {
         hpBar.fillAmount = hp / mxHp;
         dTime += Time.deltaTime;
+        if (hp<=0)
+        {
+            anim.SetBool("isDie", true);
+        }
         //이동
         if (isDash == false)
         {
@@ -213,7 +217,10 @@ public class PlayerCtrl : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         dTime = 0;
     }
-    //공격끝
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
     
     
     void OnCollisionEnter2D(Collision2D collision)
