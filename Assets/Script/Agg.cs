@@ -15,6 +15,7 @@ public class Agg : MonoBehaviour
     public float foundRange;
     public float hp;
     public float attackRange;
+    public float jumpPower;
 
     int[] attackType;
 
@@ -54,7 +55,7 @@ public class Agg : MonoBehaviour
 
     void Update()
     {
-        Debug.DrawRay(transform.position, transform.rotation.eulerAngles);
+        Debug.DrawRay(transform.position, transform.right * -5);
 
         RaycastHit2D hitinfo;
 
