@@ -14,6 +14,7 @@ public class Agg : MonoBehaviour
     public float speed;
     public float foundRange;
     public float hp;
+    public float attackRange;
 
     int[] attackType;
 
@@ -53,6 +54,16 @@ public class Agg : MonoBehaviour
 
     void Update()
     {
+        Debug.DrawRay(transform.position, transform.rotation.eulerAngles);
+
+        RaycastHit2D hitinfo;
+
+        if (Physics2D.Raycast(transform.position, transform.forward, 10f))
+        {
+            
+        }
+
+
         foundTime += Time.deltaTime;
         float dist = Vector2.Distance(transform.position, player.transform.position);
         direction = player.transform.position.x - transform.position.x;
@@ -111,7 +122,7 @@ public class Agg : MonoBehaviour
                 if (direction > 0)
                 {
                     transform.rotation = Quaternion.Euler(0, 180, 0);
-                    if (dist > 3)
+                    if (dist > attackRange)
                     {
                         i = 1;
                         transform.position = bPos + aPos + gPos;
@@ -121,14 +132,14 @@ public class Agg : MonoBehaviour
                 else if (direction < 0)
                 {
                     transform.rotation = Quaternion.Euler(0, 0, 0);
-                    if (dist > 3)
+                    if (dist > attackRange)
                     {
                         i = -1;
                         transform.position = bPos + aPos + gPos;
                         anim.SetBool("isWalk", true);
                     }
                 }
-                if (dist <= 3)
+                if (dist <= attackRange)
                 {
                     if (attackType[attackCount] == 1)
                     {
@@ -142,7 +153,6 @@ public class Agg : MonoBehaviour
                         isAttack = false;
                     }
                 }
-
                 Debug.Log(attackType[attackCount]);
             }
         }
@@ -293,10 +303,7 @@ public class Agg : MonoBehaviour
         {
             attackCount += 1;
         }
-        else
-        {
-            attackCount = 0;
-        }
+        
     }
     public void A4()
     {

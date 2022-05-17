@@ -36,8 +36,6 @@ public class PlayerCtrl : MonoBehaviour
     
     Animator anim;
     Rigidbody2D rigid;
-    CapsuleCollider2D box;
-    SpriteRenderer spriteRenderer;
     Image hpBar;
 
     Hit hit;
@@ -47,9 +45,7 @@ public class PlayerCtrl : MonoBehaviour
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
-        box = GetComponent<CapsuleCollider2D>();
         hpBar = hpUi.GetComponent<Image>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         hit = GetComponent<Hit>();
         bSpeed = maxSpeed;
         mxHp = hp;
@@ -129,7 +125,6 @@ public class PlayerCtrl : MonoBehaviour
                 anim.SetBool("isJump", true);
                 isJump += 1;
                 isGround = false;
-                box.enabled = false;
             }
             else if (isJump == 1)
             {
@@ -138,7 +133,6 @@ public class PlayerCtrl : MonoBehaviour
                 anim.SetBool("dJump", true);
                 isJump += 1;
                 isGround = false;
-                box.enabled = false;
             }
         }
         //구르기,백스텝
@@ -196,7 +190,6 @@ public class PlayerCtrl : MonoBehaviour
         }
         if (rigid.velocity.y<0)
         {
-            box.enabled = true;
         }
     }
     //구르기 끝
