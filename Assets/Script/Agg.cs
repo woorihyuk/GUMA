@@ -57,13 +57,6 @@ public class Agg : MonoBehaviour
     {
         Debug.DrawRay(transform.position, transform.right * -5);
 
-        RaycastHit2D hitinfo;
-
-        if (Physics2D.Raycast(transform.position, transform.forward, 10f))
-        {
-            
-        }
-
 
         foundTime += Time.deltaTime;
         float dist = Vector2.Distance(transform.position, player.transform.position);

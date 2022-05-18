@@ -19,6 +19,6 @@ public class Camera : MonoBehaviour
     {
         x = player.transform.position.x;
         y = player.transform.position.y;
-        transform.position = new Vector3(x, y+1, -10);
+        transform.position = new Vector3(x, 0, -10);
     }
 }
