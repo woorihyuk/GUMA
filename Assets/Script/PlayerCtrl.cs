@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,12 +10,16 @@ public class PlayerCtrl : MonoBehaviour
     public GameObject attack1;
     public GameObject attack2;
     public GameObject attack3;
+    public Transform wallChk;
+    public LayerMask layerMask;
 
     public float maxSpeed;
     public float jumpPower;
     public float dashPower;
     public float hp;
     public float moving;
+    public float wallchkDistance;
+    public float slidingSpeed;
 
     public bool isHit;
 
@@ -29,7 +34,7 @@ public class PlayerCtrl : MonoBehaviour
     bool isAttack1;
     bool isAttack2;
     bool isAttack3;
-    bool iswall;
+    bool isWall;
 
     float h;
     float mxHp;
@@ -57,6 +62,19 @@ public class PlayerCtrl : MonoBehaviour
 
     void Update()
     {
+        isWall=Physics2D.Raycast(wallChk.position, Vector2.right*h, wallchkDistance, layerMask);
+
+        Debug.DrawRay(wallChk.position, Vector2.right * h*wallchkDistance);
+        anim.SetBool("iswall", isWall);
+        if (isWall)
+        {
+            Debug.Log("¥Í¿Ω");
+            rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * slidingSpeed);
+        }
+        else
+        {
+            Debug.Log("æ»¥Í¿Ω");
+        }
         hpBar.fillAmount = hp / mxHp;
         dTime += Time.deltaTime;
         if (hp<=0)
@@ -126,7 +144,6 @@ public class PlayerCtrl : MonoBehaviour
                 rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
                 anim.SetBool("isJump", true);
                 isJump += 1;
-                isGround = false;
             }
             else if (isJump == 1)
             {
@@ -182,21 +199,12 @@ public class PlayerCtrl : MonoBehaviour
             if (h != 0)
             {
                 anim.SetBool("isRun", true);
-                //transform.localScale = new Vector3(h, 1, 1);
                 direction = h;
             }
             else
             {
                 anim.SetBool("isRun", false);
             }
-        }
-        if (iswall==true&&isGround==false)
-        {
-            anim.SetBool("iswall", true);
-        }
-        else
-        {
-            anim.SetBool("iswall", false);
         }
     }
     //±∏∏£±‚ ≥°
@@ -232,26 +240,18 @@ public class PlayerCtrl : MonoBehaviour
             isGround = true;
             isJump = 0;
         }
-        if (collision.gameObject.CompareTag("wall"))
-        {
-            iswall = true;
-        }
-       
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("wall"))
-        {
-            iswall = false;
-        }
         if (collision.gameObject.CompareTag("ground"))
         {
             isJump = 1;
+            isGround = false;
         }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-         if (collision.CompareTag("EnemyAttack"))
+        if (collision.CompareTag("EnemyAttack"))
         {
             if (isHit==false&&!isDash&&!isSteap)
             {
