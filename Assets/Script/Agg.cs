@@ -38,6 +38,9 @@ public class Agg : MonoBehaviour
     PlayerCtrl player;
     Animator anim;
     Image hpGauge;
+
+    RaycastHit2D hitinfo;
+
     private void Start()
     {
         hpBar.SetActive(false);
@@ -54,8 +57,7 @@ public class Agg : MonoBehaviour
     }
 
     void Update()
-    {
-        Debug.DrawRay(transform.position, transform.right * -5);
+    {   
 
 
         foundTime += Time.deltaTime;
@@ -189,6 +191,9 @@ public class Agg : MonoBehaviour
             isGround = false;
         }
     }
+
+    
+
     public void A1()
     {
         anim.SetBool("attack1R", false);

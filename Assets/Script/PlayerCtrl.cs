@@ -29,6 +29,7 @@ public class PlayerCtrl : MonoBehaviour
     bool isAttack1;
     bool isAttack2;
     bool isAttack3;
+    bool iswall;
 
     float h;
     float mxHp;
@@ -56,8 +57,6 @@ public class PlayerCtrl : MonoBehaviour
 
     void Update()
     {
-        moving = rigid.velocity.x;
-        Debug.Log(moving);
         hpBar.fillAmount = hp / mxHp;
         dTime += Time.deltaTime;
         if (hp<=0)
@@ -191,8 +190,13 @@ public class PlayerCtrl : MonoBehaviour
                 anim.SetBool("isRun", false);
             }
         }
-        if (rigid.velocity.y<0)
+        if (iswall==true&&isGround==false)
         {
+            anim.SetBool("iswall", true);
+        }
+        else
+        {
+            anim.SetBool("iswall", false);
         }
     }
     //구르기 끝
@@ -228,7 +232,22 @@ public class PlayerCtrl : MonoBehaviour
             isGround = true;
             isJump = 0;
         }
+        if (collision.gameObject.CompareTag("wall"))
+        {
+            iswall = true;
+        }
        
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("wall"))
+        {
+            iswall = false;
+        }
+        if (collision.gameObject.CompareTag("ground"))
+        {
+            isJump = 1;
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -242,6 +261,8 @@ public class PlayerCtrl : MonoBehaviour
             } 
         }
     }
+
+
     public void Attack1End()
     {
         isAttack1 = false;
