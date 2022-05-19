@@ -14,6 +14,7 @@ public class PlayerCtrl : MonoBehaviour
     public float jumpPower;
     public float dashPower;
     public float hp;
+    public float moving;
 
     public bool isHit;
 
@@ -55,6 +56,8 @@ public class PlayerCtrl : MonoBehaviour
 
     void Update()
     {
+        moving = rigid.velocity.x;
+        Debug.Log(moving);
         hpBar.fillAmount = hp / mxHp;
         dTime += Time.deltaTime;
         if (hp<=0)
