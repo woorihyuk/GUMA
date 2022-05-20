@@ -4,6 +4,36 @@ public class AnimationEventCaller : MonoBehaviour
 {
     public Player player;
 
+    public void Attack1Fx()
+    {
+        player.OnAnimationAttackFx(Player.AttackMode.First);
+    }
+    
+    public void Attack2Fx()
+    {
+        player.OnAnimationAttackFx(Player.AttackMode.Second);
+    }
+    
+    public void Attack3Fx()
+    {
+        player.OnAnimationAttackFx(Player.AttackMode.Third);
+    }
+
+    public void Attack1End()
+    {
+        player.OnAnimationAttackEnd(Player.AttackMode.First);
+    }
+
+    public void Attack2End()
+    {
+        player.OnAnimationAttackEnd(Player.AttackMode.Second);
+    }
+
+    public void Attack3End()
+    {
+        player.OnAnimationAttackEnd(Player.AttackMode.Third);
+    }
+    
     public void OnBackStepEnd()
     {
         player.OnAnimationBackStepEnd();

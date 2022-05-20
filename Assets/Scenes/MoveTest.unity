@@ -773,6 +773,11 @@ MonoBehaviour:
   moveSpeed: 6
   dashSpeed: 18
   defaultSpeed: 6
+  dashCoolTime: 0.1
+  attackPrefabs:
+  - {fileID: 7526511960744633938, guid: c7cfa5ec21c3d0e4696484331a52254f, type: 3}
+  - {fileID: 8840058109200526657, guid: 3e774dd351bb98e4cb82ce3b18290f21, type: 3}
+  - {fileID: 3312183653054510614, guid: b8c60005b8b2b604ab516b8290552bf5, type: 3}
   animator: {fileID: 1284438201}
   flipper: {fileID: 1284438203}
 --- !u!61 &2285804557270544343

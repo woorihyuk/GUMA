@@ -18,20 +18,29 @@ public class Player : MonoBehaviour
 
     private Controller2D controller;
 
-    public enum CurrentJump
+    public enum JumpMode
     {
         None,
         Normal,
         Double
     }
 
+    public enum AttackMode
+    {None,
+        First,
+        Second,Third
+    }
+
+    private AttackMode _currentAttack;
+
     private float _sinceLastDashTime = 10f;
     public float dashCoolTime = 0.08f;
-
-    private bool _isDash;
+    public GameObject[] attackPrefabs;
+    
+    private bool _isDash, _isAttack;
     private float _lastInputX;
     private int _direction = 1;
-    private CurrentJump _currentJump;
+    private JumpMode _currentJump;
     public Animator animator;
     public SpriteFlipper flipper;
     private static readonly int IsStap = Animator.StringToHash("isStap");
@@ -39,6 +48,7 @@ public class Player : MonoBehaviour
     private static readonly int IsJump = Animator.StringToHash("isJump");
     private static readonly int DJump = Animator.StringToHash("dJump");
     private static readonly int IsRun = Animator.StringToHash("isRun");
+    private static readonly int IsAttack = Animator.StringToHash("isAttack");
 
     private void Start()
     {
@@ -63,7 +73,7 @@ public class Player : MonoBehaviour
 
         if (controller.collisions.below)
         {
-            _currentJump = CurrentJump.None;
+            _currentJump = JumpMode.None;
             animator.SetBool(IsJump, false);
             animator.SetBool(DJump, false);
         }
@@ -95,6 +105,13 @@ public class Player : MonoBehaviour
             if (input.x != 0) _lastInputX = input.x;
         }
         
+        Attack();
+
+        if (_isAttack)
+        {
+            targetVelocityX = 0;
+        }
+
         velocity.x = Mathf.SmoothDamp(velocity.x, targetVelocityX, ref velocityXSmoothing, (controller.collisions.below)?accelerationTimeGrounded:accelerationTimeAirborne);
         velocity.y += gravity * Time.deltaTime;
 
@@ -112,23 +129,51 @@ public class Player : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
     }
 
+    private void Attack()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (_currentAttack == AttackMode.Second)
+            {
+                _isAttack = true;
+                Debug.Log("공3");
+                _currentAttack = AttackMode.Third;
+            }
+
+            else if (_currentAttack == AttackMode.First)
+            {
+                _isAttack = true;
+                Debug.Log("공2");
+                _currentAttack = AttackMode.Second;
+            }
+
+            if (_currentAttack == AttackMode.None)
+            {
+                _isAttack = true;
+                Debug.Log("공1");
+                _currentAttack = AttackMode.First;
+                animator.SetBool(IsAttack, true);
+            }
+        }
+    }
+
     private void Jump()
     {
-        if (_currentJump == CurrentJump.None)
+        if (_currentJump == JumpMode.None)
         {
             if (Input.GetKeyDown(KeyCode.Space) && controller.collisions.below)
             {
                 velocity.y = jumpVelocity;
-                _currentJump = CurrentJump.Normal;
+                _currentJump = JumpMode.Normal;
                 animator.SetBool(IsJump, true);
             }
         }
-        else if (_currentJump == CurrentJump.Normal)
+        else if (_currentJump == JumpMode.Normal)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 velocity.y = jumpVelocity;
-                _currentJump = CurrentJump.Double;
+                _currentJump = JumpMode.Double;
                 animator.SetBool(DJump, true);
             }
         }
@@ -136,7 +181,7 @@ public class Player : MonoBehaviour
 
     private void BackStep()
     {
-        if (_currentJump == CurrentJump.None && !_isDash)
+        if (_currentJump == JumpMode.None && !_isDash)
         {
             if (Input.GetMouseButtonDown(1) && controller.collisions.below)
             {
@@ -150,7 +195,7 @@ public class Player : MonoBehaviour
 
     private void Dash()
     {
-        if (_currentJump == CurrentJump.None && !_isDash)
+        if (_currentJump == JumpMode.None && !_isDash)
         {
             if (Input.GetMouseButtonDown(1) && controller.collisions.below)
             {
@@ -178,5 +223,57 @@ public class Player : MonoBehaviour
         _isDash = false;
         moveSpeed = defaultSpeed;
         //dTime = 0;
+    }
+
+    public void OnAnimationAttackFx(AttackMode attackMode)
+    {
+        if (attackMode == AttackMode.First)
+        {
+            Instantiate(attackPrefabs[0], transform.position, transform.rotation);
+        }
+        if (attackMode == AttackMode.Second)
+        {
+            Instantiate(attackPrefabs[1], transform.position, transform.rotation);
+        }
+        if (attackMode == AttackMode.Third)
+        {
+            Instantiate(attackPrefabs[2], transform.position, transform.rotation);
+        }
+    }
+
+    public void OnAnimationAttackEnd(AttackMode attackMode)
+    {
+        if (attackMode == AttackMode.First)
+        {
+            animator.SetBool("isAttack", false);
+            if (_currentAttack == AttackMode.Second)
+            {
+                animator.SetBool("isAttack2", true);
+            }
+            else
+            {
+                _isAttack = false;
+                _currentAttack = AttackMode.None;
+            }
+        }
+        if (attackMode == AttackMode.Second)
+        {
+            animator.SetBool("isAttack2", false);
+            if (_currentAttack == AttackMode.Third)
+            {
+                animator.SetBool("isAttack3", true);
+            }
+            else
+            {
+                _isAttack = false;
+                _currentAttack = AttackMode.None;
+            }
+        }
+        if (attackMode == AttackMode.Third)
+        {
+            _isAttack = false;
+            animator.SetBool("isAttack3", false);
+            _currentAttack = AttackMode.None;
+        }
     }
 }
