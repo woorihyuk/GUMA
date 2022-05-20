@@ -42,6 +42,7 @@ public class Player : MonoBehaviour
     public float wallCheckDistance = 0.95f;
     public Transform[] wallRayCheckTfs;
 
+    private Vector2 _input;
     private bool _isDash, _isAttack, _isWall;
     private float _lastInputX;
     private int _direction = 1;
@@ -86,35 +87,87 @@ public class Player : MonoBehaviour
             animator.SetBool(DJump, false);
         }
 
-        Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        Jump();
-
-        if (dashCoolTime < _sinceLastDashTime)
+        if (!_isDash)
         {
-            if (input.x == 0)
+            WallCheck();
+
+            if (!_isWall)
             {
-                BackStep();
-            }
-            else
-            {
-                Dash();
+                if (dashCoolTime < _sinceLastDashTime)
+                {
+                    if (_input.x == 0)
+                    {
+                        BackStep();
+                    }
+                    else
+                    {
+                        Dash();
+                    }
+                }
             }
         }
 
+        float targetVelocityX = _input.x * moveSpeed;
+
+        if (_isDash)
+        {
+            targetVelocityX = _direction * moveSpeed;
+        }
+        else
+        {
+            if (!_isAttack && _input.x != 0) _lastInputX = _input.x;
+            WallCheck();
+        }
+        
+        Jump();
+        
+        var gravityMultiplier = 1f;
+
+        if (!_isWall) Attack();
+        else gravityMultiplier = 0.4f;
+
+        if (_isAttack) targetVelocityX = 0;
+
+        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing,
+            _controller.collisions.below ? accelerationTimeGrounded : accelerationTimeAirborne);
+        _velocity.y += _gravity * Time.deltaTime * gravityMultiplier;
+
+        flipper.Flip(_lastInputX);
+
+        if (!_isDash)
+        {
+            if (targetVelocityX < 0 || targetVelocityX > 0)
+            {
+                animator.SetBool(IsRun, true);
+            }
+            else if (targetVelocityX == 0)
+            {
+                animator.SetBool(IsRun, false);
+            }
+        }
+        
+        _controller.Move(_velocity * Time.deltaTime);
+    }
+
+    private void WallCheck()
+    {
         // 벽 확인용
-        Debug.DrawRay(wallRayCheckTfs[0].position, wallRayCheckTfs[0].right * wallCheckDistance, Color.red, 0, false);
-        Debug.DrawRay(wallRayCheckTfs[1].position, wallRayCheckTfs[1].right * wallCheckDistance, Color.red, 0, false);
+        Debug.DrawRay(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
+ false);
+        Debug.DrawRay(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
+ false);
 
         // 월드 레이어만 레이캐스트
-        int mask = 1 << LayerMask.NameToLayer("World");
+        var mask = 1 << LayerMask.NameToLayer("World");
 
         // 벽 확인 레이캐스트 배열
         var wallCheckRays = new RaycastHit2D[2];
         wallCheckRays[0] =
-            Physics2D.Raycast(wallRayCheckTfs[0].position, wallRayCheckTfs[0].right, wallCheckDistance, mask);
+            Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), wallCheckDistance, mask);
         wallCheckRays[1] =
-            Physics2D.Raycast(wallRayCheckTfs[1].position, wallRayCheckTfs[1].right, wallCheckDistance, mask);
+            Physics2D.Raycast(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), wallCheckDistance, mask);
 
         // 벽 확인 결과 저장용
         var checkWallResult = new bool[2];
@@ -124,10 +177,19 @@ public class Player : MonoBehaviour
         // 확인코드
         if (checkWallResult[0] && checkWallResult[1])
         {
-            _isWall = true;
-            _currentJump = JumpMode.None;
-            animator.SetBool(IsJump, false);
-            animator.SetBool(DJump, false);
+            if (!_isWall)
+            {
+                _isWall = true;
+                _isDash = false;
+                _currentJump = JumpMode.None;
+                animator.SetBool(IsJump, false);
+                animator.SetBool(DJump, false);
+                
+                print("값 초기화");
+
+                _velocity.y = 0;
+            }
+            
             print("벽 맞음");
         }
         else
@@ -136,41 +198,6 @@ public class Player : MonoBehaviour
         }
 
         animator.SetBool(Iswall, _isWall);
-
-        float targetVelocityX = input.x * moveSpeed;
-
-        if (_isDash)
-        {
-            targetVelocityX = _direction * moveSpeed;
-        }
-        else
-        {
-            if (!_isAttack && input.x != 0) _lastInputX = input.x;
-        }
-
-        Attack();
-
-        if (_isAttack)
-        {
-            targetVelocityX = 0;
-        }
-
-        _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing,
-            (_controller.collisions.below) ? accelerationTimeGrounded : accelerationTimeAirborne);
-        _velocity.y += _gravity * Time.deltaTime;
-
-        flipper.Flip(_lastInputX);
-
-        if (targetVelocityX < 0 || targetVelocityX > 0)
-        {
-            animator.SetBool(IsRun, true);
-        }
-        else if (targetVelocityX == 0)
-        {
-            animator.SetBool(IsRun, false);
-        }
-
-        _controller.Move(_velocity * Time.deltaTime);
     }
 
     private void Attack()
@@ -205,11 +232,22 @@ public class Player : MonoBehaviour
     {
         if (_currentJump == JumpMode.None)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && _controller.collisions.below)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                _velocity.y = _jumpVelocity;
-                _currentJump = JumpMode.Normal;
-                animator.SetBool(IsJump, true);
+                if (_controller.collisions.below)
+                {
+                    _velocity.y = _jumpVelocity;
+                    _currentJump = JumpMode.Normal;
+                    animator.SetBool(IsJump, true);
+                }
+                else if (_isWall)
+                {
+                    _velocity.y = _jumpVelocity;
+                    print(_velocity.y);
+                    _velocity.x = -20 * _lastInputX;
+                    _currentJump = JumpMode.Normal;
+                    animator.SetBool(IsJump, true);
+                }
             }
         }
         else if (_currentJump == JumpMode.Normal)
@@ -272,7 +310,7 @@ public class Player : MonoBehaviour
     public void OnAnimationAttackFx(AttackMode attackMode)
     {
         var thisTransform = transform;
-        
+
         if (attackMode == AttackMode.First)
         {
             Instantiate(attackPrefabs[0], thisTransform.position, thisTransform.rotation);
