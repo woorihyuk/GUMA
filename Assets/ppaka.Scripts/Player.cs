@@ -10,7 +10,7 @@ public class Player : MonoBehaviour
     public float moveSpeed = 6;
     public float dashSpeed = 18;
     public float defaultSpeed = 6;
-    
+
     private float gravity;
     private float jumpVelocity;
     private Vector3 velocity;
@@ -25,12 +25,20 @@ public class Player : MonoBehaviour
         Double
     }
 
+    private float _sinceLastDashTime = 10f;
+    public float dashCoolTime = 0.08f;
+
     private bool _isDash;
     private float _lastInputX;
     private int _direction = 1;
     private CurrentJump _currentJump;
     public Animator animator;
     public SpriteFlipper flipper;
+    private static readonly int IsStap = Animator.StringToHash("isStap");
+    private static readonly int Isdash = Animator.StringToHash("isdash");
+    private static readonly int IsJump = Animator.StringToHash("isJump");
+    private static readonly int DJump = Animator.StringToHash("dJump");
+    private static readonly int IsRun = Animator.StringToHash("isRun");
 
     private void Start()
     {
@@ -46,6 +54,8 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        _sinceLastDashTime += Time.deltaTime;
+        
         if (controller.collisions.above || controller.collisions.below)
         {
             velocity.y = 0;
@@ -54,42 +64,34 @@ public class Player : MonoBehaviour
         if (controller.collisions.below)
         {
             _currentJump = CurrentJump.None;
-            animator.SetBool("isJump", false);
-            animator.SetBool("dJump", false);
+            animator.SetBool(IsJump, false);
+            animator.SetBool(DJump, false);
         }
 
         Vector2 input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        if (input.x != 0)
-        {
-            animator.SetBool("isRun", true);
-        }
-        else
-        {
-            animator.SetBool("isRun", false);
-        }
-        
         Jump();
 
-        if (input.x == 0)
+        if (dashCoolTime < _sinceLastDashTime)
         {
-            BackStep();
-        }
-        else
-        {
-            Dash();
+            if (input.x == 0)
+            {
+                BackStep();
+            }
+            else
+            {
+                Dash();
+            }
         }
 
         float targetVelocityX = input.x * moveSpeed;
         
         if (_isDash)
         {
-            print("대쉬 중");
             targetVelocityX = _direction * moveSpeed;
         }
         else
         {
-            print(input.x);
             if (input.x != 0) _lastInputX = input.x;
         }
         
@@ -100,9 +102,11 @@ public class Player : MonoBehaviour
         
         if (targetVelocityX < 0 || targetVelocityX > 0)
         {
+            animator.SetBool(IsRun, true);
         }
         else if (targetVelocityX == 0)
         {
+            animator.SetBool(IsRun, false);
         }
         
         controller.Move(velocity * Time.deltaTime);
@@ -116,7 +120,7 @@ public class Player : MonoBehaviour
             {
                 velocity.y = jumpVelocity;
                 _currentJump = CurrentJump.Normal;
-                animator.SetBool("isJump", true);
+                animator.SetBool(IsJump, true);
             }
         }
         else if (_currentJump == CurrentJump.Normal)
@@ -125,7 +129,7 @@ public class Player : MonoBehaviour
             {
                 velocity.y = jumpVelocity;
                 _currentJump = CurrentJump.Double;
-                animator.SetBool("dJump", true);
+                animator.SetBool(DJump, true);
             }
         }
     }
@@ -136,7 +140,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1) && controller.collisions.below)
             {
-                animator.SetBool("isStap", true);
+                animator.SetBool(IsStap, true);
                 _direction = -(int) _lastInputX;
                 moveSpeed = dashSpeed;
                 _isDash = true;
@@ -150,7 +154,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1) && controller.collisions.below)
             {
-                animator.SetBool("isdash", true);
+                animator.SetBool(Isdash, true);
                 _direction = (int) _lastInputX;
                 moveSpeed = dashSpeed;
                 _isDash = true;
@@ -160,19 +164,19 @@ public class Player : MonoBehaviour
     
     public void OnAnimationDashEnd()
     {
-        animator.SetBool("isdash", false);
+        _sinceLastDashTime = 0;
+        animator.SetBool(Isdash, false);
         _isDash = false;
         moveSpeed = defaultSpeed;
-        print("대쉬? : " + _isDash);
         //dTime = 0;
     }
     
     public void OnAnimationBackStepEnd()
     {
-        animator.SetBool("isStap", false);
+        _sinceLastDashTime = 0;
+        animator.SetBool(IsStap, false);
         _isDash = false;
         moveSpeed = defaultSpeed;
-        print("대쉬? : " + _isDash);
         //dTime = 0;
     }
 }
