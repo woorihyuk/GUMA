@@ -10,6 +10,7 @@ public class PlayerCtrl : MonoBehaviour
     public GameObject attack1;
     public GameObject attack2;
     public GameObject attack3;
+    public GameObject save;
     public Transform wallChk;
     public LayerMask layerMask;
 
@@ -35,12 +36,14 @@ public class PlayerCtrl : MonoBehaviour
     bool isAttack2;
     bool isAttack3;
     bool isWall;
+    bool isSave;
 
     float h;
     float mxHp;
 
     int isJump;
-    
+
+    GameManager gameManager;
     Animator anim;
     Rigidbody2D rigid;
     Image hpBar;
@@ -50,6 +53,7 @@ public class PlayerCtrl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameManager = FindObjectOfType<GameManager>();
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody2D>();
         hpBar = hpUi.GetComponent<Image>();
@@ -57,6 +61,7 @@ public class PlayerCtrl : MonoBehaviour
         bSpeed = maxSpeed;
         mxHp = hp;
         isMove = true;
+        save.SetActive(false);
     }
 
 
@@ -66,6 +71,13 @@ public class PlayerCtrl : MonoBehaviour
 
         Debug.DrawRay(wallChk.position, Vector2.right * h*wallchkDistance);
         anim.SetBool("iswall", isWall);
+        if (isSave)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                gameManager.GameSave();
+            }
+        }
         if (isWall)
         {
             Debug.Log("¥Í¿Ω");
@@ -124,6 +136,7 @@ public class PlayerCtrl : MonoBehaviour
             }
             if (isAttack1==false&&isAttack2==false&&isAttack3==false)
             {
+                    
                 isMove = false;
                 isAttack1 = true;
                 anim.SetBool("isAttack", true);
@@ -259,6 +272,17 @@ public class PlayerCtrl : MonoBehaviour
                 hp -= damage.dmg;
                 StartCoroutine(hit.HitAni());
             } 
+        }
+        if (collision.name== "Jangsung")
+        {
+            save.SetActive(true);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.name=="Jangsung")
+        {
+            save.SetActive(false);
         }
     }
 

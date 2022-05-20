@@ -19,6 +19,18 @@ public class Camera : MonoBehaviour
     {
         x = player.transform.position.x;
         y = player.transform.position.y;
-        transform.position = new Vector3(x, 0, -10);
+        if (x<=2.4)
+        {
+            x = transform.position.x;
+        }
+        if (x>= 115.6)
+        {
+            x = transform.position.x;
+        }
+        if (y>=6.5)
+        {
+            y = transform.position.y;
+        }
+        transform.position = new Vector3(x, y, -10);
     }
 }
