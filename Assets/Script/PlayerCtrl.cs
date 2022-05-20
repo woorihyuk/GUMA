@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,15 +8,14 @@ public class PlayerCtrl : MonoBehaviour
     public GameObject attack2;
     public GameObject attack3;
     public GameObject save;
-    public Transform wallChk;
-    public LayerMask layerMask;
+    public Transform[] wallRayCheckTfs;
 
     public float maxSpeed;
     public float jumpPower;
     public float dashPower;
     public float hp;
     public float moving;
-    public float wallchkDistance;
+    public float wallCheckDistance = 0.95f;
     public float slidingSpeed;
 
     public bool isHit;
@@ -49,7 +45,7 @@ public class PlayerCtrl : MonoBehaviour
     Image hpBar;
 
     Hit hit;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -67,10 +63,6 @@ public class PlayerCtrl : MonoBehaviour
 
     void Update()
     {
-        isWall=Physics2D.Raycast(wallChk.position, Vector2.right*h, wallchkDistance, layerMask);
-
-        Debug.DrawRay(wallChk.position, Vector2.right * h*wallchkDistance);
-        anim.SetBool("iswall", isWall);
         if (isSave)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -78,39 +70,33 @@ public class PlayerCtrl : MonoBehaviour
                 gameManager.GameSave();
             }
         }
-        if (isWall)
-        {
-            Debug.Log("¥Í¿Ω");
-            rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * slidingSpeed);
-        }
-        else
-        {
-            Debug.Log("æ»¥Í¿Ω");
-        }
+        
         hpBar.fillAmount = hp / mxHp;
         dTime += Time.deltaTime;
-        if (hp<=0)
+        if (hp <= 0)
         {
             anim.SetBool("isDie", true);
         }
-        //¿Ãµø
+
+        //Ïù¥Îèô
         if (isDash == false)
         {
             h = Input.GetAxisRaw("Horizontal");
             if (isMove)
             {
                 rigid.AddForce(Vector2.right * h, ForceMode2D.Impulse);
-                if (h==1)
+                if (h == 1)
                 {
                     transform.rotation = Quaternion.Euler(0, 0, 0);
                 }
-                else if (h==-1)
+                else if (h == -1)
                 {
                     transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
-            } 
+            }
         }
-        //º”µµ¡¶«—
+
+        //ÏÜçÎèÑÏ†úÌïú
         if (rigid.velocity.x > maxSpeed)
         {
             rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
@@ -119,55 +105,95 @@ public class PlayerCtrl : MonoBehaviour
         {
             rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
         }
-        //∞¯∞›
+
+        //Í≥µÍ≤©
         if (Input.GetMouseButtonDown(0))
         {
             if (isAttack2)
             {
                 isMove = false;
-                Debug.Log("∞¯3");
+                Debug.Log("Í≥µ3");
                 isAttack3 = true;
             }
+
             if (isAttack1)
             {
                 isMove = false;
-                Debug.Log("∞¯2");
+                Debug.Log("Í≥µ2");
                 isAttack2 = true;
             }
-            if (isAttack1==false&&isAttack2==false&&isAttack3==false)
+
+            if (isAttack1 == false && isAttack2 == false && isAttack3 == false)
             {
-                    
                 isMove = false;
                 isAttack1 = true;
                 anim.SetBool("isAttack", true);
             }
         }
 
-        //∏ÿ√„
+        //Î©àÏ∂§
         if (Input.GetButtonUp("Horizontal"))
         {
             rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         }
-        //¡°«¡
+        
+        // Î≤Ω ÌôïÏù∏Ïö©
+        Debug.DrawRay(wallRayCheckTfs[0].position, wallRayCheckTfs[0].right * wallCheckDistance, Color.red, 0, false);
+        Debug.DrawRay(wallRayCheckTfs[1].position, wallRayCheckTfs[1].right * wallCheckDistance, Color.red, 0, false);
+
+        // ÏõîÎìú Î†àÏù¥Ïñ¥Îßå Î†àÏù¥Ï∫êÏä§Ìä∏
+        int mask = 1 << LayerMask.NameToLayer("World");
+
+        // Î≤Ω ÌôïÏù∏ Î†àÏù¥Ï∫êÏä§Ìä∏ Î∞∞Ïó¥
+        var wallCheckRays = new RaycastHit2D[2];
+        wallCheckRays[0] = Physics2D.Raycast(wallRayCheckTfs[0].position, wallRayCheckTfs[0].right, wallCheckDistance, mask);
+        wallCheckRays[1] = Physics2D.Raycast(wallRayCheckTfs[1].position, wallRayCheckTfs[1].right, wallCheckDistance, mask);
+
+        // Î≤Ω ÌôïÏù∏ Í≤∞Í≥º Ï†ÄÏû•Ïö©
+        var checkWallResult = new bool[2];
+        if (wallCheckRays[0].transform) checkWallResult[0] = true;
+        if (wallCheckRays[1].transform) checkWallResult[1] = true;
+
+        // ÌôïÏù∏ÏΩîÎìú
+        if (checkWallResult[0] && checkWallResult[1])
+        {
+            isWall = true;
+            isJump = 0;
+            anim.SetBool("isJump", false);
+            anim.SetBool("dJump", false);
+            print("Î≤Ω ÎßûÏùå");
+        }
+        else
+        {
+            isWall = false;
+        }
+        
+        anim.SetBool("iswall", isWall);
+        
+        if (isWall) rigid.velocity = new Vector2(rigid.velocity.x, rigid.velocity.y * slidingSpeed);
+        
+        //Ï†êÌîÑ
         if (Input.GetKeyDown(KeyCode.W))
         {
-            if (isJump < 1)
+            switch (isJump)
             {
-                rigid.velocity = new Vector2(0, 0);
-                rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-                anim.SetBool("isJump", true);
-                isJump += 1;
-            }
-            else if (isJump == 1)
-            {
-                rigid.velocity = new Vector2(0, 0);
-                rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-                anim.SetBool("dJump", true);
-                isJump += 1;
-                isGround = false;
+                case 0:
+                    rigid.velocity = new Vector2(0, 0);
+                    rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                    anim.SetBool("isJump", true);
+                    isJump += 1;
+                    break;
+                case 1:
+                    rigid.velocity = new Vector2(0, 0);
+                    rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                    anim.SetBool("dJump", true);
+                    isJump += 1;
+                    isGround = false;
+                    break;
             }
         }
-        //±∏∏£±‚,πÈΩ∫≈‹
+
+        //Íµ¨Î•¥Í∏∞,Î∞±Ïä§ÌÖù
         if (Input.GetKeyDown(KeyCode.Space))
         {
             if (isMove)
@@ -194,20 +220,23 @@ public class PlayerCtrl : MonoBehaviour
                 }
             }
         }
-        //±∏∏£±‚
+
+        //Íµ¨Î•¥Í∏∞
         if (isDash == true)
         {
             var i = new Vector2(direction, 0);
             rigid.AddForce(i, ForceMode2D.Impulse);
         }
-        //Ω∫≈‹
+
+        //Ïä§ÌÖù
         if (isSteap == true)
         {
-            var j = new Vector2(direction*-1, 0);
+            var j = new Vector2(direction * -1, 0);
             rigid.AddForce(j, ForceMode2D.Impulse);
         }
-        //∂•ø° ¥Íæ“¥¬¡ˆ
-        if (isGround==true)
+
+        //ÎïÖÏóê ÎãøÏïòÎäîÏßÄ
+        if (isGround == true)
         {
             if (h != 0)
             {
@@ -220,7 +249,8 @@ public class PlayerCtrl : MonoBehaviour
             }
         }
     }
-    //±∏∏£±‚ ≥°
+
+    //Íµ¨Î•¥Í∏∞ ÎÅù
     public void DashEnd()
     {
         maxSpeed = bSpeed;
@@ -229,7 +259,8 @@ public class PlayerCtrl : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         dTime = 0;
     }
-    //Ω∫≈‹ ≥°
+
+    //Ïä§ÌÖù ÎÅù
     public void SteapEnd()
     {
         maxSpeed = bSpeed;
@@ -238,12 +269,13 @@ public class PlayerCtrl : MonoBehaviour
         rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
         dTime = 0;
     }
+
     public void Die()
     {
         Destroy(gameObject);
     }
-    
-    
+
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("ground"))
@@ -254,6 +286,7 @@ public class PlayerCtrl : MonoBehaviour
             isJump = 0;
         }
     }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("ground"))
@@ -262,25 +295,28 @@ public class PlayerCtrl : MonoBehaviour
             isGround = false;
         }
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("EnemyAttack"))
         {
-            if (isHit==false&&!isDash&&!isSteap)
+            if (isHit == false && !isDash && !isSteap)
             {
                 Damage damage = collision.gameObject.GetComponent<Damage>();
                 hp -= damage.dmg;
                 StartCoroutine(hit.HitAni());
-            } 
+            }
         }
-        if (collision.name== "Jangsung")
+
+        if (collision.name == "Jangsung")
         {
             save.SetActive(true);
         }
     }
+
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.name=="Jangsung")
+        if (collision.name == "Jangsung")
         {
             save.SetActive(false);
         }
@@ -300,18 +336,22 @@ public class PlayerCtrl : MonoBehaviour
             isMove = true;
         }
     }
+
     public void Attack1Fx()
     {
         Instantiate(attack1, transform.position, transform.rotation);
     }
+
     public void Attack2Fx()
     {
         Instantiate(attack2, transform.position, transform.rotation);
     }
+
     public void Attack3Fx()
     {
         Instantiate(attack3, transform.position, transform.rotation);
     }
+
     public void Attack2End()
     {
         anim.SetBool("isAttack2", false);
@@ -325,6 +365,7 @@ public class PlayerCtrl : MonoBehaviour
             isMove = true;
         }
     }
+
     public void Attack3End()
     {
         isAttack3 = false;
