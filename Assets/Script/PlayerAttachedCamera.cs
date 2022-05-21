@@ -1,29 +1,35 @@
+using System;
 using UnityEngine;
 
 public class PlayerAttachedCamera : MonoBehaviour
 {
-    public GameObject player;
     public float maxY = 0.2f;
+
+    private Player _player;
+    
+    private void Awake()
+    {
+        _player = FindObjectOfType<Player>();
+    }
 
     private void Update()
     {
-        var x = player.transform.position.x;
-        var y = player.transform.position.y;
-        if (x <= 2.4)
+        var position = _player.transform.position;
+        if (position.x <= 2.4f)
         {
-            x = transform.position.x;
+            position.x = 2.4f;
         }
 
-        if (x >= 115.6)
+        if (position.x >= 115.6f)
         {
-            x = transform.position.x;
+            position.x = 115.6f;
         }
 
-        if (y >= maxY)
+        if (position.y >= maxY)
         {
-            y = transform.position.y;
+            position.y = maxY;
         }
 
-        transform.position = new Vector3(x, y, -10);
+        transform.position = new Vector3(position.x, position.y, -10);
     }
 }

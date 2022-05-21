@@ -35,8 +35,8 @@ public class Agg : MonoBehaviour
     float direction;
     float mxHp;
    
-    PlayerCtrl player;
-    Animator anim;
+    Player player;
+    public Animator animator;
     Image hpGauge;
 
     RaycastHit2D hitinfo;
@@ -50,16 +50,13 @@ public class Agg : MonoBehaviour
         isGround = false;
         bSpeed = speed;
         isMov = true;
-        player = FindObjectOfType<PlayerCtrl>();
-        anim = GetComponent<Animator>();
+        player = FindObjectOfType<Player>();
         hpGauge = hpBar.GetComponent<Image>();
         isAttack = true;
     }
 
     void Update()
     {   
-
-
         foundTime += Time.deltaTime;
         float dist = Vector2.Distance(transform.position, player.transform.position);
         direction = player.transform.position.x - transform.position.x;
@@ -71,7 +68,7 @@ public class Agg : MonoBehaviour
         //못찾을때
         if (hp<=0)
         {
-            anim.SetBool("isDie", true);
+            animator.SetBool("isDie", true);
         }
         if (foundTime>=3)
         {
@@ -87,12 +84,12 @@ public class Agg : MonoBehaviour
                     transform.rotation = Quaternion.Euler(0, 180, 0);
                 }
                 transform.position = bPos + aPos;
-                anim.SetBool("isWalk", true);
+                animator.SetBool("isWalk", true);
                 walkTime += Time.deltaTime;
                 if (walkTime >= 2)
                 {
                     i = i * -1;
-                    anim.SetBool("isWalk", false);
+                    animator.SetBool("isWalk", false);
                     walkTime = 0;
                     foundTime = 0;
                 }
@@ -111,7 +108,7 @@ public class Agg : MonoBehaviour
         if (isFound)
         {
             hpBar.SetActive(true);
-            anim.SetBool("isWalk", false);
+            animator.SetBool("isWalk", false);
             foundTime = 0;
             if (isAttack == true)
             {
@@ -122,7 +119,7 @@ public class Agg : MonoBehaviour
                     {
                         i = 1;
                         transform.position = bPos + aPos + gPos;
-                        anim.SetBool("isWalk", true);
+                        animator.SetBool("isWalk", true);
                     }
                 }
                 else if (direction < 0)
@@ -132,20 +129,20 @@ public class Agg : MonoBehaviour
                     {
                         i = -1;
                         transform.position = bPos + aPos + gPos;
-                        anim.SetBool("isWalk", true);
+                        animator.SetBool("isWalk", true);
                     }
                 }
                 if (dist <= attackRange)
                 {
                     if (attackType[attackCount] == 1)
                     {
-                        anim.SetBool("attack1R", true);
+                        animator.SetBool("attack1R", true);
                         isAttack = false;
                     }
                     else if (attackType[attackCount] == 2)
 
                     {
-                        anim.SetBool("attack2R", true);
+                        animator.SetBool("attack2R", true);
                         isAttack = false;
                     }
                 }
@@ -196,8 +193,8 @@ public class Agg : MonoBehaviour
 
     public void A1()
     {
-        anim.SetBool("attack1R", false);
-        anim.SetBool("attack1", true);
+        animator.SetBool("attack1R", false);
+        animator.SetBool("attack1", true);
     }
     public void A1_1()
     {
@@ -217,7 +214,7 @@ public class Agg : MonoBehaviour
     }
     public void A1End()
     {
-        anim.SetBool("attack1", false);
+        animator.SetBool("attack1", false);
         if (attackCount<=14)
         {
             attackCount += 1;
@@ -230,8 +227,8 @@ public class Agg : MonoBehaviour
     }
     public void A2()
     {
-        anim.SetBool("attack2R", false);
-        anim.SetBool("attack2", true);
+        animator.SetBool("attack2R", false);
+        animator.SetBool("attack2", true);
     }
     public void A2_1()
     {
@@ -271,8 +268,8 @@ public class Agg : MonoBehaviour
     }
     public void A3()
     {
-        anim.SetBool("attack2", false);
-        anim.SetBool("attack3", true);
+        animator.SetBool("attack2", false);
+        animator.SetBool("attack3", true);
     }
     public void A3_1()
     {
@@ -288,7 +285,7 @@ public class Agg : MonoBehaviour
     }
     public void A3End()
     {
-        anim.SetBool("attack3", false);
+        animator.SetBool("attack3", false);
         ifSmoking = Random.Range(0, 2);
         if (ifSmoking==0)
         {
@@ -296,7 +293,7 @@ public class Agg : MonoBehaviour
         }
         else if (ifSmoking==1)
         {
-            anim.SetBool("isSit", true);
+            animator.SetBool("isSit", true);
         }
         if (attackCount <= 14)
         {
@@ -306,12 +303,12 @@ public class Agg : MonoBehaviour
     }
     public void A4()
     {
-        anim.SetBool("isSit", false);
-        anim.SetBool("isSmoking", true);
+        animator.SetBool("isSit", false);
+        animator.SetBool("isSmoking", true);
     }
     public void A4End()
     {
-        anim.SetBool("isSmoking", false);
+        animator.SetBool("isSmoking", false);
         isAttack = true;
         for (int i = 0; i < 3; i++)
         {

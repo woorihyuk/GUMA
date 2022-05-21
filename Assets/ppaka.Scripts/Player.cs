@@ -148,6 +148,8 @@ public class Player : MonoBehaviour
         }
 
         _controller.Move(_velocity * Time.deltaTime);
+        
+        print(transform.position.y);
     }
 
     private void WallCheck()
@@ -159,7 +161,7 @@ public class Player : MonoBehaviour
             false);
 
         // 월드 레이어만 레이캐스트
-        var mask = 1 << LayerMask.NameToLayer("World");
+        var mask = 1 << LayerMask.NameToLayer("WorldGround");
 
         // 벽 확인 레이캐스트 배열
         var wallCheckRays = new RaycastHit2D[2];
