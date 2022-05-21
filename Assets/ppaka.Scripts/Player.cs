@@ -245,6 +245,12 @@ public class Player : MonoBehaviour
                         _currentJump = JumpMode.Normal;
                         animator.SetBool(AnimIsJump, true);
                     }
+                    else if (!_controller.collisions.below)
+                    {
+                        _velocity.y = _jumpVelocity;
+                        _currentJump = JumpMode.Double;
+                        animator.SetBool(AnimDJump, true);
+                    }
                     else if (_isWall)
                     {
                         _velocity.y = _jumpVelocity;
