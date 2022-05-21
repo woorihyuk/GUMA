@@ -768,11 +768,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a86323f1f9e19eb4097148c900e75402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpHeight: 4
+  jumpHeight: 6
   timeToJumpApex: 0.4
-  moveSpeed: 6
-  dashSpeed: 18
-  defaultSpeed: 6
+  moveSpeed: 8
+  dashSpeed: 24
+  defaultSpeed: 8
   dashCoolTime: 0.09
   attackPrefabs:
   - {fileID: 7526511960744633938, guid: c7cfa5ec21c3d0e4696484331a52254f, type: 3}

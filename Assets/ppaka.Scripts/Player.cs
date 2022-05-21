@@ -118,7 +118,6 @@ public class Player : MonoBehaviour
         else
         {
             if (!_isAttack && _input.x != 0) _lastInputX = _input.x;
-            WallCheck();
         }
 
         Jump();
