@@ -96,7 +96,7 @@ AnimatorStateTransition:
     m_ConditionEvent: dJump
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1917899515842429738}
@@ -152,7 +152,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isdash
+    m_ConditionEvent: isDash
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8688812316214181834}
@@ -265,7 +265,7 @@ AnimatorStateTransition:
     m_ConditionEvent: dJump
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5599880958475726340}
@@ -293,7 +293,7 @@ AnimatorStateTransition:
     m_ConditionEvent: isJump
     m_EventTreshold: 0
   - m_ConditionMode: 1
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: dJump
@@ -460,7 +460,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2231603052130989457}
@@ -595,7 +595,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isStap
+    m_ConditionEvent: isBackStep
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8205890705466211634}
@@ -651,7 +651,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: isStap
+    m_ConditionEvent: isBackStep
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1917899515842429738}
@@ -730,7 +730,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2231603052130989457}
@@ -820,7 +820,7 @@ AnimatorStateTransition:
     m_ConditionEvent: dJump
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1917899515842429738}
@@ -900,67 +900,67 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: isdash
+    m_Controller: {fileID: 0}
+  - m_Name: isDash
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: isStap
+    m_Controller: {fileID: 0}
+  - m_Name: isBackStep
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: isJump
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: rJump
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: dJump
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: isAttack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: isAttack2
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: isAttack3
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: isDie
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: iswall
+    m_Controller: {fileID: 0}
+  - m_Name: isWall
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -986,7 +986,7 @@ AnimatorStateTransition:
     m_ConditionEvent: isRun
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: isdash
+    m_ConditionEvent: isDash
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1917899515842429738}
@@ -1022,7 +1022,7 @@ AnimatorStateMachine:
     m_Position: {x: -150, y: -340, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5871609110582149184}
-    m_Position: {x: 120, y: -280, z: 0}
+    m_Position: {x: 110, y: -220, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2736104683223683400}
     m_Position: {x: -1080, y: -150, z: 0}
@@ -1066,7 +1066,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: isRun
@@ -1162,7 +1162,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   - m_ConditionMode: 2
     m_ConditionEvent: dJump
@@ -1190,7 +1190,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: isdash
+    m_ConditionEvent: isDash
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 8688812316214181834}
@@ -1540,7 +1540,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: isdash
+    m_ConditionEvent: isDash
     m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: isRun
@@ -1811,7 +1811,7 @@ AnimatorStateTransition:
     m_ConditionEvent: isRun
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1917899515842429738}
@@ -1845,7 +1845,7 @@ AnimatorStateTransition:
     m_ConditionEvent: dJump
     m_EventTreshold: 0
   - m_ConditionMode: 2
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5599880958475726340}
@@ -1868,7 +1868,10 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions: []
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: dJump
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2736104683223683400}
   m_Solo: 0
@@ -1945,7 +1948,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: iswall
+    m_ConditionEvent: isWall
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -2231603052130989457}

@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     public float dashCoolTime = 0.09f;
     public GameObject[] attackPrefabs;
 
-    public float wallCheckDistance = 0.95f;
+    public float wallCheckDistance = 0.64f;
     public Transform[] wallRayCheckTfs;
 
     private Vector2 _input;
@@ -49,15 +49,15 @@ public class Player : MonoBehaviour
     private JumpMode _currentJump;
     public Animator animator;
     public SpriteFlipper flipper;
-    private static readonly int IsStap = Animator.StringToHash("isStap");
-    private static readonly int Isdash = Animator.StringToHash("isdash");
-    private static readonly int IsJump = Animator.StringToHash("isJump");
-    private static readonly int DJump = Animator.StringToHash("dJump");
-    private static readonly int IsRun = Animator.StringToHash("isRun");
-    private static readonly int IsAttack = Animator.StringToHash("isAttack");
-    private static readonly int IsAttack2 = Animator.StringToHash("isAttack2");
-    private static readonly int IsAttack3 = Animator.StringToHash("isAttack3");
-    private static readonly int Iswall = Animator.StringToHash("iswall");
+    private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
+    private static readonly int AnimIsDash = Animator.StringToHash("isDash");
+    private static readonly int AnimIsJump = Animator.StringToHash("isJump");
+    private static readonly int AnimDJump = Animator.StringToHash("dJump");
+    private static readonly int AnimIsRun = Animator.StringToHash("isRun");
+    private static readonly int AnimIsAttack = Animator.StringToHash("isAttack");
+    private static readonly int AnimIsAttack2 = Animator.StringToHash("isAttack2");
+    private static readonly int AnimIsAttack3 = Animator.StringToHash("isAttack3");
+    private static readonly int AnimIsWall = Animator.StringToHash("isWall");
 
     private void Start()
     {
@@ -83,8 +83,8 @@ public class Player : MonoBehaviour
         if (_controller.collisions.below)
         {
             _currentJump = JumpMode.None;
-            animator.SetBool(IsJump, false);
-            animator.SetBool(DJump, false);
+            animator.SetBool(AnimIsJump, false);
+            animator.SetBool(AnimDJump, false);
         }
 
         _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -120,9 +120,9 @@ public class Player : MonoBehaviour
             if (!_isAttack && _input.x != 0) _lastInputX = _input.x;
             WallCheck();
         }
-        
+
         Jump();
-        
+
         var gravityMultiplier = 1f;
 
         if (!_isWall) Attack();
@@ -140,14 +140,14 @@ public class Player : MonoBehaviour
         {
             if (targetVelocityX < 0 || targetVelocityX > 0)
             {
-                animator.SetBool(IsRun, true);
+                animator.SetBool(AnimIsRun, true);
             }
             else if (targetVelocityX == 0)
             {
-                animator.SetBool(IsRun, false);
+                animator.SetBool(AnimIsRun, false);
             }
         }
-        
+
         _controller.Move(_velocity * Time.deltaTime);
     }
 
@@ -155,9 +155,9 @@ public class Player : MonoBehaviour
     {
         // 벽 확인용
         Debug.DrawRay(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
- false);
+            false);
         Debug.DrawRay(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
- false);
+            false);
 
         // 월드 레이어만 레이캐스트
         var mask = 1 << LayerMask.NameToLayer("World");
@@ -165,9 +165,11 @@ public class Player : MonoBehaviour
         // 벽 확인 레이캐스트 배열
         var wallCheckRays = new RaycastHit2D[2];
         wallCheckRays[0] =
-            Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), wallCheckDistance, mask);
+            Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance),
+                wallCheckDistance, mask);
         wallCheckRays[1] =
-            Physics2D.Raycast(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), wallCheckDistance, mask);
+            Physics2D.Raycast(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance),
+                wallCheckDistance, mask);
 
         // 벽 확인 결과 저장용
         var checkWallResult = new bool[2];
@@ -182,22 +184,18 @@ public class Player : MonoBehaviour
                 _isWall = true;
                 _isDash = false;
                 _currentJump = JumpMode.None;
-                animator.SetBool(IsJump, false);
-                animator.SetBool(DJump, false);
-                
-                print("값 초기화");
+                animator.SetBool(AnimIsJump, false);
+                animator.SetBool(AnimDJump, false);
 
                 _velocity.y = 0;
             }
-            
-            print("벽 맞음");
         }
         else
         {
             _isWall = false;
         }
 
-        animator.SetBool(Iswall, _isWall);
+        animator.SetBool(AnimIsWall, _isWall);
     }
 
     private void Attack()
@@ -207,56 +205,61 @@ public class Player : MonoBehaviour
             if (_currentAttack == AttackMode.Second)
             {
                 _isAttack = true;
-                Debug.Log("공3");
                 _currentAttack = AttackMode.Third;
             }
 
             else if (_currentAttack == AttackMode.First)
             {
                 _isAttack = true;
-                Debug.Log("공2");
                 _currentAttack = AttackMode.Second;
             }
 
             else if (_currentAttack == AttackMode.None)
             {
                 _isAttack = true;
-                Debug.Log("공1");
                 _currentAttack = AttackMode.First;
-                animator.SetBool(IsAttack, true);
+                animator.SetBool(AnimIsAttack, true);
             }
         }
     }
 
     private void Jump()
     {
-        if (_currentJump == JumpMode.None)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            switch (_currentJump)
             {
-                if (_controller.collisions.below)
+                case JumpMode.None:
+                {
+                    if (_isWall && _controller.collisions.below)
+                    {
+                        _velocity.y = _jumpVelocity;
+                        _velocity.x = -20 * _lastInputX;
+                        _currentJump = JumpMode.Normal;
+                        animator.SetBool(AnimIsJump, true);
+                    }
+                    else if (_controller.collisions.below)
+                    {
+                        _velocity.y = _jumpVelocity;
+                        _currentJump = JumpMode.Normal;
+                        animator.SetBool(AnimIsJump, true);
+                    }
+                    else if (_isWall)
+                    {
+                        _velocity.y = _jumpVelocity;
+                        _velocity.x = -20 * _lastInputX;
+                        _currentJump = JumpMode.Normal;
+                        animator.SetBool(AnimIsJump, true);
+                    }
+                    break;
+                }
+                case JumpMode.Normal:
                 {
                     _velocity.y = _jumpVelocity;
-                    _currentJump = JumpMode.Normal;
-                    animator.SetBool(IsJump, true);
+                    _currentJump = JumpMode.Double;
+                    animator.SetBool(AnimDJump, true);
+                    break;
                 }
-                else if (_isWall)
-                {
-                    _velocity.y = _jumpVelocity;
-                    print(_velocity.y);
-                    _velocity.x = -20 * _lastInputX;
-                    _currentJump = JumpMode.Normal;
-                    animator.SetBool(IsJump, true);
-                }
-            }
-        }
-        else if (_currentJump == JumpMode.Normal)
-        {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                _velocity.y = _jumpVelocity;
-                _currentJump = JumpMode.Double;
-                animator.SetBool(DJump, true);
             }
         }
     }
@@ -267,7 +270,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1) && _controller.collisions.below)
             {
-                animator.SetBool(IsStap, true);
+                animator.SetBool(AnimIsBackStep, true);
                 _direction = -(int)_lastInputX;
                 moveSpeed = dashSpeed;
                 _isDash = true;
@@ -281,7 +284,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(1) && _controller.collisions.below)
             {
-                animator.SetBool(Isdash, true);
+                animator.SetBool(AnimIsDash, true);
                 _direction = (int)_lastInputX;
                 moveSpeed = dashSpeed;
                 _isDash = true;
@@ -292,7 +295,7 @@ public class Player : MonoBehaviour
     public void OnAnimationDashEnd()
     {
         _sinceLastDashTime = 0;
-        animator.SetBool(Isdash, false);
+        animator.SetBool(AnimIsDash, false);
         _isDash = false;
         moveSpeed = defaultSpeed;
         //dTime = 0;
@@ -301,7 +304,7 @@ public class Player : MonoBehaviour
     public void OnAnimationBackStepEnd()
     {
         _sinceLastDashTime = 0;
-        animator.SetBool(IsStap, false);
+        animator.SetBool(AnimIsBackStep, false);
         _isDash = false;
         moveSpeed = defaultSpeed;
         //dTime = 0;
@@ -331,10 +334,10 @@ public class Player : MonoBehaviour
     {
         if (attackMode == AttackMode.First)
         {
-            animator.SetBool(IsAttack, false);
+            animator.SetBool(AnimIsAttack, false);
             if ((int)_currentAttack >= (int)AttackMode.Second)
             {
-                animator.SetBool(IsAttack2, true);
+                animator.SetBool(AnimIsAttack2, true);
             }
             else
             {
@@ -345,10 +348,10 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.Second)
         {
-            animator.SetBool(IsAttack2, false);
+            animator.SetBool(AnimIsAttack2, false);
             if ((int)_currentAttack >= (int)AttackMode.Third)
             {
-                animator.SetBool(IsAttack3, true);
+                animator.SetBool(AnimIsAttack3, true);
             }
             else
             {
@@ -360,7 +363,7 @@ public class Player : MonoBehaviour
         if (attackMode == AttackMode.Third)
         {
             _isAttack = false;
-            animator.SetBool(IsAttack3, false);
+            animator.SetBool(AnimIsAttack3, false);
             _currentAttack = AttackMode.None;
         }
     }
