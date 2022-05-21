@@ -237,6 +237,7 @@ public class Player : MonoBehaviour
                         _velocity.x = -20 * _lastInputX;
                         _currentJump = JumpMode.Normal;
                         animator.SetBool(AnimIsJump, true);
+                        _lastInputX *= -1;
                     }
                     else if (_controller.collisions.below)
                     {
@@ -250,6 +251,7 @@ public class Player : MonoBehaviour
                         _velocity.x = -20 * _lastInputX;
                         _currentJump = JumpMode.Normal;
                         animator.SetBool(AnimIsJump, true);
+                        _lastInputX *= -1;
                     }
                     break;
                 }
