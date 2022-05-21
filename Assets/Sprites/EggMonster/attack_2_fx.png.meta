@@ -1,0 +1,575 @@
+fileFormatVersion: 2
+guid: d4b49388af2b0cf4eb27f5507d8e0570
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 5
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: attack_2_fx_0
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -65, y: 31}
+        - {x: -85, y: 7}
+        - {x: -88, y: -31}
+        - {x: -80, y: -46}
+        - {x: -72, y: -51}
+        - {x: -40, y: -41}
+        - {x: -58, y: -33}
+        - {x: -69, y: -22}
+        - {x: -70, y: -5}
+        - {x: -66, y: 13}
+        - {x: -48, y: 28}
+        - {x: -23, y: 39}
+      - - {x: 35, y: 29}
+        - {x: 6, y: 29}
+        - {x: -12, y: 20}
+        - {x: 12, y: 21}
+        - {x: 37, y: 6}
+        - {x: 49, y: -15}
+        - {x: 48, y: -44}
+        - {x: 61, y: -50}
+        - {x: 67, y: -47}
+        - {x: 69, y: -9}
+        - {x: 55, y: 16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ae29b0fad767c64fbdafcd654843f61
+      internalID: -1186933557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_1
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -37, y: 30}
+        - {x: -59, y: 27}
+        - {x: -80, y: 10}
+        - {x: -91, y: -15}
+        - {x: -86, y: -45}
+        - {x: -65, y: -68}
+        - {x: -48, y: -54}
+        - {x: -66, y: -32}
+        - {x: -67, y: -6}
+        - {x: -57, y: 13}
+      - - {x: 22, y: 34}
+        - {x: 0, y: 29}
+        - {x: 28, y: 25}
+        - {x: 48, y: 7}
+        - {x: 53, y: -10}
+        - {x: 50, y: -33}
+        - {x: 33, y: -53}
+        - {x: 45, y: -63}
+        - {x: 64, y: -45}
+        - {x: 72, y: -22}
+        - {x: 66, y: 6}
+        - {x: 43, y: 29}
+      tessellationDetail: 0
+      bones: []
+      spriteID: e0610befea2263d4d88725dd14e79de7
+      internalID: 2009707760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_2
+      rect:
+        serializedVersion: 2
+        x: 900
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -67, y: -54}
+        - {x: -88, y: -30}
+        - {x: -88, y: -5}
+        - {x: -79, y: 11}
+        - {x: -64, y: 20}
+        - {x: -36, y: 24}
+        - {x: -61, y: 33}
+        - {x: -83, y: 30}
+        - {x: -105, y: 12}
+        - {x: -115, y: -13}
+        - {x: -111, y: -37}
+        - {x: -101, y: -53}
+        - {x: -86, y: -63}
+        - {x: -71, y: -68}
+        - {x: -53, y: -68}
+        - {x: -36, y: -59}
+      - - {x: 60, y: 31}
+        - {x: 37, y: 32}
+        - {x: 16, y: 23}
+        - {x: 35, y: 24}
+        - {x: 49, y: 19}
+        - {x: 66, y: 3}
+        - {x: 71, y: -21}
+        - {x: 58, y: -47}
+        - {x: 35, y: -58}
+        - {x: 13, y: -56}
+        - {x: 32, y: -67}
+        - {x: 57, y: -68}
+        - {x: 81, y: -52}
+        - {x: 92, y: -36}
+        - {x: 95, y: -9}
+        - {x: 83, y: 16}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a2902d95f2c04a44aedb1a3bdb87402
+      internalID: -1931980809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_3
+      rect:
+        serializedVersion: 2
+        x: 1200
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -94, y: 24}
+        - {x: -112, y: 5}
+        - {x: -117, y: -16}
+        - {x: -113, y: -37}
+        - {x: -95, y: -57}
+        - {x: -79, y: -64}
+        - {x: -62, y: -64}
+        - {x: -50, y: -58}
+        - {x: -66, y: -58}
+        - {x: -83, y: -51}
+        - {x: -99, y: -27}
+        - {x: -98, y: -4}
+        - {x: -86, y: 11}
+        - {x: -65, y: 24}
+        - {x: -49, y: 24}
+        - {x: -73, y: 31}
+      - - {x: 26, y: 25}
+        - {x: 51, y: 23}
+        - {x: 71, y: 8}
+        - {x: 79, y: -16}
+        - {x: 67, y: -46}
+        - {x: 45, y: -58}
+        - {x: 26, y: -58}
+        - {x: 37, y: -63}
+        - {x: 53, y: -64}
+        - {x: 72, y: -58}
+        - {x: 89, y: -41}
+        - {x: 96, y: -22}
+        - {x: 91, y: 4}
+        - {x: 70, y: 26}
+        - {x: 46, y: 31}
+      tessellationDetail: 0
+      bones: []
+      spriteID: c200ce492afac88498b8341033705ef4
+      internalID: -337868816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_4
+      rect:
+        serializedVersion: 2
+        x: 1500
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -90, y: 32}
+        - {x: -111, y: 18}
+        - {x: -124, y: -10}
+        - {x: -120, y: -38}
+        - {x: -102, y: -61}
+        - {x: -81, y: -67}
+        - {x: -59, y: -66}
+        - {x: -80, y: -62}
+        - {x: -96, y: -54}
+        - {x: -111, y: -30}
+        - {x: -109, y: 1}
+        - {x: -96, y: 18}
+        - {x: -81, y: 27}
+        - {x: -59, y: 31}
+      - - {x: 36, y: 30}
+        - {x: 66, y: 25}
+        - {x: 80, y: 13}
+        - {x: 90, y: -7}
+        - {x: 89, y: -30}
+        - {x: 77, y: -50}
+        - {x: 60, y: -62}
+        - {x: 39, y: -65}
+        - {x: 52, y: -68}
+        - {x: 70, y: -64}
+        - {x: 87, y: -53}
+        - {x: 97, y: -40}
+        - {x: 101, y: -23}
+        - {x: 99, y: 0}
+        - {x: 79, y: 26}
+        - {x: 55, y: 33}
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff5782465cc60664cbbe313ece08d09f
+      internalID: 32790134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_5
+      rect:
+        serializedVersion: 2
+        x: 1800
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -90, y: 32}
+        - {x: -116, y: 17}
+        - {x: -129, y: -4}
+        - {x: -128, y: -33}
+        - {x: -112, y: -56}
+        - {x: -92, y: -67}
+        - {x: -70, y: -67}
+        - {x: -59, y: -63}
+        - {x: -73, y: -64}
+        - {x: -95, y: -58}
+        - {x: -112, y: -42}
+        - {x: -118, y: -17}
+        - {x: -112, y: 7}
+        - {x: -93, y: 24}
+        - {x: -67, y: 31}
+      - - {x: 40, y: 30}
+        - {x: 67, y: 26}
+        - {x: 82, y: 16}
+        - {x: 92, y: 2}
+        - {x: 96, y: -25}
+        - {x: 82, y: -50}
+        - {x: 58, y: -63}
+        - {x: 37, y: -62}
+        - {x: 52, y: -68}
+        - {x: 74, y: -66}
+        - {x: 92, y: -53}
+        - {x: 106, y: -30}
+        - {x: 107, y: -5}
+        - {x: 93, y: 19}
+        - {x: 65, y: 33}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 17f8e2f781a6fb040856e975a1fded4a
+      internalID: 714915831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_6
+      rect:
+        serializedVersion: 2
+        x: 2100
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -107, y: 26}
+        - {x: -120, y: 17}
+        - {x: -134, y: -2}
+        - {x: -135, y: -28}
+        - {x: -123, y: -50}
+        - {x: -106, y: -62}
+        - {x: -85, y: -63}
+        - {x: -105, y: -56}
+        - {x: -121, y: -39}
+        - {x: -126, y: -18}
+        - {x: -121, y: 4}
+        - {x: -109, y: 19}
+        - {x: -90, y: 28}
+      - - {x: 85, y: 26}
+        - {x: 69, y: 29}
+        - {x: 81, y: 23}
+        - {x: 91, y: 14}
+        - {x: 101, y: 1}
+        - {x: 105, y: -19}
+        - {x: 98, y: -41}
+        - {x: 81, y: -58}
+        - {x: 64, y: -64}
+        - {x: 81, y: -62}
+        - {x: 96, y: -54}
+        - {x: 107, y: -41}
+        - {x: 113, y: -26}
+        - {x: 113, y: -9}
+        - {x: 104, y: 11}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 53135ae08be82ff43b25ac1c80834168
+      internalID: 2129703430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_7
+      rect:
+        serializedVersion: 2
+        x: 2400
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: -136, y: -18}
+        - {x: -131, y: -39}
+        - {x: -117, y: -56}
+        - {x: -99, y: -63}
+        - {x: -112, y: -54}
+        - {x: -125, y: -38}
+        - {x: -131, y: -18}
+        - {x: -127, y: -1}
+        - {x: -119, y: 14}
+        - {x: -105, y: 25}
+        - {x: -120, y: 18}
+        - {x: -131, y: 4}
+      - - {x: 103, y: 12}
+        - {x: 91, y: 23}
+        - {x: 75, y: 28}
+        - {x: 86, y: 23}
+        - {x: 98, y: 11}
+        - {x: 107, y: -5}
+        - {x: 109, y: -25}
+        - {x: 95, y: -49}
+        - {x: 81, y: -61}
+        - {x: 97, y: -53}
+        - {x: 108, y: -38}
+        - {x: 113, y: -26}
+        - {x: 113, y: -8}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83a877ffdd94bf94eaa58c36df03f65e
+      internalID: -782507298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: attack_2_fx_8
+      rect:
+        serializedVersion: 2
+        x: 2700
+        y: 0
+        width: 300
+        height: 160
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape:
+      - - {x: 108, y: 6}
+        - {x: 101, y: 12}
+        - {x: 105, y: 6}
+        - {x: 107, y: -2}
+        - {x: 108, y: -18}
+        - {x: 106, y: -33}
+        - {x: 102, y: -48}
+        - {x: 107, y: -40}
+        - {x: 111, y: -32}
+        - {x: 113, y: -19}
+        - {x: 112, y: -4}
+      - - {x: -129, y: 6}
+        - {x: -135, y: -9}
+        - {x: -135, y: -27}
+        - {x: -132, y: -34}
+        - {x: -129, y: -41}
+        - {x: -125, y: -45}
+        - {x: -128, y: -39}
+        - {x: -131, y: -23}
+        - {x: -130, y: -10}
+        - {x: -126, y: 4}
+        - {x: -122, y: 14}
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39b82120b7be00a4784e390d55b1ea21
+      internalID: -1324500726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      attack_2_fx_7: -782507298
+      attack_2_fx_1: 2009707760
+      attack_2_fx_2: -1931980809
+      attack_2_fx_3: -337868816
+      attack_2_fx_8: -1324500726
+      attack_2_fx_6: 2129703430
+      attack_2_fx_0: -1186933557
+      attack_2_fx_5: 714915831
+      attack_2_fx_4: 32790134
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
