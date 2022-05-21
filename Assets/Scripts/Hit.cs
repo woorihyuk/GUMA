@@ -4,35 +4,34 @@ using UnityEngine;
 
 public class Hit : MonoBehaviour
 {
-    PlayerCtrl player;
+    Player player;
     SpriteRenderer sr;
     // Start is called before the first frame update
     void Start()
     {
-        sr = GetComponent<SpriteRenderer>();
-        player = GetComponent<PlayerCtrl>();
+        sr = GetComponentInChildren<SpriteRenderer>();
+        player = GetComponent<Player>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public IEnumerator HitAni()
     {
-        player.isHit = true;
-        sr.color = new Color(1, 1, 1, 0);
-        yield return new WaitForSeconds(0.2f);
-        sr.color = new Color(1, 1, 1, 1);
-        yield return new WaitForSeconds(0.2f);
-        sr.color = new Color(1, 1, 1, 0);
-        yield return new WaitForSeconds(0.2f);
-        sr.color = new Color(1, 1, 1, 1);
-        yield return new WaitForSeconds(0.2f);
-        sr.color = new Color(1, 1, 1, 0);
-        yield return new WaitForSeconds(0.2f);
-        sr.color = new Color(1, 1, 1, 1);
+        Debug.Log("맞음");
         player.isHit = false;
+        sr.color = new Color(1, 1, 1, 0);
+        yield return new WaitForSeconds(0.2f);
+        sr.color = new Color(1, 1, 1, 1);
+        yield return new WaitForSeconds(0.2f);
+        sr.color = new Color(1, 1, 1, 0);
+        yield return new WaitForSeconds(0.2f);
+        sr.color = new Color(1, 1, 1, 1);
+        yield return new WaitForSeconds(0.2f);
+        sr.color = new Color(1, 1, 1, 1);
+        player.isHit = true;
         yield return null;
     }
 }

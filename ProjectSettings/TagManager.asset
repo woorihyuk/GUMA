@@ -9,6 +9,7 @@ TagManager:
   - PlayerAttack
   - wall
   - isground
+  - Sine
   layers:
   - Default
   - TransparentFX

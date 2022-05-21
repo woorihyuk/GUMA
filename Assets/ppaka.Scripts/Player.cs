@@ -1,22 +1,55 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
 {
+
+    public int _direction = 1;
     public float jumpHeight = 4;
     public float timeToJumpApex = 0.4f;
-    private float accelerationTimeAirborne = 0.2f;
-    private float accelerationTimeGrounded = 0.1f;
     public float moveSpeed = 6;
     public float dashSpeed = 18;
     public float defaultSpeed = 6;
+    public float dashCoolTime = 0.09f;
+    public float _lastInputX;
+    public float wallCheckDistance = 0.64f;
+    public float maxHP;
+    public bool isHit;
+    public GameObject E;
+    public GameObject textBox;
+    public GameObject[] attackPrefabs;
+    public Transform[] wallRayCheckTfs;
+    public Animator animator;
+    public SpriteFlipper flipper;
 
+    private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
+    private static readonly int AnimIsDash = Animator.StringToHash("isDash");
+    private static readonly int AnimIsJump = Animator.StringToHash("isJump");
+    private static readonly int AnimDJump = Animator.StringToHash("dJump");
+    private static readonly int AnimIsRun = Animator.StringToHash("isRun");
+    private static readonly int AnimIsAttack = Animator.StringToHash("isAttack");
+    private static readonly int AnimIsAttack2 = Animator.StringToHash("isAttack2");
+    private static readonly int AnimIsAttack3 = Animator.StringToHash("isAttack3");
+    private static readonly int AnimIsWall = Animator.StringToHash("isWall");
+    private static readonly int AnimIsDiy = Animator.StringToHash("isDie");
+    private float accelerationTimeAirborne = 0.2f;
+    private float accelerationTimeGrounded = 0.1f;
     private float _gravity;
     private float _jumpVelocity;
-    private Vector3 _velocity;
     private float _velocityXSmoothing;
-
+    private float _sinceLastDashTime = 10f;
+    public float _HP;
+    private bool _isDash, _isAttack, _isWall, _isTalk;
+    private Vector2 _input;
+    private Vector3 _velocity;
+    private AttackMode _currentAttack;
+    private JumpMode _currentJump;
+    private Hit _hit;
     private Controller2D _controller;
+    private GameObject hpBar;
+    private Image _hpBar;
+    private Sine sine;
 
     private enum JumpMode
     {
@@ -33,43 +66,31 @@ public class Player : MonoBehaviour
         Third
     }
 
-    private AttackMode _currentAttack;
-
-    private float _sinceLastDashTime = 10f;
-    public float dashCoolTime = 0.09f;
-    public GameObject[] attackPrefabs;
-
-    public float wallCheckDistance = 0.64f;
-    public Transform[] wallRayCheckTfs;
-
-    private Vector2 _input;
-    public bool _isDash, _isAttack, _isWall;
-    public float _lastInputX;
-    public int _direction = 1;
-    private JumpMode _currentJump;
-    public Animator animator;
-    public SpriteFlipper flipper;
-    private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
-    private static readonly int AnimIsDash = Animator.StringToHash("isDash");
-    private static readonly int AnimIsJump = Animator.StringToHash("isJump");
-    private static readonly int AnimDJump = Animator.StringToHash("dJump");
-    private static readonly int AnimIsRun = Animator.StringToHash("isRun");
-    private static readonly int AnimIsAttack = Animator.StringToHash("isAttack");
-    private static readonly int AnimIsAttack2 = Animator.StringToHash("isAttack2");
-    private static readonly int AnimIsAttack3 = Animator.StringToHash("isAttack3");
-    private static readonly int AnimIsWall = Animator.StringToHash("isWall");
+    
 
     private void Start()
     {
+       
         Application.targetFrameRate = 60;
         _controller = GetComponent<Controller2D>();
 
         defaultSpeed = moveSpeed;
         _lastInputX = 1;
 
-        _gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2); // f의 p승
+        _gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2); // f??p??
         _jumpVelocity = Mathf.Abs(_gravity) * timeToJumpApex;
         print("Gravity: " + _gravity + " Jump Velocity: " + _jumpVelocity);
+
+
+        hpBar = GameObject.Find("PlayerHp");
+        _hpBar = hpBar.GetComponent<Image>();
+        _HP = maxHP;
+        
+        _hit = GetComponent<Hit>();
+        isHit = true;
+
+        E.SetActive(false);
+        textBox.SetActive(false);
     }
 
     private void Update()
@@ -141,6 +162,7 @@ public class Player : MonoBehaviour
             if (targetVelocityX < 0 || targetVelocityX > 0)
             {
                 animator.SetBool(AnimIsRun, true);
+
             }
             else if (targetVelocityX == 0)
             {
@@ -153,16 +175,16 @@ public class Player : MonoBehaviour
 
     private void WallCheck()
     {
-        // 벽 확인용
+        // 甕??類ㅼ뵥??
         Debug.DrawRay(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
             false);
         Debug.DrawRay(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
             false);
 
-        // 월드 레이어만 레이캐스트
+        // ?遺얜굡 ??됱뵠??彛???됱뵠筌?Ŋ???
         var mask = 1 << LayerMask.NameToLayer("WorldGround");
 
-        // 벽 확인 레이캐스트 배열
+        // 甕??類ㅼ뵥 ??됱뵠筌?Ŋ???獄쏄퀣肉?
         var wallCheckRays = new RaycastHit2D[2];
         wallCheckRays[0] =
             Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance),
@@ -171,12 +193,12 @@ public class Player : MonoBehaviour
             Physics2D.Raycast(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance),
                 wallCheckDistance, mask);
 
-        // 벽 확인 결과 저장용
+        // 甕??類ㅼ뵥 野껉퀗?????關??
         var checkWallResult = new bool[2];
         if (wallCheckRays[0].transform) checkWallResult[0] = true;
         if (wallCheckRays[1].transform) checkWallResult[1] = true;
 
-        // 확인코드
+        // ?類ㅼ뵥?꾨뗀諭?
         if (checkWallResult[0] && checkWallResult[1])
         {
             if (!_isWall)
@@ -196,6 +218,13 @@ public class Player : MonoBehaviour
         }
 
         animator.SetBool(AnimIsWall, _isWall);
+        if (_isTalk)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                sine.NextText();
+            }
+        }
     }
 
     private void Attack()
@@ -375,4 +404,42 @@ public class Player : MonoBehaviour
             _currentAttack = AttackMode.None;
         }
     }
+
+    public void IsDie()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyAttack"))
+        {
+            Damage damage = collision.GetComponent<Damage>();
+            if (isHit)
+            {
+                _HP -= damage.dmg;
+                _hpBar.fillAmount = _HP / maxHP;
+                if (_HP<=0)
+                {
+                    animator.SetBool(AnimIsDiy, true);
+                }
+                StartCoroutine(_hit.HitAni());
+            }
+        }
+        if (collision.CompareTag("Sine"))
+        {
+            _isTalk = true;
+            E.SetActive(true);
+            sine = collision.GetComponent<Sine>();
+        }
+    }
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Sine"))
+        {
+            _isTalk = false;
+            E.SetActive(false);
+        }
+    }
+
 }

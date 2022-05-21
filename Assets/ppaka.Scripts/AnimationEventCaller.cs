@@ -43,4 +43,9 @@ public class AnimationEventCaller : MonoBehaviour
     {
         player.OnAnimationDashEnd();
     }
+
+    public void OnDieEnd()
+    {
+        player.IsDie();
+    }
 }
