@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class AnimationEventCaller : MonoBehaviour
 {
-    /*public Player player;
+    public Player player;
 
     public void Attack1Fx()
     {
@@ -42,5 +42,5 @@ public class AnimationEventCaller : MonoBehaviour
     public void OnDashEnd()
     {
         player.OnAnimationDashEnd();
-    }*/
+    }
 }
