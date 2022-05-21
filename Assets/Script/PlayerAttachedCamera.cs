@@ -1,12 +1,14 @@
-using System;
 using UnityEngine;
 
 public class PlayerAttachedCamera : MonoBehaviour
 {
+    public float maxX = 115.6f, minX = 2.4f;
+
     public float maxY = 0.2f;
+    public float minY = -1.6f;
 
     private Player _player;
-    
+
     private void Awake()
     {
         _player = FindObjectOfType<Player>();
@@ -15,20 +17,9 @@ public class PlayerAttachedCamera : MonoBehaviour
     private void Update()
     {
         var position = _player.transform.position;
-        if (position.x <= 2.4f)
-        {
-            position.x = 2.4f;
-        }
-
-        if (position.x >= 115.6f)
-        {
-            position.x = 115.6f;
-        }
-
-        if (position.y >= maxY)
-        {
-            position.y = maxY;
-        }
+        
+        position.x = Mathf.Clamp(position.x, minX, maxX);
+        position.y = Mathf.Clamp(position.y, minY, maxY);
 
         transform.position = new Vector3(position.x, position.y, -10);
     }
