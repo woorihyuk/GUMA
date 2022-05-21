@@ -1,75 +1,72 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Smoking : MonoBehaviour
 {
-    PlayerCtrl player;
-    Rigidbody2D rigid;
-
     public float speed;
-    int i;
-    float a;
-    bool isMove;
+    int _i;
+    float _a;
+    bool _isMove;
 
-    Animator ani;
-    // Start is called before the first frame update
-    void Start()
+    Player _player;
+    Animator _animator;
+    Rigidbody2D _rigid;
+
+    private void Start()
     {
-        player = FindObjectOfType<PlayerCtrl>();
-        ani = GetComponent<Animator>();
-        rigid = GetComponent<Rigidbody2D>();
-        rigid.gravityScale = 0;
+        _player = FindObjectOfType<Player>();
+        _animator = GetComponent<Animator>();
+        _rigid = GetComponent<Rigidbody2D>();
+        _rigid.gravityScale = 0;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
-        float direction = player.transform.position.x - transform.position.x;
-        if (direction > 0)
+        var direction = _player.transform.position.x - transform.position.x;
+        _i = direction switch
         {
-            i=1;
-        }
-        else if (direction < 0)
-        {
-            i=-1;
-        }
-        Vector2 bPos = transform.position;
-        Vector2 aPos = new Vector2(speed * i, 0) * Time.deltaTime;
-        if (isMove == true)
+            > 0 => 1,
+            < 0 => -1,
+            _ => _i
+        };
+
+        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
+        var bPos = (Vector2) transform.position;
+        if (_isMove)
         {
             Debug.Log("kjsdfshe");
             transform.position = bPos + aPos;
         }
     }
+
     public void Move()
     {
-        Debug.Log("¹«ºê");
-        ani.SetBool("isMove", true);
-        isMove = true;
+        Debug.Log("ë¬´ë¸Œ");
+        _animator.SetBool("isMove", true);
+        _isMove = true;
         Jump();
-        rigid.gravityScale = 0.5f;
+        _rigid.gravityScale = 0.5f;
     }
+
     public void End()
     {
         Destroy(gameObject);
     }
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "ground")
-        {
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("ground"))
+        {
             Destroy(gameObject);
         }
-        else if (other.gameObject.name=="player")
+        else if (other.CompareTag("Player"))
         {
             Destroy(gameObject);
         }
     }
-    void Jump()
+
+    private void Jump()
     {
-        a = Random.Range(2, 6);
-        rigid.AddForce(Vector2.up * a, ForceMode2D.Impulse);
+        _a = Random.Range(2, 6);
+        _rigid.AddForce(Vector2.up * _a, ForceMode2D.Impulse);
     }
 }

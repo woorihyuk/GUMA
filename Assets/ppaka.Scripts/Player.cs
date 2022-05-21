@@ -18,7 +18,7 @@ public class Player : MonoBehaviour
 
     private Controller2D _controller;
 
-    public enum JumpMode
+    private enum JumpMode
     {
         None,
         Normal,
@@ -121,7 +121,7 @@ public class Player : MonoBehaviour
             if (!_isAttack && _input.x != 0) _lastInputX = _input.x;
         }
 
-        Jump();
+        if (!_isAttack) Jump();
 
         var gravityMultiplier = 1f;
 

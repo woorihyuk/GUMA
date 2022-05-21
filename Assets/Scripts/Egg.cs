@@ -1,8 +1,7 @@
-﻿using DG.Tweening;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+// ReSharper disable Unity.InefficientPropertyAccess
 public class Egg : MonoBehaviour
 {
     public GameObject prefab;
@@ -17,163 +16,181 @@ public class Egg : MonoBehaviour
     public float attackRange;
     public float jumpPower;
 
-    int[] attackType;
+    private int[] _attackType;
 
-    int i;
-    int attackCount;
-    int ifSmoking;
+    private int _i;
+    private int _attackCount;
+    private int _ifSmoking;
 
     public bool isGround;
-    bool isMov;
-    bool isAttack;
-    bool isFound;
+    private bool _isMov;
+    private bool _isAttack;
+    private bool _isFound;
 
-    float gravty;
-    float bSpeed;
-    float foundTime;
-    float walkTime;
-    float direction;
-    float mxHp;
-   
-    Player player;
+    private float _gravity;
+    private float _bSpeed;
+    private float _foundTime;
+    private float _walkTime;
+    private float _direction;
+    private float _mxHp;
+
     public Animator animator;
-    Image hpGauge;
+    private Player _player;
+    private Image _hpGauge;
 
-    RaycastHit2D hitinfo;
+    private RaycastHit2D _hitInfo;
+    private static readonly int AnimAttack1R = Animator.StringToHash("attack1R");
+    private static readonly int AnimAttack1 = Animator.StringToHash("attack1");
+    private static readonly int AnimAttack2R = Animator.StringToHash("attack2R");
+    private static readonly int AnimAttack2 = Animator.StringToHash("attack2");
+    private static readonly int AnimAttack3 = Animator.StringToHash("attack3");
+    private static readonly int AnimIsSit = Animator.StringToHash("isSit");
+    private static readonly int AnimIsSmoking = Animator.StringToHash("isSmoking");
+    private static readonly int AnimIsWalk = Animator.StringToHash("isWalk");
+    private static readonly int AnimIsDie = Animator.StringToHash("isDie");
 
     private void Start()
     {
         hpBar.SetActive(false);
-        mxHp = hp;
-        attackType = new int[] {1,2,1,1,2,1,2,1,1,1,2,2,1,1,1,2 };
-        i = 1;
+        _mxHp = hp;
+        _attackType = new[] { 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2 };
+        _i = 1;
         isGround = false;
-        bSpeed = speed;
-        isMov = true;
-        player = FindObjectOfType<Player>();
-        hpGauge = hpBar.GetComponent<Image>();
-        isAttack = true;
+        _bSpeed = speed;
+        _isMov = true;
+        _player = FindObjectOfType<Player>();
+        _hpGauge = hpBar.GetComponent<Image>();
+        _isAttack = true;
     }
 
-    void Update()
-    {   
-        foundTime += Time.deltaTime;
-        float dist = Vector2.Distance(transform.position, player.transform.position);
-        direction = player.transform.position.x - transform.position.x;
-        Vector2 bPos = transform.position;
-        Vector2 aPos = new Vector2(speed * i, 0) * Time.deltaTime;
-        Vector2 gPos = new Vector2(0, gravty) * Time.deltaTime;
-        hpGauge.fillAmount = hp / mxHp;
+    private void Update()
+    {
+        _foundTime += Time.deltaTime;
+        var dist = Vector2.Distance(transform.position, _player.transform.position);
+        _direction = _player.transform.position.x - transform.position.x;
+        var bPos = (Vector2)transform.position;
+        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
+        var gPos = new Vector2(0, _gravity) * Time.deltaTime;
+        _hpGauge.fillAmount = hp / _mxHp;
         transform.position = bPos + gPos;
         //못찾을때
-        if (hp<=0)
+        if (hp <= 0)
         {
-            animator.SetBool("isDie", true);
+            animator.SetBool(AnimIsDie, true);
         }
-        if (foundTime>=3)
+
+        if (_foundTime >= 3)
         {
-            if (!isFound)
+            if (!_isFound)
             {
                 hpBar.SetActive(false);
-                if (i == -1)
-                {
-                    transform.rotation = Quaternion.Euler(0, 0, 0);
-                }
-                else
-                {
-                    transform.rotation = Quaternion.Euler(0, 180, 0);
-                }
+                transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
+
                 transform.position = bPos + aPos;
-                animator.SetBool("isWalk", true);
-                walkTime += Time.deltaTime;
-                if (walkTime >= 2)
+                animator.SetBool(AnimIsWalk, true);
+                _walkTime += Time.deltaTime;
+                if (_walkTime >= 2)
                 {
-                    i = i * -1;
-                    animator.SetBool("isWalk", false);
-                    walkTime = 0;
-                    foundTime = 0;
+                    _i = _i * -1;
+                    animator.SetBool(AnimIsWalk, false);
+                    _walkTime = 0;
+                    _foundTime = 0;
                 }
             }
         }
+
         //인식했을떄
-        if (dist<=foundRange)
+        if (dist <= foundRange)
         {
-            isFound = true;
-            
+            _isFound = true;
         }
-        else if (direction>=10)
+        else if (_direction >= 10)
         {
-            isFound = false;
+            _isFound = false;
         }
-        if (isFound)
+
+        if (_isFound)
         {
             hpBar.SetActive(true);
-            animator.SetBool("isWalk", false);
-            foundTime = 0;
-            if (isAttack == true)
+            animator.SetBool(AnimIsWalk, false);
+            _foundTime = 0;
+            if (_isAttack)
             {
-                if (direction > 0)
+                switch (_direction)
                 {
-                    transform.rotation = Quaternion.Euler(0, 180, 0);
-                    if (dist > attackRange)
+                    case > 0:
                     {
-                        i = 1;
-                        transform.position = bPos + aPos + gPos;
-                        animator.SetBool("isWalk", true);
+                        transform.rotation = Quaternion.Euler(0, 180, 0);
+                        if (dist > attackRange)
+                        {
+                            _i = 1;
+                            transform.position = bPos + aPos + gPos;
+                            animator.SetBool(AnimIsWalk, true);
+                        }
+
+                        break;
+                    }
+                    case < 0:
+                    {
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
+                        if (dist > attackRange)
+                        {
+                            _i = -1;
+                            transform.position = bPos + aPos + gPos;
+                            animator.SetBool(AnimIsWalk, true);
+                        }
+
+                        break;
                     }
                 }
-                else if (direction < 0)
-                {
-                    transform.rotation = Quaternion.Euler(0, 0, 0);
-                    if (dist > attackRange)
-                    {
-                        i = -1;
-                        transform.position = bPos + aPos + gPos;
-                        animator.SetBool("isWalk", true);
-                    }
-                }
+
                 if (dist <= attackRange)
                 {
-                    if (attackType[attackCount] == 1)
+                    switch (_attackType[_attackCount])
                     {
-                        animator.SetBool("attack1R", true);
-                        isAttack = false;
-                    }
-                    else if (attackType[attackCount] == 2)
-
-                    {
-                        animator.SetBool("attack2R", true);
-                        isAttack = false;
+                        case 1:
+                            animator.SetBool(AnimAttack1R, true);
+                            _isAttack = false;
+                            break;
+                        case 2:
+                            animator.SetBool(AnimAttack2R, true);
+                            _isAttack = false;
+                            break;
                     }
                 }
-                Debug.Log(attackType[attackCount]);
+
+                Debug.Log(_attackType[_attackCount]);
             }
         }
+
         //중력
-        if (isGround==false)
+        if (isGround == false)
         {
-            gravty = -3;
+            _gravity = -3;
         }
         else
         {
-            gravty = 0;
+            _gravity = 0;
         }
+
         //이동통제
-        if (isMov==false)
+        if (_isMov == false)
         {
             speed = 0;
         }
         else
         {
-            speed=bSpeed;
+            speed = _bSpeed;
         }
     }
-    void OnTriggerEnter2D(Collider2D other)
+
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("ground"))
         {
             isGround = true;
         }
+
         if (other.CompareTag("PlayerAttack"))
         {
             Damage damage = other.gameObject.GetComponent<Damage>();
@@ -181,7 +198,8 @@ public class Egg : MonoBehaviour
             Debug.Log("맞음");
         }
     }
-    void OnTriggerExit2D(Collider2D collision)
+
+    private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.CompareTag("ground"))
         {
@@ -189,139 +207,163 @@ public class Egg : MonoBehaviour
         }
     }
 
-    
 
     public void A1()
     {
-        animator.SetBool("attack1R", false);
-        animator.SetBool("attack1", true);
+        animator.SetBool(AnimAttack1R, false);
+        animator.SetBool(AnimAttack1, true);
     }
+
     public void A1_1()
     {
         Instantiate(attacks[0], transform.position, transform.rotation);
     }
+
     public void A1_2()
     {
         Instantiate(attacks[1], transform.position, transform.rotation);
     }
+
     public void A1_3()
     {
         Instantiate(attacks[2], transform.position, transform.rotation);
     }
+
     public void A1_4()
     {
         //attack1_3.SetActive(false);
     }
+
     public void A1End()
     {
-        animator.SetBool("attack1", false);
-        if (attackCount<=14)
+        animator.SetBool(AnimAttack1, false);
+        if (_attackCount <= 14)
         {
-            attackCount += 1;
+            _attackCount += 1;
         }
         else
         {
-            attackCount = 0;
+            _attackCount = 0;
         }
-        isAttack = true;
+
+        _isAttack = true;
     }
+
     public void A2()
     {
-        animator.SetBool("attack2R", false);
-        animator.SetBool("attack2", true);
+        animator.SetBool(AnimAttack2R, false);
+        animator.SetBool(AnimAttack2, true);
     }
+
     public void A2_1()
     {
         Instantiate(attacks[3], transform.position, transform.rotation);
     }
+
     public void A2_2()
     {
         Instantiate(attacks[4], transform.position, transform.rotation);
     }
+
     public void A2_3()
     {
         Instantiate(attacks[5], transform.position, transform.rotation);
     }
+
     public void A2_4()
     {
         Instantiate(attacks[6], transform.position, transform.rotation);
     }
+
     public void A2_5()
     {
         Instantiate(attacks[7], transform.position, transform.rotation);
     }
+
     public void A2_6()
     {
         Instantiate(attacks[8], transform.position, transform.rotation);
     }
+
     public void A2_7()
     {
         Instantiate(attacks[9], transform.position, transform.rotation);
     }
+
     public void A2_8()
     {
         Instantiate(attacks[10], transform.position, transform.rotation);
     }
+
     public void A2_9()
     {
         Instantiate(attacks[11], transform.position, transform.rotation);
     }
+
     public void A3()
     {
-        animator.SetBool("attack2", false);
-        animator.SetBool("attack3", true);
+        animator.SetBool(AnimAttack2, false);
+        animator.SetBool(AnimAttack3, true);
     }
+
     public void A3_1()
     {
         Instantiate(attacks[12], transform.position, transform.rotation);
     }
+
     public void A3_2()
     {
         Instantiate(attacks[13], transform.position, transform.rotation);
     }
+
     public void A3_3()
     {
         Instantiate(attacks[14], transform.position, transform.rotation);
     }
+
     public void A3End()
     {
-        animator.SetBool("attack3", false);
-        ifSmoking = Random.Range(0, 2);
-        if (ifSmoking==0)
+        animator.SetBool(AnimAttack3, false);
+        _ifSmoking = Random.Range(0, 2);
+        if (_ifSmoking == 0)
         {
-            isAttack = true;
+            _isAttack = true;
         }
-        else if (ifSmoking==1)
+        else if (_ifSmoking == 1)
         {
-            animator.SetBool("isSit", true);
+            animator.SetBool(AnimIsSit, true);
         }
-        if (attackCount <= 14)
+
+        if (_attackCount <= 14)
         {
-            attackCount += 1;
+            _attackCount += 1;
         }
-        
     }
+
     public void A4()
     {
-        animator.SetBool("isSit", false);
-        animator.SetBool("isSmoking", true);
+        animator.SetBool(AnimIsSit, false);
+        animator.SetBool(AnimIsSmoking, true);
     }
+
     public void A4End()
     {
-        animator.SetBool("isSmoking", false);
-        isAttack = true;
-        for (int i = 0; i < 3; i++)
+        animator.SetBool(AnimIsSmoking, false);
+        _isAttack = true;
+        for (var i = 0; i < 3; i++)
         {
-            if (direction > 0)
+            switch (_direction)
             {
-                Instantiate(prefab, shootPoint2.transform.position, Quaternion.identity);
-            }
-            else if (direction < 0)
-            {
-                Instantiate(prefab, shootPoint1.transform.position, Quaternion.identity);
+                case > 0:
+                    Instantiate(prefab, shootPoint2.transform.position, Quaternion.identity);
+                    break;
+                case < 0:
+                    Instantiate(prefab, shootPoint1.transform.position, Quaternion.identity);
+                    break;
             }
         }
     }
+
     public void Die()
     {
         Destroy(gameObject);
