@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Agg : MonoBehaviour
+public class Egg : MonoBehaviour
 {
     public GameObject prefab;
     public GameObject shootPoint1;

@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EggMonsterAnimationEventCaller : MonoBehaviour
 {
-    public Agg eggMonster;
+    public Egg eggMonster;
     
     public void A1()
     {eggMonster.A1();

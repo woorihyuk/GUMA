@@ -61,6 +61,7 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
+        Application.targetFrameRate = 60;
         _controller = GetComponent<Controller2D>();
 
         defaultSpeed = moveSpeed;
@@ -148,8 +149,6 @@ public class Player : MonoBehaviour
         }
 
         _controller.Move(_velocity * Time.deltaTime);
-        
-        print(transform.position.y);
     }
 
     private void WallCheck()
