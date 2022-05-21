@@ -43,9 +43,9 @@ public class Player : MonoBehaviour
     public Transform[] wallRayCheckTfs;
 
     private Vector2 _input;
-    private bool _isDash, _isAttack, _isWall;
-    private float _lastInputX;
-    private int _direction = 1;
+    public bool _isDash, _isAttack, _isWall;
+    public float _lastInputX;
+    public int _direction = 1;
     private JumpMode _currentJump;
     public Animator animator;
     public SpriteFlipper flipper;
