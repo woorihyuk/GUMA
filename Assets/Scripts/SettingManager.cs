@@ -7,9 +7,9 @@ namespace Setting
 {
     public class SettingManager : MonoBehaviour
     {
-        public string returnSceneName;
+        public KeyCode keyCode;
 
-        private JangseungCtrl jangseungCtrl;
+        private static JangseungCtrl jangseungCtrl;
         //private SettingManager settingManager;
         public static SettingManager settingManager;
 
@@ -22,7 +22,7 @@ namespace Setting
 
         public void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (Input.GetKeyDown(keyCode))
             {
                 SwitchPause();
             }
@@ -70,7 +70,7 @@ namespace Setting
             StartCoroutine(Unload());
         }
 
-        private IEnumerator Init()
+        private static IEnumerator Init()
         {
             yield return null;
 
