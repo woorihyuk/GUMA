@@ -20,10 +20,20 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 66527923, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+      value: {fileID: -986776370, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
     - time: 0.083333336
-      value: {fileID: 1162628752, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+      value: {fileID: -1498389218, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
     - time: 0.16666667
+      value: {fileID: -1030529735, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - time: 0.25
+      value: {fileID: -1579143221, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - time: 0.33333334
+      value: {fileID: 1607682114, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - time: 0.41666666
+      value: {fileID: 66527923, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - time: 0.5
+      value: {fileID: 1162628752, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - time: 0.5833333
       value: {fileID: -861951798, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
     attribute: m_Sprite
     path: 
@@ -44,6 +54,11 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     pptrCurveMapping:
+    - {fileID: -986776370, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - {fileID: -1498389218, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - {fileID: -1030529735, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - {fileID: -1579143221, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
+    - {fileID: 1607682114, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
     - {fileID: 66527923, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
     - {fileID: 1162628752, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
     - {fileID: -861951798, guid: 274b154c41b42aa47bf61e1b7114a389, type: 3}
@@ -52,12 +67,12 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.25
+    m_StopTime: 0.6666667
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
     m_HasAdditiveReferencePose: 0
-    m_LoopTime: 0
+    m_LoopTime: 1
     m_LoopBlend: 0
     m_LoopBlendOrientation: 0
     m_LoopBlendPositionY: 0
@@ -72,14 +87,21 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0
+  - time: 0.16666667
+    functionName: Attack1Fx
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.41666666
     functionName: Attack2Fx
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.25
+  - time: 0.6666667
     functionName: Attack2End
     data: 
     objectReferenceParameter: {fileID: 0}

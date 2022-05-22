@@ -7,26 +7,26 @@ public class Sine : MonoBehaviour
 {
     public int type;
     public GameObject talk;
+    public GameObject player;
 
     private int textType;
     private int maxText;
     private string[] talkText;
-    private GameObject textBox1;
+    public GameObject textBox1;
     private Text text1;
-    private GameObject textBox2;
+    public GameObject textBox2;
     private Text text2;
 
     void Start()
     {
-        textBox1 = GameObject.Find("TalkText 1");
-        textBox2 = GameObject.Find("TalkText 2");
         text1 = textBox1.GetComponent<Text>();
         text2 = textBox2.GetComponent<Text>();
+        //talk.SetActive(false);
 
         switch (type)
         {
             case 1:
-                talkText = new string[] { "뭐야 너", "다 까먹어버린거야?", "A 키를 누르면 왼쪽으로, ", "D 키를 누르면 오른쪽으로 이동할 수 있어." };
+                talkText = new string[] { "뭐야 너!", "다 까먹어버린거야?", "A 키를 누르면 왼쪽으로, ", "D키를 누르면 오른쪽으로 이동할 수 있어." };
                 maxText = 3;
                 break;
             case 2:
@@ -34,7 +34,7 @@ public class Sine : MonoBehaviour
                 maxText = 1;
                 break;
             case 3:
-                talkText = new string[] { "Shift키를 누르면 대쉬를 하고,", "가만히 있는 상태에서 Shift를 누르면 백스탭을 해" };
+                talkText = new string[] { "Shift키를 누르면 대쉬를 하고,", "가만히 있는 상태에서 Shift를 누르면 백스탭을 해"};
                 maxText = 1;
                 break;
             case 4:
@@ -42,7 +42,7 @@ public class Sine : MonoBehaviour
                 maxText = 1;
                 break;
             case 5:
-                talkText = new string[] { "좌클릭을 하면 창 공격을 할 수 있어,", "앞에 있는 동상을 공격해봐" };
+                talkText = new string[] { "우클릭을 누르면 총알이 앞으로 나가", "푸슝-!" };
                 maxText = 1;
                 break;
             case 6:
@@ -59,21 +59,23 @@ public class Sine : MonoBehaviour
     }
     public void TalkStart()
     {
+        Debug.Log(type);
         talk.SetActive(true);
         textType = 0;
+        NextText();
     }
     public void NextText()
     {
-        if (textType>=maxText)
+        if (textType < talkText.Length)
         {
-            if (textType % 2 != 0)
-            {
-
-                text1.text = talkText[textType++];
+            if (textType % 2 == 1)
+            { 
+                text2.text = talkText[textType++];
             }
             else
             {
-                text2.text = talkText[textType++];
+                text1.text = talkText[textType++];
+                text2.text = "";
             }
         }
         else
@@ -82,8 +84,9 @@ public class Sine : MonoBehaviour
         }
     }
 
-    private void TextEnd()
+    public void TextEnd()
     {
+        Debug.Log("나감");
         talk.SetActive(false);
     }
 }

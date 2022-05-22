@@ -33,7 +33,6 @@ public class Smoking : MonoBehaviour
         var bPos = (Vector2) transform.position;
         if (_isMove)
         {
-            Debug.Log("kjsdfshe");
             transform.position = bPos + aPos;
         }
     }

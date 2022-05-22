@@ -40,7 +40,7 @@ public class Player : MonoBehaviour
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
     public float _HP;
-    private bool _isDash, _isAttack, _isWall, _isTalk;
+    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave;
     private Vector2 _input;
     private Vector3 _velocity;
     private AttackMode _currentAttack;
@@ -66,11 +66,11 @@ public class Player : MonoBehaviour
         Third
     }
 
-    
+
 
     private void Start()
     {
-       
+
         Application.targetFrameRate = 60;
         _controller = GetComponent<Controller2D>();
 
@@ -85,12 +85,22 @@ public class Player : MonoBehaviour
         hpBar = GameObject.Find("PlayerHp");
         _hpBar = hpBar.GetComponent<Image>();
         _HP = maxHP;
-        
+
         _hit = GetComponent<Hit>();
         isHit = true;
 
         E.SetActive(false);
-        textBox.SetActive(false);
+
+        /*switch (GameManager.Instance.savePoint)
+        {
+            case 0:
+                transform.position = new Vector3(0, -2.5f, 0);
+                break;
+            case 1:
+                transform.position = new Vector3(86, 8.25f, 0);
+                break;
+        }*/
+        Debug.Log(GameManager.Instance.savePoint);
     }
 
     private void Update()
@@ -171,20 +181,62 @@ public class Player : MonoBehaviour
         }
 
         _controller.Move(_velocity * Time.deltaTime);
+
+        if (_isTalk)
+        {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                if (!_isTalking)
+                {
+                    Debug.Log(_isTalking);
+                    _isTalking = true;
+                    E.SetActive(false);
+                    sine.TalkStart();
+                }
+                else
+                {
+                    sine.NextText();
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (_isTalk)
+            {
+
+                if (!_isTalking)
+                {
+                    Debug.Log(_isTalking);
+                    _isTalking = true;
+                    E.SetActive(false);
+                    sine.TalkStart();
+                }
+                else
+                {
+                    sine.NextText();
+                }
+
+            }
+            if (_isSave)
+            {
+                GameManager.Instance.savePoint = 1;
+                Debug.Log("저장");
+            }
+        }
     }
 
     private void WallCheck()
     {
-        // 甕??類ㅼ뵥??
+        // ???筌먦끉逾??
         Debug.DrawRay(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
             false);
         Debug.DrawRay(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
             false);
 
-        // ?遺얜굡 ??됱뵠??彛???됱뵠筌?Ŋ???
+        // ??븐뼔援????깅턄???壤????깅턄嶺?흮???
         var mask = 1 << LayerMask.NameToLayer("WorldGround");
 
-        // 甕??類ㅼ뵥 ??됱뵠筌?Ŋ???獄쏄퀣肉?
+        // ???筌먦끉逾????깅턄嶺?흮????꾩룄?ｈ굢?
         var wallCheckRays = new RaycastHit2D[2];
         wallCheckRays[0] =
             Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance),
@@ -193,12 +245,12 @@ public class Player : MonoBehaviour
             Physics2D.Raycast(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance),
                 wallCheckDistance, mask);
 
-        // 甕??類ㅼ뵥 野껉퀗?????關??
+        // ???筌먦끉逾??롪퍒?????????
         var checkWallResult = new bool[2];
         if (wallCheckRays[0].transform) checkWallResult[0] = true;
         if (wallCheckRays[1].transform) checkWallResult[1] = true;
 
-        // ?類ㅼ뵥?꾨뗀諭?
+        // ?筌먦끉逾?袁⑤?獄?
         if (checkWallResult[0] && checkWallResult[1])
         {
             if (!_isWall)
@@ -218,13 +270,7 @@ public class Player : MonoBehaviour
         }
 
         animator.SetBool(AnimIsWall, _isWall);
-        if (_isTalk)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                sine.NextText();
-            }
-        }
+
     }
 
     private void Attack()
@@ -259,44 +305,43 @@ public class Player : MonoBehaviour
             switch (_currentJump)
             {
                 case JumpMode.None:
-                {
-                    if (_isWall && _controller.collisions.below)
                     {
-                        _velocity.y = _jumpVelocity;
-                        _velocity.x = -20 * _lastInputX;
-                        _currentJump = JumpMode.Normal;
-                        animator.SetBool(AnimIsJump, true);
-                        _lastInputX *= -1;
+                        switch (_isWall)
+                        {
+                            case true when _controller.collisions.below:
+                                _velocity.y = _jumpVelocity;
+                                _velocity.x = -20 * _lastInputX;
+                                _currentJump = JumpMode.Normal;
+                                animator.SetBool(AnimIsJump, true);
+                                _lastInputX *= -1;
+                                break;
+                            case false when _controller.collisions.below:
+                                _velocity.y = _jumpVelocity;
+                                _currentJump = JumpMode.Normal;
+                                animator.SetBool(AnimIsJump, true);
+                                break;
+                            case false when !_controller.collisions.below:
+                                _velocity.y = _jumpVelocity;
+                                _currentJump = JumpMode.Double;
+                                animator.SetBool(AnimDJump, true);
+                                break;
+                            case true when !_controller.collisions.below:
+                                _velocity.y = _jumpVelocity;
+                                _velocity.x = -20 * _lastInputX;
+                                _currentJump = JumpMode.Normal;
+                                animator.SetBool(AnimIsJump, true);
+                                _lastInputX *= -1;
+                                break;
+                        }
+                        break;
                     }
-                    else if (_controller.collisions.below)
-                    {
-                        _velocity.y = _jumpVelocity;
-                        _currentJump = JumpMode.Normal;
-                        animator.SetBool(AnimIsJump, true);
-                    }
-                    else if (!_controller.collisions.below)
+                case JumpMode.Normal:
                     {
                         _velocity.y = _jumpVelocity;
                         _currentJump = JumpMode.Double;
                         animator.SetBool(AnimDJump, true);
+                        break;
                     }
-                    else if (_isWall)
-                    {
-                        _velocity.y = _jumpVelocity;
-                        _velocity.x = -20 * _lastInputX;
-                        _currentJump = JumpMode.Normal;
-                        animator.SetBool(AnimIsJump, true);
-                        _lastInputX *= -1;
-                    }
-                    break;
-                }
-                case JumpMode.Normal:
-                {
-                    _velocity.y = _jumpVelocity;
-                    _currentJump = JumpMode.Double;
-                    animator.SetBool(AnimDJump, true);
-                    break;
-                }
             }
         }
     }
@@ -419,7 +464,7 @@ public class Player : MonoBehaviour
             {
                 _HP -= damage.dmg;
                 _hpBar.fillAmount = _HP / maxHP;
-                if (_HP<=0)
+                if (_HP <= 0)
                 {
                     animator.SetBool(AnimIsDiy, true);
                 }
@@ -432,13 +477,21 @@ public class Player : MonoBehaviour
             E.SetActive(true);
             sine = collision.GetComponent<Sine>();
         }
+        if (collision.CompareTag("SavePoint"))
+        {
+            _isSave = true;
+            E.SetActive(true);
+        }
     }
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Sine"))
         {
+            Debug.Log(_isTalking);
             _isTalk = false;
+            _isTalking = false;
             E.SetActive(false);
+            sine.TextEnd();
         }
     }
 
