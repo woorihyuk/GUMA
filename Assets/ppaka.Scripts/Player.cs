@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     public Transform[] wallRayCheckTfs;
     public Animator animator;
     public SpriteFlipper flipper;
+    public PlayerAttachedCamera playerAttached;
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
     private static readonly int AnimIsDash = Animator.StringToHash("isDash");
@@ -40,9 +42,10 @@ public class Player : MonoBehaviour
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
     public float _HP;
-    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave;
+    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor;
     private Vector2 _input;
     private Vector3 _velocity;
+    private Vector3 _doorPos;
     private AttackMode _currentAttack;
     private JumpMode _currentJump;
     private Hit _hit;
@@ -50,6 +53,8 @@ public class Player : MonoBehaviour
     private GameObject hpBar;
     private Image _hpBar;
     private Sine sine;
+    private Doer door;
+
 
     private enum JumpMode
     {
@@ -91,7 +96,7 @@ public class Player : MonoBehaviour
 
         E.SetActive(false);
 
-        /*switch (GameManager.Instance.savePoint)
+        switch (GameManager.Instance.savePoint)
         {
             case 0:
                 transform.position = new Vector3(0, -2.5f, 0);
@@ -99,8 +104,9 @@ public class Player : MonoBehaviour
             case 1:
                 transform.position = new Vector3(86, 8.25f, 0);
                 break;
-        }*/
+        }
         Debug.Log(GameManager.Instance.savePoint);
+        playerAttached.isIn = true;
     }
 
     private void Update()
@@ -220,8 +226,29 @@ public class Player : MonoBehaviour
             if (_isSave)
             {
                 GameManager.Instance.savePoint = 1;
+                GameManager.Instance.GameSave();
                 Debug.Log("저장");
             }
+            if (_isDoor)
+            {
+                transform.position = _doorPos;
+                _isDoor = false;
+                if (playerAttached.isIn)
+                {
+                    playerAttached.isIn = false;
+                }
+                else
+                {
+                    playerAttached.isIn = true;
+                }
+                E.SetActive(false);
+                door = null;
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            SceneManager.LoadScene("Title");
+
         }
     }
 
@@ -350,7 +377,7 @@ public class Player : MonoBehaviour
     {
         if (_currentJump == JumpMode.None && !_isDash)
         {
-            if (Input.GetMouseButtonDown(1) && _controller.collisions.below)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _controller.collisions.below)
             {
                 animator.SetBool(AnimIsBackStep, true);
                 _direction = -(int)_lastInputX;
@@ -364,7 +391,7 @@ public class Player : MonoBehaviour
     {
         if (_currentJump == JumpMode.None && !_isDash)
         {
-            if (Input.GetMouseButtonDown(1) && _controller.collisions.below)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && _controller.collisions.below)
             {
                 animator.SetBool(AnimIsDash, true);
                 _direction = (int)_lastInputX;
@@ -482,6 +509,13 @@ public class Player : MonoBehaviour
             _isSave = true;
             E.SetActive(true);
         }
+        if (collision.CompareTag("Door"))
+        {
+            door = collision.GetComponent<Doer>();
+            _doorPos = door.monePosition;
+            _isDoor = true;
+            E.SetActive(true);
+        }
     }
     private void OnTriggerExit2D(Collider2D other)
     {
@@ -492,6 +526,18 @@ public class Player : MonoBehaviour
             _isTalking = false;
             E.SetActive(false);
             sine.TextEnd();
+        }
+        if (other.CompareTag("SavePoint"))
+        {
+            _isSave = false;
+            E.SetActive(false);
+
+        }
+        if (other.CompareTag("Door"))
+        {
+            _isDoor = false;
+            E.SetActive(false);
+            door = null;
         }
     }
 

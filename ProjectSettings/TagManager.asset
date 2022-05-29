@@ -11,6 +11,7 @@ TagManager:
   - isground
   - Sine
   - SavePoint
+  - Door
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - 
   - 
   - WorldGround
-  - 
+  - WorldNotGround
   - 
   - 
   - 

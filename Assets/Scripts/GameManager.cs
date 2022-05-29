@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public int savePoint;
-
+    
 
     public static GameManager instance;
     public static GameManager Instance
@@ -39,10 +39,11 @@ public class GameManager : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
+        GameLoad();
     }
     void Start()
     {
-
+        GameLoad();
     }
 
     // Update is called once per frame
@@ -52,11 +53,17 @@ public class GameManager : MonoBehaviour
     }
     public void GameSave()
     {
-
+        PlayerPrefs.SetInt("SavePoint", GameManager.Instance.savePoint);
+        PlayerPrefs.Save();
     }
     public void GameLoad()
     {
-
+        if (!PlayerPrefs.HasKey("SavePoint"))
+        {
+            return;
+        }
+        savePoint=PlayerPrefs.GetInt("SavePoint");
+        Debug.Log("gameLoad");
     }
 }
 

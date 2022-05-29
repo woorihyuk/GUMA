@@ -18,7 +18,12 @@ public class Director : MonoBehaviour
     }
     public void NewGame()
     {
+        GameManager.Instance.savePoint = 0;
         SceneManager.LoadScene("PlayScene"); 
+    }
+    public void LoadGame()
+    {
+        SceneManager.LoadScene("PlayScene");
     }
     public void Seting()
     {
