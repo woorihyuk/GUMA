@@ -35,6 +35,7 @@ public class Player : MonoBehaviour
     private static readonly int AnimIsAttack3 = Animator.StringToHash("isAttack3");
     private static readonly int AnimIsWall = Animator.StringToHash("isWall");
     private static readonly int AnimIsDiy = Animator.StringToHash("isDie");
+    private static readonly int AnimShoot = Animator.StringToHash("isShoot");
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
     private float _gravity;
@@ -68,11 +69,12 @@ public class Player : MonoBehaviour
         None,
         First,
         Second,
-        Third
+        Third,
+        FirstShoot,
+        SecondShoot
+
     }
-
-
-
+   
     private void Start()
     {
 
@@ -323,6 +325,21 @@ public class Player : MonoBehaviour
                 animator.SetBool(AnimIsAttack, true);
             }
         }
+        else if (Input.GetMouseButtonDown(1))
+        {
+            if (_currentAttack == AttackMode.None)
+            {
+                animator.SetBool(AnimShoot, true);
+                _isAttack = true;
+                _currentAttack = AttackMode.First;
+            }
+            if (_currentAttack == AttackMode.First)
+            {
+                _isAttack = true;
+                _currentAttack = AttackMode.Second;
+            }
+
+        }
     }
 
     private void Jump()
@@ -437,6 +454,10 @@ public class Player : MonoBehaviour
         {
             Instantiate(attackPrefabs[2], thisTransform.position, thisTransform.rotation);
         }
+        if (attackMode == AttackMode.FirstShoot || attackMode == AttackMode.SecondShoot)
+        {
+            Instantiate(attackPrefabs[3], transform.position, thisTransform.rotation);
+        }
     }
 
     public void OnAnimationAttackEnd(AttackMode attackMode)
@@ -444,7 +465,7 @@ public class Player : MonoBehaviour
         if (attackMode == AttackMode.First)
         {
             animator.SetBool(AnimIsAttack, false);
-            if ((int)_currentAttack >= (int)AttackMode.Second)
+            if ((int)_currentAttack == (int)AttackMode.Second)
             {
                 animator.SetBool(AnimIsAttack2, true);
             }
@@ -458,7 +479,7 @@ public class Player : MonoBehaviour
         if (attackMode == AttackMode.Second)
         {
             animator.SetBool(AnimIsAttack2, false);
-            if ((int)_currentAttack >= (int)AttackMode.Third)
+            if ((int)_currentAttack == (int)AttackMode.Third)
             {
                 animator.SetBool(AnimIsAttack3, true);
             }
@@ -474,6 +495,25 @@ public class Player : MonoBehaviour
             _isAttack = false;
             animator.SetBool(AnimIsAttack3, false);
             _currentAttack = AttackMode.None;
+        }
+
+        if (attackMode == AttackMode.FirstShoot)
+        {
+            //_isAttack = false;
+            animator.SetBool(AnimShoot,false);
+            if ((int)_currentAttack == (int)AttackMode.Third)
+            {
+                animator.SetBool(AnimIsAttack3, true);
+            }
+            else if ((int)_currentAttack == (int)AttackMode.Third)
+            {
+                animator.SetBool(AnimIsAttack3, true);
+            }
+            else
+            {
+                _isAttack = false;
+                _currentAttack = AttackMode.None;
+            }
         }
     }
 

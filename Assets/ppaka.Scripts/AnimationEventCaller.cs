@@ -19,6 +19,11 @@ public class AnimationEventCaller : MonoBehaviour
         player.OnAnimationAttackFx(Player.AttackMode.Third);
     }
 
+    public void ShootFx()
+    {
+        player.OnAnimationAttackFx(Player.AttackMode.FirstShoot);
+    }
+
     public void Attack1End()
     {
         player.OnAnimationAttackEnd(Player.AttackMode.First);
@@ -47,5 +52,9 @@ public class AnimationEventCaller : MonoBehaviour
     public void OnDieEnd()
     {
         player.IsDie();
+    }
+    public void ShootEnd()
+    {
+        player.OnAnimationAttackEnd(Player.AttackMode.FirstShoot);
     }
 }
