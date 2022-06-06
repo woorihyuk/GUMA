@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     public Animator animator;
     public SpriteFlipper flipper;
     public PlayerAttachedCamera playerAttached;
+    public SpriteRenderer sr;
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
     private static readonly int AnimIsDash = Animator.StringToHash("isDash");
@@ -324,19 +325,27 @@ public class Player : MonoBehaviour
                 _currentAttack = AttackMode.First;
                 animator.SetBool(AnimIsAttack, true);
             }
+
+            else if (_currentAttack == AttackMode.FirstShoot)
+            {
+                _isAttack = true;
+                _currentAttack = AttackMode.Second;
+            }
         }
+
         else if (Input.GetMouseButtonDown(1))
         {
             if (_currentAttack == AttackMode.None)
             {
                 animator.SetBool(AnimShoot, true);
                 _isAttack = true;
-                _currentAttack = AttackMode.First;
+                _currentAttack = AttackMode.FirstShoot;
             }
-            if (_currentAttack == AttackMode.First)
+
+            else if (_currentAttack == AttackMode.First)
             {
                 _isAttack = true;
-                _currentAttack = AttackMode.Second;
+                _currentAttack = AttackMode.SecondShoot;
             }
 
         }
@@ -442,21 +451,49 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.First)
         {
-            Instantiate(attackPrefabs[0], thisTransform.position, thisTransform.rotation);
+            if (!sr.flipX)
+            {
+                Instantiate(attackPrefabs[0], thisTransform.position, thisTransform.rotation);
+            }
+            else
+            {
+                Instantiate(attackPrefabs[0], thisTransform.position, Quaternion.Euler(0,-180,0));
+            }
         }
 
         if (attackMode == AttackMode.Second)
         {
-            Instantiate(attackPrefabs[1], thisTransform.position, thisTransform.rotation);
+            if (!sr.flipX)
+            {
+                Instantiate(attackPrefabs[1], thisTransform.position, thisTransform.rotation);
+            }
+            else
+            {
+                Instantiate(attackPrefabs[1], thisTransform.position, Quaternion.Euler(0, -180, 0));
+            }
         }
 
         if (attackMode == AttackMode.Third)
         {
-            Instantiate(attackPrefabs[2], thisTransform.position, thisTransform.rotation);
+            if (!sr.flipX)
+            {
+                Instantiate(attackPrefabs[2], thisTransform.position, thisTransform.rotation);
+            }
+            else
+            {
+                Instantiate(attackPrefabs[2], thisTransform.position, Quaternion.Euler(0, -180, 0));
+            }
         }
         if (attackMode == AttackMode.FirstShoot || attackMode == AttackMode.SecondShoot)
         {
-            Instantiate(attackPrefabs[3], transform.position, thisTransform.rotation);
+            if (!sr.flipX)
+            {
+                Instantiate(attackPrefabs[3], thisTransform.position, thisTransform.rotation);
+            }
+            else
+            {
+                Instantiate(attackPrefabs[3], thisTransform.position, Quaternion.Euler(0, -180, 0));
+            }
         }
     }
 
@@ -499,18 +536,15 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.FirstShoot)
         {
-            //_isAttack = false;
-            animator.SetBool(AnimShoot,false);
-            if ((int)_currentAttack == (int)AttackMode.Third)
+            animator.SetBool(AnimShoot, false);
+            if (_currentAttack == AttackMode.Second)
             {
-                animator.SetBool(AnimIsAttack3, true);
-            }
-            else if ((int)_currentAttack == (int)AttackMode.Third)
-            {
-                animator.SetBool(AnimIsAttack3, true);
+                animator.SetBool(AnimIsAttack2, true);
+                Debug.Log("총창");    
             }
             else
             {
+                animator.SetBool(AnimShoot, false);
                 _isAttack = false;
                 _currentAttack = AttackMode.None;
             }
