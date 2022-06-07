@@ -266,16 +266,33 @@ public class Player : MonoBehaviour
             {
 
                 case 1:
+                    if ((int)_currentAttack >= (int)AttackMode.Second)
+                    {
+                        _isAttack = true;
+                        animator.SetBool(AnimIsAttack2, true);
+                    }
                     break;
                 case 2:
+                    if ((int)_currentAttack >= (int)AttackMode.Third)
+                    {
+                        _isAttack = true;
+                        animator.SetBool(AnimIsAttack3, true);
+                    }
                     break;
                 case 3:
+                    if (_currentAttack == AttackMode.SecondShoot)
+                    {
+                        _isAttack = true;
+                        animator.SetBool(AnimIsAttack2, true);
+                    }
                     break;
             }
         }
         else
         {
+            _attackMode = 0;
             _currentAttack = AttackMode.None;
+            isCombo = false;
         }
     }
 
@@ -331,6 +348,8 @@ public class Player : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            isCombo = true;
+
             if (_currentAttack == AttackMode.Second)
             {
                 _isAttack = true;
@@ -359,6 +378,7 @@ public class Player : MonoBehaviour
 
         else if (Input.GetMouseButtonDown(1))
         {
+            isCombo = true;
             if (_currentAttack == AttackMode.None)
             {
                 animator.SetBool(AnimShoot, true);
@@ -523,44 +543,28 @@ public class Player : MonoBehaviour
 
     public void OnAnimationAttackEnd(AttackMode attackMode)
     {
+        isCombo = false;
         if (attackMode == AttackMode.First)
         {
             animator.SetBool(AnimIsAttack, false);
-            if ((int)_currentAttack >= (int)AttackMode.Second)
-            {
-                _attackMode = 1;
-
-                animator.SetBool(AnimIsAttack2, true);
-            }
-            else
-            {
-                _isAttack = false;
-                _currentAttack = AttackMode.None;
-            }
+            _attackMode = 1;
+            _isAttack = false;
         }
 
         if (attackMode == AttackMode.Second)
         {
             
             animator.SetBool(AnimIsAttack2, false);
-            if ((int)_currentAttack >= (int)AttackMode.Third)
-            {
-                animator.SetBool(AnimIsAttack3, true);
-                _attackMode = 2;
-            }
-            else
-            {
-                _isAttack = false;
-                _currentAttack = AttackMode.None;
-            }
+            _attackMode = 2;
+            _isAttack = false;
         }
 
         if (attackMode == AttackMode.Third)
         {
-            _attackMode = 3;
             _isAttack = false;
             animator.SetBool(AnimIsAttack3, false);
             _currentAttack = AttackMode.None;
+            _attackMode = 0;
         }
 
         if (attackMode == AttackMode.FirstShoot)
