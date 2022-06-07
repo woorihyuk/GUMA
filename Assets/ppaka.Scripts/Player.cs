@@ -37,14 +37,16 @@ public class Player : MonoBehaviour
     private static readonly int AnimIsWall = Animator.StringToHash("isWall");
     private static readonly int AnimIsDiy = Animator.StringToHash("isDie");
     private static readonly int AnimShoot = Animator.StringToHash("isShoot");
+    private int _attackMode;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
     private float _gravity;
     private float _jumpVelocity;
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
+    private float _comboTime;
     public float _HP;
-    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor;
+    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, isCombo;
     private Vector2 _input;
     private Vector3 _velocity;
     private Vector3 _doorPos;
@@ -73,7 +75,6 @@ public class Player : MonoBehaviour
         Third,
         FirstShoot,
         SecondShoot
-
     }
    
     private void Start()
@@ -115,6 +116,8 @@ public class Player : MonoBehaviour
     private void Update()
     {
         _sinceLastDashTime += Time.deltaTime;
+
+        _comboTime += Time.deltaTime;
 
         if (_controller.collisions.above || _controller.collisions.below)
         {
@@ -253,20 +256,41 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Title");
 
         }
+        if (isCombo)
+        {
+            _comboTime = 0;
+        }
+        if (_comboTime<=0.5)
+        {
+            switch (_attackMode)
+            {
+
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+            }
+        }
+        else
+        {
+            _currentAttack = AttackMode.None;
+        }
     }
 
     private void WallCheck()
     {
-        // ???筌먦끉逾??
+        // 체크 용도
         Debug.DrawRay(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
             false);
         Debug.DrawRay(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance), Color.red, 0,
             false);
 
-        // ??븐뼔援????깅턄???壤????깅턄嶺?흮???
+        // 레이어 마스크
         var mask = 1 << LayerMask.NameToLayer("WorldGround");
 
-        // ???筌먦끉逾????깅턄嶺?흮????꾩룄?ｈ굢?
+        // 위 아레로 플레이어 보는 방향으로 레이 쏘기
         var wallCheckRays = new RaycastHit2D[2];
         wallCheckRays[0] =
             Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (_lastInputX * wallCheckDistance),
@@ -275,12 +299,12 @@ public class Player : MonoBehaviour
             Physics2D.Raycast(wallRayCheckTfs[1].position, Vector3.right * (_lastInputX * wallCheckDistance),
                 wallCheckDistance, mask);
 
-        // ???筌먦끉逾??롪퍒?????????
+        // 값 확인
         var checkWallResult = new bool[2];
         if (wallCheckRays[0].transform) checkWallResult[0] = true;
         if (wallCheckRays[1].transform) checkWallResult[1] = true;
 
-        // ?筌먦끉逾?袁⑤?獄?
+        // 벽인가?
         if (checkWallResult[0] && checkWallResult[1])
         {
             if (!_isWall)
@@ -502,8 +526,10 @@ public class Player : MonoBehaviour
         if (attackMode == AttackMode.First)
         {
             animator.SetBool(AnimIsAttack, false);
-            if ((int)_currentAttack == (int)AttackMode.Second)
+            if ((int)_currentAttack >= (int)AttackMode.Second)
             {
+                _attackMode = 1;
+
                 animator.SetBool(AnimIsAttack2, true);
             }
             else
@@ -515,10 +541,12 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.Second)
         {
+            
             animator.SetBool(AnimIsAttack2, false);
-            if ((int)_currentAttack == (int)AttackMode.Third)
+            if ((int)_currentAttack >= (int)AttackMode.Third)
             {
                 animator.SetBool(AnimIsAttack3, true);
+                _attackMode = 2;
             }
             else
             {
@@ -529,6 +557,7 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.Third)
         {
+            _attackMode = 3;
             _isAttack = false;
             animator.SetBool(AnimIsAttack3, false);
             _currentAttack = AttackMode.None;
