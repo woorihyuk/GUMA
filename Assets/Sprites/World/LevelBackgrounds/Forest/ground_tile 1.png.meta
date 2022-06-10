@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 5
+  spritePixelsToUnits: 1
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -928,7 +928,7 @@ TextureImporter:
       ground_tile_31: 1148029699
       ground_tile_15: -980588389
       ground_tile_1: -844605921
-      ground_tile_2: 1457086667
+      ground_tile_11: 883407409
       ground_tile_36: 1763929633
       ground_tile_37: 550333700
       ground_tile_20: -2107767712
@@ -937,8 +937,8 @@ TextureImporter:
       ground_tile_13: 282657649
       ground_tile_32: 458802703
       ground_tile_12: -1147797330
-      ground_tile_6: 571944282
-      ground_tile_14: 614005593
+      ground_tile_26: -1806338488
+      ground_tile_23: 341616314
       ground_tile_8: 2040089443
       ground_tile_18: -1646686770
       ground_tile_30: 1236497858
@@ -957,10 +957,10 @@ TextureImporter:
       ground_tile_19: -1037850398
       ground_tile_24: 2121056683
       ground_tile_33: -1531920561
-      ground_tile_26: -1806338488
       ground_tile_29: 648131006
-      ground_tile_23: 341616314
-      ground_tile_11: 883407409
+      ground_tile_6: 571944282
+      ground_tile_14: 614005593
+      ground_tile_2: 1457086667
       ground_tile_16: 1926275308
   spritePackingTag: 
   pSDRemoveMatte: 0

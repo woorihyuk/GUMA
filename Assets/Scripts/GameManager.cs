@@ -5,9 +5,9 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public int savePoint;
-    
 
-    public static GameManager instance;
+    
+    public static GameManager instance; 
     public static GameManager Instance
     {
         get

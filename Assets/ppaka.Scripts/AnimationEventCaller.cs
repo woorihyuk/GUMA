@@ -57,4 +57,8 @@ public class AnimationEventCaller : MonoBehaviour
     {
         player.OnAnimationAttackEnd(Player.AttackMode.FirstShoot);
     }
+    public void Shoot2End()
+    {
+        player.OnAnimationAttackEnd(Player.AttackMode.SecondShoot);
+    }
 }

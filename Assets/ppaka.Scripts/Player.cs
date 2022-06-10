@@ -37,6 +37,8 @@ public class Player : MonoBehaviour
     private static readonly int AnimIsWall = Animator.StringToHash("isWall");
     private static readonly int AnimIsDiy = Animator.StringToHash("isDie");
     private static readonly int AnimShoot = Animator.StringToHash("isShoot");
+    private static readonly int AnimShoot2 = Animator.StringToHash("isShoot2");
+
     private int _attackMode;
     private float accelerationTimeAirborne = 0.2f;
     private float accelerationTimeGrounded = 0.1f;
@@ -46,7 +48,7 @@ public class Player : MonoBehaviour
     private float _sinceLastDashTime = 10f;
     private float _comboTime;
     public float _HP;
-    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, isCombo;
+    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isCombo, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
     private Vector3 _doorPos;
@@ -76,10 +78,10 @@ public class Player : MonoBehaviour
         FirstShoot,
         SecondShoot
     }
-   
+
     private void Start()
     {
-
+        _isAttackYet = true;
         Application.targetFrameRate = 60;
         _controller = GetComponent<Controller2D>();
 
@@ -103,7 +105,7 @@ public class Player : MonoBehaviour
         switch (GameManager.Instance.savePoint)
         {
             case 0:
-                transform.position = new Vector3(0, -2.5f, 0);
+                transform.position = new Vector3(0, -1.5f, 0);
                 break;
             case 1:
                 transform.position = new Vector3(86, 8.25f, 0);
@@ -256,7 +258,7 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Title");
 
         }
-        if (isCombo)
+        if (_isCombo)
         {
             _comboTime = 0;
         }
@@ -266,14 +268,21 @@ public class Player : MonoBehaviour
             {
 
                 case 1:
-                    if ((int)_currentAttack >= (int)AttackMode.Second)
+                    if ((int)_currentAttack == (int)AttackMode.Second)
                     {
+                        Debug.Log("공2");
                         _isAttack = true;
                         animator.SetBool(AnimIsAttack2, true);
                     }
+                    else if (_currentAttack == AttackMode.SecondShoot)
+                    {
+                        _isAttack = true;
+                        animator.SetBool(AnimShoot2, true);
+                        Debug.Log("총2");
+                    }
                     break;
                 case 2:
-                    if ((int)_currentAttack >= (int)AttackMode.Third)
+                    if ((int)_currentAttack == (int)AttackMode.Third)
                     {
                         _isAttack = true;
                         animator.SetBool(AnimIsAttack3, true);
@@ -284,6 +293,19 @@ public class Player : MonoBehaviour
                     {
                         _isAttack = true;
                         animator.SetBool(AnimIsAttack2, true);
+                        animator.SetBool(AnimShoot, true);
+                    }
+                    else if ((int)_currentAttack == (int)AttackMode.Second)
+                    {
+                        _isAttack = true;
+                        animator.SetBool(AnimIsAttack2, true);
+                    }
+                    break;
+                case 4:
+                    if ((int)_currentAttack == (int)AttackMode.Third)
+                    {
+                        _isAttack = true;
+                        animator.SetBool(AnimIsAttack3, true);
                     }
                     break;
             }
@@ -292,7 +314,8 @@ public class Player : MonoBehaviour
         {
             _attackMode = 0;
             _currentAttack = AttackMode.None;
-            isCombo = false;
+            _isCombo = false;
+            _isAttackYet = true;
         }
     }
 
@@ -346,53 +369,61 @@ public class Player : MonoBehaviour
 
     private void Attack()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (_isAttackYet)
         {
-            isCombo = true;
-
-            if (_currentAttack == AttackMode.Second)
+            if (Input.GetMouseButtonDown(0))
             {
-                _isAttack = true;
-                _currentAttack = AttackMode.Third;
+                _isCombo = true;
+
+                if (_currentAttack == AttackMode.Second)
+                {
+                    _currentAttack = AttackMode.Third;
+                    _isAttackYet = false;
+                }
+
+                else if (_currentAttack == AttackMode.First)
+                {
+                    _currentAttack = AttackMode.Second;
+                    _isAttackYet = false;
+                }
+
+                else if (_currentAttack == AttackMode.FirstShoot)
+                {
+                    _currentAttack = AttackMode.Second;
+                    _isAttackYet = false;
+                }
+
+                else if (_currentAttack == AttackMode.None)
+                {
+                    _isAttack = true;
+                    _currentAttack = AttackMode.First;
+                    animator.SetBool(AnimIsAttack, true);
+                   // _isAttackYet = false;
+                }
+
+
             }
 
-            else if (_currentAttack == AttackMode.First)
+            else if (Input.GetMouseButtonDown(1))
             {
-                _isAttack = true;
-                _currentAttack = AttackMode.Second;
-            }
+                _isCombo = true;
+                if (_currentAttack == AttackMode.None)
+                {
+                    _isAttack = true;
+                    _currentAttack = AttackMode.FirstShoot;
+                    animator.SetBool(AnimShoot, true);
+                   // _isAttackYet = false;
+                }
 
-            else if (_currentAttack == AttackMode.None)
-            {
-                _isAttack = true;
-                _currentAttack = AttackMode.First;
-                animator.SetBool(AnimIsAttack, true);
-            }
+                else if (_currentAttack == AttackMode.FirstShoot || _currentAttack == AttackMode.First)
+                {
+                    _currentAttack = AttackMode.SecondShoot;
+                    _isAttackYet = false;
+                }
 
-            else if (_currentAttack == AttackMode.FirstShoot)
-            {
-                _isAttack = true;
-                _currentAttack = AttackMode.Second;
             }
         }
-
-        else if (Input.GetMouseButtonDown(1))
-        {
-            isCombo = true;
-            if (_currentAttack == AttackMode.None)
-            {
-                animator.SetBool(AnimShoot, true);
-                _isAttack = true;
-                _currentAttack = AttackMode.FirstShoot;
-            }
-
-            else if (_currentAttack == AttackMode.First)
-            {
-                _isAttack = true;
-                _currentAttack = AttackMode.SecondShoot;
-            }
-
-        }
+        
     }
 
     private void Jump()
@@ -543,7 +574,8 @@ public class Player : MonoBehaviour
 
     public void OnAnimationAttackEnd(AttackMode attackMode)
     {
-        isCombo = false;
+        _isCombo = false;
+        _isAttackYet = true;
         if (attackMode == AttackMode.First)
         {
             animator.SetBool(AnimIsAttack, false);
@@ -569,18 +601,15 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.FirstShoot)
         {
+            _isAttack = false;
             animator.SetBool(AnimShoot, false);
-            if (_currentAttack == AttackMode.Second)
-            {
-                animator.SetBool(AnimIsAttack2, true);
-                Debug.Log("총창");    
-            }
-            else
-            {
-                animator.SetBool(AnimShoot, false);
-                _isAttack = false;
-                _currentAttack = AttackMode.None;
-            }
+            _attackMode = 3;
+        }
+        if (attackMode==AttackMode.SecondShoot)
+        {
+            _isAttack = false;
+            animator.SetBool(AnimShoot2, false);
+            _attackMode = 4;
         }
     }
 
@@ -638,7 +667,7 @@ public class Player : MonoBehaviour
         {
             _isSave = false;
             E.SetActive(false);
-
+            
         }
         if (other.CompareTag("Door"))
         {

@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class BackgroundLayerMover : MonoBehaviour
 {
     public Transform target;
@@ -7,15 +6,16 @@ public class BackgroundLayerMover : MonoBehaviour
 
     private Vector3 _origin;
     
-    private void Start()
+    private void Start() 
     {
         _origin = transform.position;
     }
-
+     
     private void Update()
     {
         var pos = (_origin + target.position) * (-1 * multiplier);
         pos.z = 0;
-        transform.position = pos;
+        transform.position = pos; 
     }
 }
+ 
