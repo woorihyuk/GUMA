@@ -292,8 +292,7 @@ public class Player : MonoBehaviour
                     if (_currentAttack == AttackMode.SecondShoot)
                     {
                         _isAttack = true;
-                        animator.SetBool(AnimIsAttack2, true);
-                        animator.SetBool(AnimShoot, true);
+                        animator.SetBool(AnimShoot2, true);
                     }
                     else if ((int)_currentAttack == (int)AttackMode.Second)
                     {
@@ -390,6 +389,12 @@ public class Player : MonoBehaviour
                 else if (_currentAttack == AttackMode.FirstShoot)
                 {
                     _currentAttack = AttackMode.Second;
+                    _isAttackYet = false;
+                }
+
+                else if(_currentAttack == AttackMode.SecondShoot)
+                {
+                    _currentAttack = AttackMode.Third;
                     _isAttackYet = false;
                 }
 
@@ -605,10 +610,12 @@ public class Player : MonoBehaviour
             animator.SetBool(AnimShoot, false);
             _attackMode = 3;
         }
-        if (attackMode==AttackMode.SecondShoot)
+
+        if (attackMode == AttackMode.SecondShoot)
         {
             _isAttack = false;
             animator.SetBool(AnimShoot2, false);
+            Debug.Log("총2끝");
             _attackMode = 4;
         }
     }
