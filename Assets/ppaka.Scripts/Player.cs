@@ -615,7 +615,6 @@ public class Player : MonoBehaviour
         {
             _isAttack = false;
             animator.SetBool(AnimShoot2, false);
-            Debug.Log("총2끝");
             _attackMode = 4;
         }
     }
