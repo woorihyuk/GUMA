@@ -119,7 +119,6 @@ public class Player : MonoBehaviour
     {
         _sinceLastDashTime += Time.deltaTime;
 
-        _comboTime += Time.deltaTime;
 
         if (_controller.collisions.above || _controller.collisions.below)
         {
@@ -258,32 +257,40 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Title");
 
         }
-        if (_isCombo)
+        if (!_isCombo)
         {
-            _comboTime = 0;
+            _comboTime += Time.deltaTime;
         }
+        Debug.Log(_currentAttack);
+        Debug.Log(_attackMode);
+        //Debug.Log(_comboTime) ;
         if (_comboTime<=0.5)
         {
+            Debug.Log("tlqkf");
             switch (_attackMode)
             {
 
                 case 1:
                     if ((int)_currentAttack == (int)AttackMode.Second)
                     {
-                        Debug.Log("공2");
+                        _isCombo = true;
                         _isAttack = true;
+                        _isAttackYet = true;
                         animator.SetBool(AnimIsAttack2, true);
                     }
                     else if (_currentAttack == AttackMode.SecondShoot)
                     {
+                        _isCombo = true;
+                        _isAttackYet = true;
                         _isAttack = true;
                         animator.SetBool(AnimShoot2, true);
-                        Debug.Log("총2");
                     }
                     break;
                 case 2:
-                    if ((int)_currentAttack == (int)AttackMode.Third)
+                    if (_currentAttack == AttackMode.Third)
                     {
+                        _isCombo = true;
+                        _isAttackYet = true;
                         _isAttack = true;
                         animator.SetBool(AnimIsAttack3, true);
                     }
@@ -291,11 +298,14 @@ public class Player : MonoBehaviour
                 case 3:
                     if (_currentAttack == AttackMode.SecondShoot)
                     {
+                        _isCombo = true;
+                        _isAttackYet = true;
                         _isAttack = true;
                         animator.SetBool(AnimShoot2, true);
                     }
-                    else if ((int)_currentAttack == (int)AttackMode.Second)
+                    else if (_currentAttack == AttackMode.Second)
                     {
+                        _isCombo = true;
                         _isAttack = true;
                         animator.SetBool(AnimIsAttack2, true);
                     }
@@ -303,14 +313,18 @@ public class Player : MonoBehaviour
                 case 4:
                     if ((int)_currentAttack == (int)AttackMode.Third)
                     {
+                        _isCombo = true;
+                        Debug.Log("시발");
+                        _isAttackYet = true;
                         _isAttack = true;
                         animator.SetBool(AnimIsAttack3, true);
                     }
                     break;
             }
         }
-        else
+        if(_comboTime>0.5)
         {
+            Debug.Log("콤보끝");
             _attackMode = 0;
             _currentAttack = AttackMode.None;
             _isCombo = false;
@@ -372,38 +386,25 @@ public class Player : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                _isCombo = true;
-
-                if (_currentAttack == AttackMode.Second)
+                if (_currentAttack == AttackMode.Second || _currentAttack == AttackMode.SecondShoot)
                 {
                     _currentAttack = AttackMode.Third;
                     _isAttackYet = false;
                 }
 
-                else if (_currentAttack == AttackMode.First)
+                else if (_currentAttack == AttackMode.First || _currentAttack == AttackMode.FirstShoot)
                 {
                     _currentAttack = AttackMode.Second;
                     _isAttackYet = false;
                 }
-
-                else if (_currentAttack == AttackMode.FirstShoot)
-                {
-                    _currentAttack = AttackMode.Second;
-                    _isAttackYet = false;
-                }
-
-                else if(_currentAttack == AttackMode.SecondShoot)
-                {
-                    _currentAttack = AttackMode.Third;
-                    _isAttackYet = false;
-                }
-
                 else if (_currentAttack == AttackMode.None)
                 {
+                    _comboTime = 0;
+                    _isCombo = true;
                     _isAttack = true;
                     _currentAttack = AttackMode.First;
                     animator.SetBool(AnimIsAttack, true);
-                   // _isAttackYet = false;
+                    _isAttackYet = false;
                 }
 
 
@@ -411,13 +412,14 @@ public class Player : MonoBehaviour
 
             else if (Input.GetMouseButtonDown(1))
             {
-                _isCombo = true;
                 if (_currentAttack == AttackMode.None)
                 {
+                    _comboTime = 0;
+                    _isCombo = true;
                     _isAttack = true;
                     _currentAttack = AttackMode.FirstShoot;
                     animator.SetBool(AnimShoot, true);
-                   // _isAttackYet = false;
+                    _isAttackYet = false;
                 }
 
                 else if (_currentAttack == AttackMode.FirstShoot || _currentAttack == AttackMode.First)
@@ -590,7 +592,6 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.Second)
         {
-            
             animator.SetBool(AnimIsAttack2, false);
             _attackMode = 2;
             _isAttack = false;
