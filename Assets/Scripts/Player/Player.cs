@@ -201,7 +201,6 @@ public class Player : MonoBehaviour
             {
                 if (!_isTalking)
                 {
-                    Debug.Log(_isTalking);
                     _isTalking = true;
                     E.SetActive(false);
                     sine.TalkStart();
@@ -261,8 +260,7 @@ public class Player : MonoBehaviour
         {
             _comboTime += Time.deltaTime;
         }
-        Debug.Log(_currentAttack);
-        Debug.Log(_attackMode);
+        
         //Debug.Log(_comboTime) ;
         if (_comboTime<=0.5)
         {

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 
 // ReSharper disable Unity.InefficientPropertyAccess
@@ -63,9 +64,48 @@ public class Egg : MonoBehaviour
         _isAttack = true;
     }
 
+
+    
     private void Update()
     {
+        /*
+        var bPos = (Vector2)transform.position;
+        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
+        var gPos = new Vector2(0, gravity) * Time.deltaTime;
+        */
+        _walkTime += Time.deltaTime;
         _foundTime += Time.deltaTime;
+        var bPos = (Vector2)transform.position;
+        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
+        var gPos = new Vector2(0, _gravity) * Time.deltaTime;
+        transform.position = bPos + gPos;
+
+        if (!_isFound)
+        {
+            if (_walkTime>2)
+            {
+                _isMov = false;
+                Debug.Log(_i);
+                animator.SetBool(AnimIsWalk, false);
+                if (_i==-1)
+                {
+                    _i = 1;
+                    
+                }
+                else if(_i==1)
+                {
+                    _i = -1;
+                }
+                _foundTime = 0;
+            }
+            if (_foundTime > 3)
+            {
+                animator.SetBool(AnimIsWalk, true);
+                _isMov = true;
+                _walkTime = 0;
+            }
+        }
+        /*_foundTime += Time.deltaTime;
         var dist = Vector2.Distance(transform.position, _player.transform.position);
         _direction = _player.transform.position.x - transform.position.x;
         var bPos = (Vector2)transform.position;
@@ -73,12 +113,12 @@ public class Egg : MonoBehaviour
         var gPos = new Vector2(0, _gravity) * Time.deltaTime;
         _hpGauge.fillAmount = hp / _mxHp;
         transform.position = bPos + gPos;
-        //못찾을때
         if (hp <= 0)
         {
             animator.SetBool(AnimIsDie, true);
         }
-
+        
+        
         if (_foundTime >= 3)
         {
             if (!_isFound)
@@ -107,6 +147,7 @@ public class Egg : MonoBehaviour
         else if (_direction >= 10)
         {
             _isFound = false;
+            _isMov = true;
         }
 
         if (_isFound)
@@ -127,7 +168,7 @@ public class Egg : MonoBehaviour
                             transform.position = bPos + aPos + gPos;
                             animator.SetBool(AnimIsWalk, true);
                         }
-
+                            Debug.Log(_direction);
                         break;
                     }
                     case < 0:
@@ -162,7 +203,7 @@ public class Egg : MonoBehaviour
                 Debug.Log(_attackType[_attackCount]);
             }
         }
-
+        */
         //중력
         if (isGround == false)
         {
@@ -172,7 +213,7 @@ public class Egg : MonoBehaviour
         {
             _gravity = 0;
         }
-
+        
         //이동통제
         if (_isMov == false)
         {
