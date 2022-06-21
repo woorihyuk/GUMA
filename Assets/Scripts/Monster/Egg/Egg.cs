@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,11 +12,17 @@ public class Egg : MonoBehaviour
     public GameObject hpBar;
     public GameObject[] attacks;
 
+    public bool isStay;
+
     public float speed;
     public float foundRange;
     public float hp;
     public float attackRange;
     public float jumpPower;
+
+    Vector2 bPos; 
+    Vector2 aPos;
+    Vector2 gPos;
 
     private int[] _attackType;
 
@@ -24,9 +31,10 @@ public class Egg : MonoBehaviour
     private int _ifSmoking;
 
     public bool isGround;
-    private bool _isMov;
+    private bool _isMove;
     private bool _isAttack;
     private bool _isFound;
+    private bool _isWait;
 
     private float _gravity;
     private float _bSpeed;
@@ -34,8 +42,11 @@ public class Egg : MonoBehaviour
     private float _walkTime;
     private float _direction;
     private float _mxHp;
+    private float _dist;
 
     public Animator animator;
+
+    private Stay stay;
     private Player _player;
     private Image _hpGauge;
 
@@ -58,51 +69,89 @@ public class Egg : MonoBehaviour
         _i = 1;
         isGround = false;
         _bSpeed = speed;
-        _isMov = true;
+        _isWait = true;
         _player = FindObjectOfType<Player>();
         _hpGauge = hpBar.GetComponent<Image>();
         _isAttack = true;
     }
 
 
-    
+    IEnumerator Wait()
+    {
+        _isWait = false;
+        Debug.Log("기다리기 시작");
+        animator.SetBool(AnimIsWalk, false);
+        yield return new WaitForSeconds(3);
+        _isMove = true;
+        if (_i == 1)
+        {
+            _i = -1;
+        }
+        else
+        {
+            _i = 1;
+        }
+        Debug.Log("기다리기 끝");
+        yield return null;
+    }
     private void Update()
     {
-        /*
-        var bPos = (Vector2)transform.position;
-        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
-        var gPos = new Vector2(0, gravity) * Time.deltaTime;
-        */
-        _walkTime += Time.deltaTime;
+        var dist = Vector2.Distance(transform.position, _player.transform.position);
+        _direction = _player.transform.position.x - transform.position.x;
         _foundTime += Time.deltaTime;
-        var bPos = (Vector2)transform.position;
-        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
-        var gPos = new Vector2(0, _gravity) * Time.deltaTime;
+        bPos = (Vector2)transform.position;
+        aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
+        gPos = new Vector2(0, _gravity) * Time.deltaTime;
         transform.position = bPos + gPos;
+        transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
 
         if (!_isFound)
         {
-            if (_walkTime>2)
+            if (_isMove)
             {
-                _isMov = false;
-                Debug.Log(_i);
-                animator.SetBool(AnimIsWalk, false);
-                if (_i==-1)
+                _walkTime += Time.deltaTime;
+                transform.position = bPos + aPos + gPos;
+                if (_walkTime>2)
                 {
-                    _i = 1;
-                    
+                    _isMove = false;
+                    _isWait = true;
+                    _walkTime = 0;
                 }
-                else if(_i==1)
-                {
-                    _i = -1;
-                }
-                _foundTime = 0;
             }
-            if (_foundTime > 3)
+            if (_isWait)
             {
-                animator.SetBool(AnimIsWalk, true);
-                _isMov = true;
-                _walkTime = 0;
+                StartCoroutine(Wait());
+            }
+        }
+        else
+        {
+            if (dist <= attackRange)
+            {
+                switch (_attackType[_attackCount])
+                {
+                    case 1:
+                        animator.SetBool(AnimAttack1R, true);
+                        _isAttack = false;
+                        break;
+                    case 2:
+                        animator.SetBool(AnimAttack2R, true);
+                        _isAttack = false;
+                        break;
+                }
+            }
+            else
+            {
+                switch (_direction)
+                {
+                    case < 0://플레이어가 왼쪽
+                        _i = 1;
+                        transform.position = bPos + aPos + gPos;
+                        break;
+                    case > 0://플레이어가 오른쪽
+                        _i = -1;
+                        transform.position = bPos + aPos + gPos;
+                        break;
+                }
             }
         }
         /*_foundTime += Time.deltaTime;
@@ -214,7 +263,7 @@ public class Egg : MonoBehaviour
             _gravity = 0;
         }
         
-        //이동통제
+        /*//이동통제
         if (_isMov == false)
         {
             speed = 0;
@@ -222,7 +271,7 @@ public class Egg : MonoBehaviour
         else
         {
             speed = _bSpeed;
-        }
+        }*/
     }
 
     private void OnTriggerEnter2D(Collider2D other)
