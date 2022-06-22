@@ -1,8 +1,38 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
+internal static class YieldlnstructionCache
+{
+    class FloatComparer : IEqualityComparer<float>
+    {
+        bool IEqualityComparer<float>.Equals(float x, float y)
+        {
+            return x == y;
+        }
+        int IEqualityComparer<float>.GetHashCode(float obj)
+        {
+            return obj.GetHashCode();
+        } 
+    }
+    public static readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
+    public static readonly WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
+
+    private static readonly Dictionary<float, WaitForSeconds> _timeInterval =
+        new Dictionary<float, WaitForSeconds>(new FloatComparer());
+
+    public static WaitForSeconds WaitForSeconds(float seconds)
+    {
+        WaitForSeconds wfs;
+        if (!_timeInterval.TryGetValue(seconds, out wfs))
+        {
+            _timeInterval.Add(seconds, wfs = new WaitForSeconds(seconds));
+        }
+        return wfs;
+    }
+}
 // ReSharper disable Unity.InefficientPropertyAccess
 public class Egg : MonoBehaviour
 {
@@ -35,18 +65,14 @@ public class Egg : MonoBehaviour
     private bool _isAttack;
     private bool _isFound;
     private bool _isWait;
+    private bool _isWalk;
 
     private float _gravity;
-    private float _bSpeed;
-    private float _foundTime;
-    private float _walkTime;
     private float _direction;
     private float _mxHp;
-    private float _dist;
 
     public Animator animator;
 
-    private Stay stay;
     private Player _player;
     private Image _hpGauge;
 
@@ -68,7 +94,6 @@ public class Egg : MonoBehaviour
         _attackType = new[] { 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2 };
         _i = 1;
         isGround = false;
-        _bSpeed = speed;
         _isWait = true;
         _player = FindObjectOfType<Player>();
         _hpGauge = hpBar.GetComponent<Image>();
@@ -79,43 +104,44 @@ public class Egg : MonoBehaviour
     IEnumerator Wait()
     {
         _isWait = false;
-        Debug.Log("기다리기 시작");
         animator.SetBool(AnimIsWalk, false);
-        yield return new WaitForSeconds(3);
+        yield return YieldlnstructionCache.WaitForSeconds(3);
+        _i = _i == -1 ? 1 : -1;
         _isMove = true;
-        if (_i == 1)
-        {
-            _i = -1;
-        }
-        else
-        {
-            _i = 1;
-        }
-        Debug.Log("기다리기 끝");
-        yield return null;
+    }
+
+    IEnumerator Walk()
+    {
+        _isWalk = true;
+        yield return YieldlnstructionCache.WaitForSeconds(2);
+        _isMove = false;
+        _isWait = true;
+        _isWalk = false;
     }
     private void Update()
     {
         var dist = Vector2.Distance(transform.position, _player.transform.position);
         _direction = _player.transform.position.x - transform.position.x;
-        _foundTime += Time.deltaTime;
         bPos = (Vector2)transform.position;
         aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
         gPos = new Vector2(0, _gravity) * Time.deltaTime;
         transform.position = bPos + gPos;
-        transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
+
+        if (dist<foundRange)
+        {
+            _isFound = true;
+        }
 
         if (!_isFound)
         {
+            transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
             if (_isMove)
             {
-                _walkTime += Time.deltaTime;
+                animator.SetBool(AnimIsWalk, true);
                 transform.position = bPos + aPos + gPos;
-                if (_walkTime>2)
+                if (!_isWalk)
                 {
-                    _isMove = false;
-                    _isWait = true;
-                    _walkTime = 0;
+                    StartCoroutine(Walk());
                 }
             }
             if (_isWait)
@@ -127,28 +153,23 @@ public class Egg : MonoBehaviour
         {
             if (dist <= attackRange)
             {
-                switch (_attackType[_attackCount])
+                if (_isAttack)
                 {
-                    case 1:
-                        animator.SetBool(AnimAttack1R, true);
-                        _isAttack = false;
-                        break;
-                    case 2:
-                        animator.SetBool(AnimAttack2R, true);
-                        _isAttack = false;
-                        break;
+                    Attack();
                 }
             }
             else
             {
                 switch (_direction)
                 {
-                    case < 0://플레이어가 왼쪽
+                    case > 0://플레이어가 왼쪽
                         _i = 1;
+                        transform.rotation = Quaternion.Euler(0, 180, 0);
                         transform.position = bPos + aPos + gPos;
                         break;
-                    case > 0://플레이어가 오른쪽
+                    case < 0://플레이어가 오른쪽
                         _i = -1;
+                        transform.rotation = Quaternion.Euler(0, 0, 0);
                         transform.position = bPos + aPos + gPos;
                         break;
                 }
@@ -297,7 +318,20 @@ public class Egg : MonoBehaviour
         }
     }
 
-
+    private void Attack()
+    {
+        switch (_attackType[_attackCount++])
+        {
+            case 1:
+                animator.SetBool(AnimAttack1R, true);
+                _isAttack = false;
+                break;
+            case 2:
+                animator.SetBool(AnimAttack2R, true);
+                _isAttack = false;
+                break;
+        }
+    }
     public void A1()
     {
         animator.SetBool(AnimAttack1R, false);
