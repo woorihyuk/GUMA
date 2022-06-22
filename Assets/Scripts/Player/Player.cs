@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
@@ -113,6 +114,11 @@ public class Player : MonoBehaviour
         }
         Debug.Log(GameManager.Instance.savePoint);
         playerAttached.isIn = true;
+    }
+
+    IEnumerator ComboAttack()
+    {
+        yield return YieldlnstructionCache.WaitForSeconds(0.5f);
     }
 
     private void Update()
@@ -262,7 +268,7 @@ public class Player : MonoBehaviour
         }
         
         //Debug.Log(_comboTime) ;
-        if (_comboTime<=0.5)
+        /*if (_comboTime<=0.5)
         {
             Debug.Log("tlqkf");
             switch (_attackMode)
@@ -319,7 +325,7 @@ public class Player : MonoBehaviour
                     }
                     break;
             }
-        }
+        }   
         if(_comboTime>0.5)
         {
             Debug.Log("콤보끝");
@@ -327,7 +333,7 @@ public class Player : MonoBehaviour
             _currentAttack = AttackMode.None;
             _isCombo = false;
             _isAttackYet = true;
-        }
+        }*/
     }
 
     private void WallCheck()

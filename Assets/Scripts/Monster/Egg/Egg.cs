@@ -158,8 +158,9 @@ public class Egg : MonoBehaviour
                     Attack();
                 }
             }
-            else
+            else if(_isAttack)
             {
+                animator.SetBool(AnimIsWalk, true);
                 switch (_direction)
                 {
                     case > 0://플레이어가 왼쪽
@@ -175,105 +176,6 @@ public class Egg : MonoBehaviour
                 }
             }
         }
-        /*_foundTime += Time.deltaTime;
-        var dist = Vector2.Distance(transform.position, _player.transform.position);
-        _direction = _player.transform.position.x - transform.position.x;
-        var bPos = (Vector2)transform.position;
-        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
-        var gPos = new Vector2(0, _gravity) * Time.deltaTime;
-        _hpGauge.fillAmount = hp / _mxHp;
-        transform.position = bPos + gPos;
-        if (hp <= 0)
-        {
-            animator.SetBool(AnimIsDie, true);
-        }
-        
-        
-        if (_foundTime >= 3)
-        {
-            if (!_isFound)
-            {
-                hpBar.SetActive(false);
-                transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
-
-                transform.position = bPos + aPos;
-                animator.SetBool(AnimIsWalk, true);
-                _walkTime += Time.deltaTime;
-                if (_walkTime >= 2)
-                {
-                    _i = _i * -1;
-                    animator.SetBool(AnimIsWalk, false);
-                    _walkTime = 0;
-                    _foundTime = 0;
-                }
-            }
-        }
-
-        //인식했을떄
-        if (dist <= foundRange)
-        {
-            _isFound = true;
-        }
-        else if (_direction >= 10)
-        {
-            _isFound = false;
-            _isMov = true;
-        }
-
-        if (_isFound)
-        {
-            hpBar.SetActive(true);
-            animator.SetBool(AnimIsWalk, false);
-            _foundTime = 0;
-            if (_isAttack)
-            {
-                switch (_direction)
-                {
-                    case > 0:
-                    {
-                        transform.rotation = Quaternion.Euler(0, 180, 0);
-                        if (dist > attackRange)
-                        {
-                            _i = 1;
-                            transform.position = bPos + aPos + gPos;
-                            animator.SetBool(AnimIsWalk, true);
-                        }
-                            Debug.Log(_direction);
-                        break;
-                    }
-                    case < 0:
-                    {
-                        transform.rotation = Quaternion.Euler(0, 0, 0);
-                        if (dist > attackRange)
-                        {
-                            _i = -1;
-                            transform.position = bPos + aPos + gPos;
-                            animator.SetBool(AnimIsWalk, true);
-                        }
-
-                        break;
-                    }
-                }
-
-                if (dist <= attackRange)
-                {
-                    switch (_attackType[_attackCount])
-                    {
-                        case 1:
-                            animator.SetBool(AnimAttack1R, true);
-                            _isAttack = false;
-                            break;
-                        case 2:
-                            animator.SetBool(AnimAttack2R, true);
-                            _isAttack = false;
-                            break;
-                    }
-                }
-
-                Debug.Log(_attackType[_attackCount]);
-            }
-        }
-        */
         //중력
         if (isGround == false)
         {
@@ -283,17 +185,7 @@ public class Egg : MonoBehaviour
         {
             _gravity = 0;
         }
-        
-        /*//이동통제
-        if (_isMov == false)
-        {
-            speed = 0;
-        }
-        else
-        {
-            speed = _bSpeed;
-        }*/
-    }
+}
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -320,6 +212,7 @@ public class Egg : MonoBehaviour
 
     private void Attack()
     {
+        animator.SetBool(AnimIsWalk, false);
         switch (_attackType[_attackCount++])
         {
             case 1:
