@@ -112,13 +112,18 @@ public class Player : MonoBehaviour
                 transform.position = new Vector3(86, 8.25f, 0);
                 break;
         }
-        Debug.Log(GameManager.Instance.savePoint);
         playerAttached.isIn = true;
     }
 
-    IEnumerator ComboAttack()
+    IEnumerator ComboAttack(AttackMode attackMode)
     {
         yield return YieldlnstructionCache.WaitForSeconds(0.5f);
+        if (_currentAttack==attackMode)
+        {
+            Debug.Log("attack");
+            _isCombo = false;
+            _currentAttack = AttackMode.None;
+        }
     }
 
     private void Update()
@@ -262,11 +267,14 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Title");
 
         }
-        if (!_isCombo)
+        if (_isCombo)
         {
-            _comboTime += Time.deltaTime;
+            if (!_isAttack)
+            {
+                DoAttack();
+            }
         }
-        
+
         //Debug.Log(_comboTime) ;
         /*if (_comboTime<=0.5)
         {
@@ -334,6 +342,7 @@ public class Player : MonoBehaviour
             _isCombo = false;
             _isAttackYet = true;
         }*/
+        Debug.Log(_isCombo);
     }
 
     private void WallCheck()
@@ -384,6 +393,34 @@ public class Player : MonoBehaviour
 
     }
 
+    private void DoAttack()
+    {
+        switch ((int)_currentAttack)
+        {
+            case 0:
+                break;
+            case 1:
+                _isAttack = true;
+                animator.SetBool(AnimIsAttack, true);
+                break;
+            case 2:
+                _isAttack = true;
+                animator.SetBool(AnimIsAttack2, true);
+                break;
+            case 3:
+                _isAttack = true;
+                animator.SetBool(AnimIsAttack3, true);
+                break;
+            case 4:
+                _isAttack = true;
+                animator.SetBool(AnimShoot, true);
+                break;
+            case 5:
+                _isAttack = true;
+                animator.SetBool(AnimShoot2, true);
+                break;
+        }
+    }
     private void Attack()
     {
         if (_isAttackYet)
@@ -403,12 +440,8 @@ public class Player : MonoBehaviour
                 }
                 else if (_currentAttack == AttackMode.None)
                 {
-                    _comboTime = 0;
-                    _isCombo = true;
-                    _isAttack = true;
                     _currentAttack = AttackMode.First;
-                    animator.SetBool(AnimIsAttack, true);
-                    _isAttackYet = false;
+                    _isCombo = true;
                 }
 
 
@@ -418,12 +451,8 @@ public class Player : MonoBehaviour
             {
                 if (_currentAttack == AttackMode.None)
                 {
-                    _comboTime = 0;
-                    _isCombo = true;
-                    _isAttack = true;
                     _currentAttack = AttackMode.FirstShoot;
-                    animator.SetBool(AnimShoot, true);
-                    _isAttackYet = false;
+                    _isCombo = true;
                 }
 
                 else if (_currentAttack == AttackMode.FirstShoot || _currentAttack == AttackMode.First)
@@ -585,19 +614,16 @@ public class Player : MonoBehaviour
 
     public void OnAnimationAttackEnd(AttackMode attackMode)
     {
-        _isCombo = false;
         _isAttackYet = true;
         if (attackMode == AttackMode.First)
         {
             animator.SetBool(AnimIsAttack, false);
-            _attackMode = 1;
             _isAttack = false;
         }
 
         if (attackMode == AttackMode.Second)
         {
             animator.SetBool(AnimIsAttack2, false);
-            _attackMode = 2;
             _isAttack = false;
         }
 
@@ -606,22 +632,20 @@ public class Player : MonoBehaviour
             _isAttack = false;
             animator.SetBool(AnimIsAttack3, false);
             _currentAttack = AttackMode.None;
-            _attackMode = 0;
         }
 
         if (attackMode == AttackMode.FirstShoot)
         {
             _isAttack = false;
             animator.SetBool(AnimShoot, false);
-            _attackMode = 3;
         }
 
         if (attackMode == AttackMode.SecondShoot)
         {
             _isAttack = false;
             animator.SetBool(AnimShoot2, false);
-            _attackMode = 4;
         }
+        StartCoroutine(ComboAttack(attackMode));
     }
 
     public void IsDie()
@@ -668,7 +692,6 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Sine"))
         {
-            Debug.Log(_isTalking);
             _isTalk = false;
             _isTalking = false;
             E.SetActive(false);
