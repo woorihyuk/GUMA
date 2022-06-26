@@ -17,7 +17,8 @@ public class Player : MonoBehaviour
     public float _lastInputX;
     public float wallCheckDistance = 0.64f;
     public float maxHP;
-    public bool isHit;
+    public bool isHit, isCombo;
+    public AttackMode _currentAttack;
     public GameObject E;
     public GameObject textBox;
     public GameObject[] attackPrefabs;
@@ -49,11 +50,10 @@ public class Player : MonoBehaviour
     private float _sinceLastDashTime = 10f;
     private float _comboTime;
     public float _HP;
-    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isCombo, _isAttackYet;
+    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isDoAttack, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
     private Vector3 _doorPos;
-    private AttackMode _currentAttack;
     private JumpMode _currentJump;
     private Hit _hit;
     private Controller2D _controller;
@@ -115,16 +115,16 @@ public class Player : MonoBehaviour
         playerAttached.isIn = true;
     }
 
-    IEnumerator ComboAttack(AttackMode attackMode)
-    {
-        yield return YieldlnstructionCache.WaitForSeconds(0.5f);
-        if (_currentAttack==attackMode)
-        {
-            Debug.Log("attack");
-            _isCombo = false;
-            _currentAttack = AttackMode.None;
-        }
-    }
+    //IEnumerator ComboAttack(AttackMode attackMode)
+    //{
+    //    yield return YieldlnstructionCache.WaitForSeconds(0.5f);
+    //    if (_currentAttack==attackMode)
+    //    {
+    //        Debug.Log("attack");
+    //        _isCombo = false;
+    //        _currentAttack = AttackMode.None;
+    //    }
+    //}
 
     private void Update()
     {
@@ -267,11 +267,14 @@ public class Player : MonoBehaviour
             SceneManager.LoadScene("Title");
 
         }
-        if (_isCombo)
+        if (isCombo)
         {
             if (!_isAttack)
             {
-                DoAttack();
+                if (_isDoAttack)
+                {
+                    DoAttack();
+                }
             }
         }
 
@@ -342,7 +345,6 @@ public class Player : MonoBehaviour
             _isCombo = false;
             _isAttackYet = true;
         }*/
-        Debug.Log(_isCombo);
     }
 
     private void WallCheck()
@@ -440,19 +442,18 @@ public class Player : MonoBehaviour
                 }
                 else if (_currentAttack == AttackMode.None)
                 {
+                    animator.SetBool(AnimIsAttack, true);
                     _currentAttack = AttackMode.First;
-                    _isCombo = true;
                 }
-
-
+                _isDoAttack = true;
             }
 
             else if (Input.GetMouseButtonDown(1))
             {
                 if (_currentAttack == AttackMode.None)
                 {
+                    animator.SetBool(AnimShoot, true);
                     _currentAttack = AttackMode.FirstShoot;
-                    _isCombo = true;
                 }
 
                 else if (_currentAttack == AttackMode.FirstShoot || _currentAttack == AttackMode.First)
@@ -460,7 +461,7 @@ public class Player : MonoBehaviour
                     _currentAttack = AttackMode.SecondShoot;
                     _isAttackYet = false;
                 }
-
+                _isDoAttack = true;
             }
         }
         
@@ -645,7 +646,13 @@ public class Player : MonoBehaviour
             _isAttack = false;
             animator.SetBool(AnimShoot2, false);
         }
-        StartCoroutine(ComboAttack(attackMode));
+        if (_currentAttack == attackMode)
+        {
+            _isDoAttack = false;
+            Debug.Log(_currentAttack);
+        }
+        isCombo = true;
+        StartCoroutine(_hit.AttackWait(attackMode));
     }
 
     public void IsDie()

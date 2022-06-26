@@ -34,4 +34,14 @@ public class Hit : MonoBehaviour
         player.isHit = true;
         yield return null;
     }
+
+    public IEnumerator AttackWait(Player.AttackMode attackMode)
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (player._currentAttack == attackMode)
+        {
+            player._currentAttack = Player.AttackMode.None;
+            player.isCombo = false;
+        }
+    }
 }
