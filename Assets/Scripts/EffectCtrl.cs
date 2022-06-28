@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletAni : MonoBehaviour
+public class EffectCtrl : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -15,7 +15,7 @@ public class BulletAni : MonoBehaviour
     {
         
     }
-    public void BulletEnd()
+    public void EffectEnd()
     {
         Destroy(gameObject);
     }

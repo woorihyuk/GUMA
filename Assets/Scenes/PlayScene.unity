@@ -1861,6 +1861,7 @@ GameObject:
   - component: {fileID: 535619224}
   - component: {fileID: 535619223}
   - component: {fileID: 535619222}
+  - component: {fileID: 535619225}
   m_Layer: 0
   m_Name: Shirimp
   m_TagString: Untagged
@@ -1929,7 +1930,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1428742608, guid: 959ff43f3d44e974e99f0579789cb6b6, type: 3}
+  m_Sprite: {fileID: -714780770, guid: 6f2fec367935a894283b59fcb4206554, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1956,6 +1957,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &535619225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535619221}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 185d0976c58fc914e83ec9ff0c18c4cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movePoint: []
+  attackEffect: {fileID: 2518091325949736171, guid: 94c635595adee0f4691d1722a09077d1, type: 3}
+  lightning: {fileID: 5401434286570836014, guid: 6cdba9e036db6a541ba50ee0f14af13e, type: 3}
+  lightningPoint: {fileID: 1038384501}
+  attackRange: 0
 --- !u!1 &607256836 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 322884085259225194, guid: ed7f979805747eb4099ce855889da0b9, type: 3}

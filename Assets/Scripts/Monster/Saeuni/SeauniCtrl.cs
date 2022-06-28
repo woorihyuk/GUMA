@@ -5,16 +5,24 @@ using UnityEngine;
 public class SeauniCtrl : MonoBehaviour
 {
     public GameObject[] movePoint;
+    public GameObject attackEffect;
+    public GameObject lightning;
+    public GameObject lightningPoint;
 
     public float attackRange;
 
     private Player _player;
+    private Animator anim;
+
+    private int _i;
 
     private float _direction;
     // Start is called before the first frame update
     void Start()
     {
         _player = FindObjectOfType<Player>();
+        anim = GetComponent<Animator>();
+        Attack1();
     }
 
     // Update is called once per frame
@@ -27,11 +35,29 @@ public class SeauniCtrl : MonoBehaviour
             switch (_direction)
             {
                 case > 0:
-
+                    _i = 1;
+                    Attack1();
                     break;
                 case < 0:
+                    _i= -1;
+                    Attack1();
                     break;
             }
         }
+    }
+    void Attack1()
+    {
+        anim.SetBool("isAttack", true);
+    }
+
+    public void AttackEffect()
+    {
+        Instantiate(attackEffect, transform.position, Quaternion.identity);
+        Instantiate(lightning, lightningPoint.transform.position, Quaternion.identity);
+    }
+
+    public void AttackEnd()
+    {
+        anim.SetBool("isAttack", false);
     }
 }

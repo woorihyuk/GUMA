@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7931334511472667585}
   - component: {fileID: 7325852825182312102}
   - component: {fileID: 8767658905552897605}
+  - component: {fileID: -5736811495780779589}
   m_Layer: 0
   m_Name: Shirimp_Attack_Effect
   m_TagString: Untagged
@@ -105,3 +106,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-5736811495780779589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2518091325949736171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5770009c3e24144bde7562f6ce0df9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

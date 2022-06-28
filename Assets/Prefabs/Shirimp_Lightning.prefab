@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8737401485135258028}
   - component: {fileID: 4762954113874377477}
   - component: {fileID: 8369583822338165581}
+  - component: {fileID: 456293929686148828}
   m_Layer: 0
   m_Name: Shirimp_Lightning
   m_TagString: Untagged
@@ -105,3 +106,15 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &456293929686148828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401434286570836014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5770009c3e24144bde7562f6ce0df9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
