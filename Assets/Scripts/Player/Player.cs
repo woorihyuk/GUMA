@@ -525,6 +525,7 @@ public class Player : MonoBehaviour
                 _direction = -(int)_lastInputX;
                 moveSpeed = dashSpeed;
                 _isDash = true;
+                isHit = false;
             }
         }
     }
@@ -539,6 +540,7 @@ public class Player : MonoBehaviour
                 _direction = (int)_lastInputX;
                 moveSpeed = dashSpeed;
                 _isDash = true;
+                isHit = false;
             }
         }
     }
@@ -548,6 +550,7 @@ public class Player : MonoBehaviour
         _sinceLastDashTime = 0;
         animator.SetBool(AnimIsDash, false);
         _isDash = false;
+        isHit = true;
         moveSpeed = defaultSpeed;
         //dTime = 0;
     }
