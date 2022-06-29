@@ -131,6 +131,10 @@ public class Egg : MonoBehaviour
         {
             _isFound = true;
         }
+        else
+        {
+            _isFound = false;
+        }
 
         if (!_isFound)
         {
