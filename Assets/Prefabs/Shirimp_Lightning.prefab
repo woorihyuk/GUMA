@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4762954113874377477}
   - component: {fileID: 8369583822338165581}
   - component: {fileID: 456293929686148828}
+  - component: {fileID: 8088906914403502098}
   m_Layer: 0
   m_Name: Shirimp_Lightning
   m_TagString: Untagged
@@ -28,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 5401434286570836014}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -47.373672, y: 8.101127, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -74,7 +75,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 11
   m_Sprite: {fileID: 1728870356, guid: b584b9814c58f76479eb3e22bccf66a5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -118,3 +119,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db5770009c3e24144bde7562f6ce0df9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8088906914403502098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5401434286570836014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: faf1e175d57856345acd19b2f137c517, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attack: {fileID: 7691529174892246277, guid: 763e5bd0a2918fe4da4d838313635b85, type: 3}

@@ -660,7 +660,15 @@ public class Player : MonoBehaviour
 
     public void IsDie()
     {
-        Destroy(gameObject);
+        switch (GameManager.Instance.savePoint)
+        {
+            case 0:
+                transform.position = new Vector3(0, -1.5f, 0);
+                break;
+            case 1:
+                transform.position = new Vector3(86, 8.25f, 0);
+                break;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

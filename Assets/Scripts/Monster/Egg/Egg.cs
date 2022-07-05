@@ -4,36 +4,7 @@ using System.Data;
 using UnityEngine;
 using UnityEngine.UI;
 
-//internal static class YieldlnstructionCache
-//{
-//    class FloatComparer : IEqualityComparer<float>
-//    {
-//        bool IEqualityComparer<float>.Equals(float x, float y)
-//        {
-//            return x == y;
-//        }
-//        int IEqualityComparer<float>.GetHashCode(float obj)
-//        {
-//            return obj.GetHashCode();
-//        } 
-//    }
-//    public static readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
-//    public static readonly WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
 
-//    private static readonly Dictionary<float, WaitForSeconds> _timeInterval =
-//        new Dictionary<float, WaitForSeconds>(new FloatComparer());
-
-//    public static WaitForSeconds WaitForSeconds(float seconds)
-//    {
-//        WaitForSeconds wfs;
-//        if (!_timeInterval.TryGetValue(seconds, out wfs))
-//        {
-//            _timeInterval.Add(seconds, wfs = new WaitForSeconds(seconds));
-//        }
-//        return wfs;
-//    }
-//}
-// ReSharper disable Unity.InefficientPropertyAccess
 public class Egg : MonoBehaviour
 {
     public GameObject prefab;
@@ -43,6 +14,7 @@ public class Egg : MonoBehaviour
     public GameObject[] attacks;
 
     public bool isStay;
+    public bool isWall;
 
     public float speed;
     public float foundRange;
@@ -76,6 +48,8 @@ public class Egg : MonoBehaviour
     private Player _player;
     private Image _hpGauge;
 
+    private Vector2 _startPoint;
+
     private RaycastHit2D _hitInfo;
     private static readonly int AnimAttack1R = Animator.StringToHash("attack1R");
     private static readonly int AnimAttack1 = Animator.StringToHash("attack1");
@@ -98,6 +72,7 @@ public class Egg : MonoBehaviour
         _player = FindObjectOfType<Player>();
         _hpGauge = hpBar.GetComponent<Image>();
         _isAttack = true;
+        _startPoint = transform.position;
     }
 
 
@@ -126,6 +101,7 @@ public class Egg : MonoBehaviour
         aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
         gPos = new Vector2(0, _gravity) * Time.deltaTime;
         transform.position = bPos + gPos;
+        _hpGauge.fillAmount = hp / _mxHp;
 
         if (dist<foundRange)
         {
@@ -133,28 +109,64 @@ public class Egg : MonoBehaviour
         }
         else
         {
-            _isFound = false;
+            if (_isAttack)
+            {
+                _isFound = false;
+            }
         }
+
+        
+
+        if (isWall)
+        {
+            _isFound = false;
+            if (transform.position.x>_startPoint.x)
+            {
+                _i = -1;
+                transform.rotation = Quaternion.Euler(0, -180, 0);
+                transform.position = bPos + aPos + gPos;
+                if (transform.position.x - _startPoint.x<=1)
+                {
+                    isWall = false;
+                }
+            }
+            else if (transform.position.x < _startPoint.x)
+            {
+                _i = 1;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.position = bPos + aPos + gPos;
+                if (transform.position.x - _startPoint.x >= 1)
+                {
+                    isWall = false;
+                }
+            }
+        }
+        
 
         if (!_isFound)
         {
-            transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
-            if (_isMove)
+            hpBar.SetActive(false);
+            if (!isWall)
             {
-                animator.SetBool(AnimIsWalk, true);
-                transform.position = bPos + aPos + gPos;
-                if (!_isWalk)
+                transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
+                if (_isMove)
                 {
-                    StartCoroutine(Walk());
+                    animator.SetBool(AnimIsWalk, true);
+                    transform.position = bPos + aPos + gPos;
+                    if (!_isWalk)
+                    {
+                        StartCoroutine(Walk());
+                    }
                 }
-            }
-            if (_isWait)
-            {
-                StartCoroutine(Wait());
+                if (_isWait)
+                {
+                    StartCoroutine(Wait());
+                }
             }
         }
         else
         {
+            hpBar.SetActive(true);
             if (dist <= attackRange)
             {
                 if (_isAttack)
@@ -189,6 +201,11 @@ public class Egg : MonoBehaviour
         {
             _gravity = 0;
         }
+
+        if (hp<=0)
+        {
+            animator.SetBool("isDie", true);
+        }
 }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -202,7 +219,7 @@ public class Egg : MonoBehaviour
         {
             Damage damage = other.gameObject.GetComponent<Damage>();
             hp -= damage.dmg;
-            Debug.Log("맞음");
+            Debug.Log(hp);
         }
     }
 
@@ -212,6 +229,11 @@ public class Egg : MonoBehaviour
         {
             isGround = false;
         }
+    }
+
+    public void IaWall()
+    {
+
     }
 
     private void Attack()
@@ -371,7 +393,7 @@ public class Egg : MonoBehaviour
     {
         animator.SetBool(AnimIsSmoking, false);
         _isAttack = true;
-        for (var i = 0; i < 3; i++)
+        for (var i = 0; i < 20; i++)
         {
             switch (_direction)
             {

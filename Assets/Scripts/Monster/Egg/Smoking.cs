@@ -5,6 +5,7 @@ public class Smoking : MonoBehaviour
     public float speed;
     int _i;
     float _a;
+    float _direction;
     bool _isMove;
 
     Player _player;
@@ -17,17 +18,18 @@ public class Smoking : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rigid = GetComponent<Rigidbody2D>();
         _rigid.gravityScale = 0;
+        speed = Random.Range(1, 15);
     }
 
     private void Update()
     {
-        var direction = _player.transform.position.x - transform.position.x;
-        _i = direction switch
-        {
-            > 0 => 1,
-            < 0 => -1,
-            _ => _i
-        };
+        _direction = _player.transform.position.x - transform.position.x;
+        //_i = direction switch
+        //{
+        //    > 0 => 1,
+        //    < 0 => -1,
+        //    _ => _i
+        //};
 
         var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
         var bPos = (Vector2) transform.position;
@@ -65,7 +67,13 @@ public class Smoking : MonoBehaviour
 
     private void Jump()
     {
-        _a = Random.Range(2, 6);
+        _i = _direction switch
+        {
+            > 0 => 1,
+            < 0 => -1,
+            _ => _i
+        };
+        _a = Random.Range(2, 10);
         _rigid.AddForce(Vector2.up * _a, ForceMode2D.Impulse);
     }
 }
