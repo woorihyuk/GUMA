@@ -78,7 +78,7 @@ public class GameManager : MonoBehaviour
     }
     public void GameSave()
     {
-        PlayerPrefs.SetInt("SavePoint", GameManager.Instance.savePoint);
+        PlayerPrefs.SetInt("SavePoint", Instance.savePoint);
         PlayerPrefs.Save();
     }
     public void GameLoad()

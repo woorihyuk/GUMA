@@ -23,10 +23,15 @@ public class Director : MonoBehaviour
     }
     public void LoadGame()
     {
+        GameManager.instance.GameLoad();
         SceneManager.LoadScene("PlayScene");
     }
     public void Seting()
     {
         SceneManager.LoadScene("SettingScene" , LoadSceneMode.Additive);
+    }
+    public void End()
+    {
+        Application.Quit();
     }
 }

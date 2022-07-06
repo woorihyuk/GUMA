@@ -29,5 +29,9 @@ namespace Setting
             SettingManager.settingManager.UnPause();
         }
 
+        public void End()
+        {
+            SceneManager.LoadScene("Title");
+        }
     }
 }

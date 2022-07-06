@@ -15,6 +15,7 @@ public class Egg : MonoBehaviour
 
     public bool isStay;
     public bool isWall;
+    public bool isFound;
 
     public float speed;
     public float foundRange;
@@ -35,7 +36,6 @@ public class Egg : MonoBehaviour
     public bool isGround;
     private bool _isMove;
     private bool _isAttack;
-    private bool _isFound;
     private bool _isWait;
     private bool _isWalk;
 
@@ -105,13 +105,13 @@ public class Egg : MonoBehaviour
 
         if (dist<foundRange)
         {
-            _isFound = true;
+            isFound = true;
         }
         else
         {
             if (_isAttack)
             {
-                _isFound = false;
+                isFound = false;
             }
         }
 
@@ -119,7 +119,7 @@ public class Egg : MonoBehaviour
 
         if (isWall)
         {
-            _isFound = false;
+            isFound = false;
             if (transform.position.x>_startPoint.x)
             {
                 _i = -1;
@@ -143,7 +143,7 @@ public class Egg : MonoBehaviour
         }
         
 
-        if (!_isFound)
+        if (!isFound)
         {
             hpBar.SetActive(false);
             if (!isWall)
@@ -275,6 +275,19 @@ public class Egg : MonoBehaviour
 
     public void A1End()
     {
+        switch (_direction)
+        {
+            case > 0://플레이어가 왼쪽
+                _i = 1;
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+                transform.position = bPos + aPos + gPos;
+                break;
+            case < 0://플레이어가 오른쪽
+                _i = -1;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.position = bPos + aPos + gPos;
+                break;
+        }
         animator.SetBool(AnimAttack1, false);
         if (_attackCount <= 14)
         {

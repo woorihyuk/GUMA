@@ -21,6 +21,7 @@ public class Player : MonoBehaviour
     public AttackMode _currentAttack;
     public GameObject E;
     public GameObject textBox;
+    public GameObject gameOver;
     public GameObject[] attackPrefabs;
     public Transform[] wallRayCheckTfs;
     public Animator animator;
@@ -61,6 +62,7 @@ public class Player : MonoBehaviour
     private Image _hpBar;
     private Sine sine;
     private Doer door;
+    private Egg egg;
 
 
     private enum JumpMode
@@ -105,14 +107,19 @@ public class Player : MonoBehaviour
 
         switch (GameManager.Instance.savePoint)
         {
+
             case 0:
-                transform.position = new Vector3(0, -1.5f, 0);
+                transform.position = new Vector3(0.5f, -6.07f, 0);
+                Time.timeScale = 1;
                 break;
             case 1:
-                transform.position = new Vector3(86, 8.25f, 0);
+                transform.position = new Vector3(89.41f, 2.95f, 0);
+                Time.timeScale = 1;
                 break;
         }
         playerAttached.isIn = true;
+        gameOver.SetActive(false);
+        egg = FindObjectOfType<Egg>();
     }
 
     //IEnumerator ComboAttack(AttackMode attackMode)
@@ -206,22 +213,22 @@ public class Player : MonoBehaviour
 
         _controller.Move(_velocity * Time.deltaTime);
 
-        if (_isTalk)
-        {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                if (!_isTalking)
-                {
-                    _isTalking = true;
-                    E.SetActive(false);
-                    sine.TalkStart();
-                }
-                else
-                {
-                    sine.NextText();
-                }
-            }
-        }
+        //if (_isTalk)
+        //{
+        //    if (Input.GetKeyDown(KeyCode.E))
+        //    {
+        //        if (!_isTalking)
+        //        {
+        //            _isTalking = true;
+        //            E.SetActive(false);
+        //            sine.TalkStart();
+        //        }
+        //        else
+        //        {
+        //            sine.NextText();
+        //        }
+        //    }
+        //}
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (_isTalk)
@@ -244,7 +251,7 @@ public class Player : MonoBehaviour
             {
                 GameManager.Instance.savePoint = 1;
                 GameManager.Instance.GameSave();
-                Debug.Log("저장");
+                StartCoroutine(_hit.Save());
             }
             if (_isDoor)
             {
@@ -278,73 +285,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        //Debug.Log(_comboTime) ;
-        /*if (_comboTime<=0.5)
-        {
-            Debug.Log("tlqkf");
-            switch (_attackMode)
-            {
-
-                case 1:
-                    if ((int)_currentAttack == (int)AttackMode.Second)
-                    {
-                        _isCombo = true;
-                        _isAttack = true;
-                        _isAttackYet = true;
-                        animator.SetBool(AnimIsAttack2, true);
-                    }
-                    else if (_currentAttack == AttackMode.SecondShoot)
-                    {
-                        _isCombo = true;
-                        _isAttackYet = true;
-                        _isAttack = true;
-                        animator.SetBool(AnimShoot2, true);
-                    }
-                    break;
-                case 2:
-                    if (_currentAttack == AttackMode.Third)
-                    {
-                        _isCombo = true;
-                        _isAttackYet = true;
-                        _isAttack = true;
-                        animator.SetBool(AnimIsAttack3, true);
-                    }
-                    break;
-                case 3:
-                    if (_currentAttack == AttackMode.SecondShoot)
-                    {
-                        _isCombo = true;
-                        _isAttackYet = true;
-                        _isAttack = true;
-                        animator.SetBool(AnimShoot2, true);
-                    }
-                    else if (_currentAttack == AttackMode.Second)
-                    {
-                        _isCombo = true;
-                        _isAttack = true;
-                        animator.SetBool(AnimIsAttack2, true);
-                    }
-                    break;
-                case 4:
-                    if ((int)_currentAttack == (int)AttackMode.Third)
-                    {
-                        _isCombo = true;
-                        Debug.Log("시발");
-                        _isAttackYet = true;
-                        _isAttack = true;
-                        animator.SetBool(AnimIsAttack3, true);
-                    }
-                    break;
-            }
-        }   
-        if(_comboTime>0.5)
-        {
-            Debug.Log("콤보끝");
-            _attackMode = 0;
-            _currentAttack = AttackMode.None;
-            _isCombo = false;
-            _isAttackYet = true;
-        }*/
+        
     }
 
     private void WallCheck()
@@ -660,6 +601,9 @@ public class Player : MonoBehaviour
 
     public void IsDie()
     {
+        Time.timeScale = 0;
+        gameOver.SetActive(true);
+        egg.isFound = false;
         switch (GameManager.Instance.savePoint)
         {
             case 0:
@@ -669,6 +613,15 @@ public class Player : MonoBehaviour
                 transform.position = new Vector3(86, 8.25f, 0);
                 break;
         }
+    }
+
+    public void UP()
+    {
+        _HP = maxHP;
+        _hpBar.fillAmount = _HP / maxHP;
+        gameOver.SetActive(false);
+        animator.SetBool(AnimIsDiy, false);
+        Time.timeScale = 1;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

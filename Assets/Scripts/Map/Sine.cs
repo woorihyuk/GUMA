@@ -38,7 +38,7 @@ public class Sine : MonoBehaviour
                 maxText = 1;
                 break;
             case 4:
-                talkText = new string[] { "좌클릭을 하면 창 공격을 할 수 있어,", "앞에 있는 동상을 공격해봐" };
+                talkText = new string[] { "좌클릭을 하면 창 공격을 할 수 있어,", "한 번 공격해봐" };
                 maxText = 1;
                 break;
             case 5:
