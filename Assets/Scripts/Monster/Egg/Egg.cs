@@ -123,7 +123,7 @@ public class Egg : MonoBehaviour
             if (transform.position.x>_startPoint.x)
             {
                 _i = -1;
-                transform.rotation = Quaternion.Euler(0, -180, 0);
+                transform.rotation = Quaternion.Euler(0, 0, 0);
                 transform.position = bPos + aPos + gPos;
                 if (transform.position.x - _startPoint.x<=1)
                 {
@@ -133,7 +133,7 @@ public class Egg : MonoBehaviour
             else if (transform.position.x < _startPoint.x)
             {
                 _i = 1;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.rotation = Quaternion.Euler(0, -180, 0);
                 transform.position = bPos + aPos + gPos;
                 if (transform.position.x - _startPoint.x >= 1)
                 {
@@ -231,10 +231,6 @@ public class Egg : MonoBehaviour
         }
     }
 
-    public void IaWall()
-    {
-
-    }
 
     private void Attack()
     {

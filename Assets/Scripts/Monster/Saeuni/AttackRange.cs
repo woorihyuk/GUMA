@@ -18,6 +18,6 @@ public class AttackRange : MonoBehaviour
     }
     public void AttackEffect()
     {
-        Instantiate(attack, transform.position, Quaternion.identity);
+        Instantiate(attack, transform.position, transform.rotation);
     }
 }

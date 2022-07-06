@@ -1456,7 +1456,7 @@ MonoBehaviour:
   isStay: 0
   isWall: 0
   speed: 8
-  foundRange: 12
+  foundRange: 20
   hp: 100
   attackRange: 7.5
   jumpPower: 0
@@ -2774,6 +2774,8 @@ GameObject:
   - component: {fileID: 535619223}
   - component: {fileID: 535619222}
   - component: {fileID: 535619225}
+  - component: {fileID: 535619227}
+  - component: {fileID: 535619226}
   m_Layer: 0
   m_Name: Shirimp
   m_TagString: Untagged
@@ -2861,7 +2863,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 535619221}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 232.43, y: 11.38, z: 0}
+  m_LocalPosition: {x: 217.8, y: 11.2, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.49950075}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2898,7 +2900,47 @@ MonoBehaviour:
   lightningPoint: {fileID: 1038384501}
   detectPoint: {fileID: 795462837}
   point4_2: {fileID: 0}
+  hpBar: {fileID: 398505205}
   attackRange: 8
+  hp: 100
+  foundRange: 20
+--- !u!70 &535619226
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535619221}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.09720838, y: -6.1640215}
+  m_Size: {x: 2.9883225, y: 18.259016}
+  m_Direction: 0
+--- !u!50 &535619227
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 535619221}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &587925347
 GameObject:
   m_ObjectHideFlags: 0

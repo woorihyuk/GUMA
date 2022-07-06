@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SeauniCtrl : MonoBehaviour
 {
@@ -11,8 +13,11 @@ public class SeauniCtrl : MonoBehaviour
     public GameObject lightningPoint;
     public GameObject detectPoint;
     public GameObject point4_2;
+    public GameObject hpBar;
 
     public float attackRange;
+    public float hp;
+    public float foundRange;
 
     private Player _player;
     private Animator anim;
@@ -21,11 +26,13 @@ public class SeauniCtrl : MonoBehaviour
     private Lightning _lightning3;
     private Lightning _lightning4;
     private Lightning _lightning5;
+    private Image _hpBar;
 
     private int _nowPosition;
     private int _moveDirection;
 
     private float _direction;
+    private float _mxHp;
 
     private bool _isAttack;
     // Start is called before the first frame update
@@ -40,14 +47,25 @@ public class SeauniCtrl : MonoBehaviour
         _lightning3 = lightning2Point[2].GetComponent<Lightning>();
         _lightning4 = lightning2Point[3].GetComponent<Lightning>();
         _lightning5 = lightning2Point[4].GetComponent<Lightning>();
+        _hpBar = hpBar.GetComponent<Image>();
+        _mxHp = hp;
+        hpBar.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        _hpBar.fillAmount = hp / _mxHp;
         var dist = Vector2.Distance(_player.transform.position, detectPoint.transform.position);
         _direction = _player.transform.position.x - detectPoint.transform.position.x;
+        if (dist<foundRange)
+        {
+            hpBar.SetActive(true);
+        }
+        else
+        {
+            hpBar.SetActive(false);
+        }
         if (dist<attackRange)
         {
             Attack1();
@@ -119,6 +137,12 @@ public class SeauniCtrl : MonoBehaviour
         }
         
     }
+
+    public void Die()
+    {
+        Destroy(gameObject);
+    }
+
     public void AttackEffect()
     {
         Instantiate(attackEffect, transform.position, transform.rotation);
@@ -130,5 +154,18 @@ public class SeauniCtrl : MonoBehaviour
         anim.SetBool("isAttack", false);
         _isAttack = false;
         Attack2();
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("PlayerAttack"))
+        {
+            Damage damage = collision.gameObject.GetComponent<Damage>();
+            hp -= damage.dmg;
+            Attack2();
+            if (hp<=0)
+            {
+                anim.SetBool("isDie", true);
+            }
+        }
     }
 }
