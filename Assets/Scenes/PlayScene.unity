@@ -1784,13 +1784,11 @@ MonoBehaviour:
   - {fileID: 8426377851071631229, guid: 3af6feeeb8898574989cd77011093ab2, type: 3}
   isStay: 0
   isWall: 0
-  isFound: 0
   speed: 8
   foundRange: 20
   hp: 300
   attackRange: 7.5
   jumpPower: 0
-  isGround: 0
   animator: {fileID: 1368088757}
 --- !u!114 &350402304
 MonoBehaviour:
@@ -3160,7 +3158,7 @@ MonoBehaviour:
   point4_2: {fileID: 0}
   hpBar: {fileID: 398505205}
   attackRange: 8
-  hp: 200
+  hp: 50
   foundRange: 20
 --- !u!70 &535619226
 CapsuleCollider2D:

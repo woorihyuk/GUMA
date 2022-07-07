@@ -168,4 +168,8 @@ public class SeauniCtrl : MonoBehaviour
             }
         }
     }
+    public void PlayerDie()
+    {
+        hp = _mxHp;
+    }
 }

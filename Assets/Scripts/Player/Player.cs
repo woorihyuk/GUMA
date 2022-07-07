@@ -155,21 +155,24 @@ public class Player : MonoBehaviour
         if (!_isDash)
         {
             WallCheck();
-
-            if (!_isWall)
+            if (!_isAttack)
             {
-                if (dashCoolTime < _sinceLastDashTime)
+                if (!_isWall)
                 {
-                    if (_input.x == 0)
+                    if (dashCoolTime < _sinceLastDashTime)
                     {
-                        BackStep();
-                    }
-                    else
-                    {
-                        Dash();
+                        if (_input.x == 0)
+                        {
+                            BackStep();
+                        }
+                        else
+                        {
+                            Dash();
+                        }
                     }
                 }
             }
+            
         }
 
         float targetVelocityX = _input.x * moveSpeed;
@@ -383,6 +386,7 @@ public class Player : MonoBehaviour
                 }
                 else if (_currentAttack == AttackMode.None)
                 {
+                    _isAttack = true;
                     animator.SetBool(AnimIsAttack, true);
                     _currentAttack = AttackMode.First;
                 }
@@ -393,6 +397,7 @@ public class Player : MonoBehaviour
             {
                 if (_currentAttack == AttackMode.None)
                 {
+                    _isAttack = true;
                     animator.SetBool(AnimShoot, true);
                     _currentAttack = AttackMode.FirstShoot;
                 }
@@ -601,9 +606,10 @@ public class Player : MonoBehaviour
 
     public void IsDie()
     {
+        GameManager.instance.GameLoad();
         Time.timeScale = 0;
         gameOver.SetActive(true);
-        egg.isFound = false;
+        egg.PlayerDie();
         switch (GameManager.Instance.savePoint)
         {
             case 0:

@@ -15,7 +15,6 @@ public class Egg : MonoBehaviour
 
     public bool isStay;
     public bool isWall;
-    public bool isFound;
 
     public float speed;
     public float foundRange;
@@ -33,7 +32,8 @@ public class Egg : MonoBehaviour
     private int _attackCount;
     private int _ifSmoking;
 
-    public bool isGround;
+    private bool _isFound;
+    private bool isGround;
     private bool _isMove;
     private bool _isAttack;
     private bool _isWait;
@@ -105,13 +105,13 @@ public class Egg : MonoBehaviour
 
         if (dist<foundRange)
         {
-            isFound = true;
+            _isFound = true;
         }
         else
         {
             if (_isAttack)
             {
-                isFound = false;
+                _isFound = false;
             }
         }
 
@@ -119,7 +119,7 @@ public class Egg : MonoBehaviour
 
         if (isWall)
         {
-            isFound = false;
+            _isFound = false;
             if (transform.position.x>_startPoint.x)
             {
                 _i = -1;
@@ -143,7 +143,7 @@ public class Egg : MonoBehaviour
         }
         
 
-        if (!isFound)
+        if (!_isFound)
         {
             hpBar.SetActive(false);
             if (!isWall)
@@ -419,5 +419,12 @@ public class Egg : MonoBehaviour
     public void Die()
     {
         Destroy(gameObject);
+    }
+
+    public void PlayerDie()
+    {
+        hp = _mxHp;
+        _isFound = false;
+        transform.position = _startPoint;
     }
 }
