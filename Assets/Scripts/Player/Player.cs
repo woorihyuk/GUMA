@@ -24,6 +24,7 @@ public class Player : MonoBehaviour
     public GameObject gameOver;
     public GameObject[] attackPrefabs;
     public Transform[] wallRayCheckTfs;
+    public AudioClip[] clip;
     public Animator animator;
     public SpriteFlipper flipper;
     public PlayerAttachedCamera playerAttached;
@@ -41,6 +42,8 @@ public class Player : MonoBehaviour
     private static readonly int AnimIsDiy = Animator.StringToHash("isDie");
     private static readonly int AnimShoot = Animator.StringToHash("isShoot");
     private static readonly int AnimShoot2 = Animator.StringToHash("isShoot2");
+
+    private AudioSource audio;
 
     private int _attackMode;
     private float accelerationTimeAirborne = 0.2f;
@@ -120,6 +123,7 @@ public class Player : MonoBehaviour
         playerAttached.isIn = true;
         gameOver.SetActive(false);
         egg = FindObjectOfType<Egg>();
+        audio = GetComponent<AudioSource>();
     }
 
     //IEnumerator ComboAttack(AttackMode attackMode)
@@ -421,6 +425,8 @@ public class Player : MonoBehaviour
             {
                 case JumpMode.None:
                     {
+                        audio.clip = clip[0];
+                        audio.Play();
                         switch (_isWall)
                         {
                             case true when _controller.collisions.below:
@@ -467,6 +473,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) && _controller.collisions.below)
             {
+                audio.PlayOneShot(clip[3]);
                 animator.SetBool(AnimIsBackStep, true);
                 _direction = -(int)_lastInputX;
                 moveSpeed = dashSpeed;
@@ -482,6 +489,7 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) && _controller.collisions.below)
             {
+                audio.PlayOneShot(clip[3]);
                 animator.SetBool(AnimIsDash, true);
                 _direction = (int)_lastInputX;
                 moveSpeed = dashSpeed;
@@ -516,6 +524,8 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.First)
         {
+            audio.PlayOneShot(clip[1]);
+
             if (!sr.flipX)
             {
                 Instantiate(attackPrefabs[0], thisTransform.position, thisTransform.rotation);
@@ -528,6 +538,8 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.Second)
         {
+            audio.PlayOneShot(clip[1]);
+
             if (!sr.flipX)
             {
                 Instantiate(attackPrefabs[1], thisTransform.position, thisTransform.rotation);
@@ -540,6 +552,8 @@ public class Player : MonoBehaviour
 
         if (attackMode == AttackMode.Third)
         {
+            audio.PlayOneShot(clip[1]);
+
             if (!sr.flipX)
             {
                 Instantiate(attackPrefabs[2], thisTransform.position, thisTransform.rotation);
@@ -551,6 +565,7 @@ public class Player : MonoBehaviour
         }
         if (attackMode == AttackMode.FirstShoot || attackMode == AttackMode.SecondShoot)
         {
+            audio.PlayOneShot(clip[2]);
             if (!sr.flipX)
             {
                 Instantiate(attackPrefabs[3], thisTransform.position, thisTransform.rotation);

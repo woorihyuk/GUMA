@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Attack : MonoBehaviour
 {
-    public float attackTime;
+    private float attackTime;
     // Start is called before the first frame update
     void Start()
     {

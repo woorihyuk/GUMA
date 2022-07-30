@@ -1,21 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PigCtrl : MonoBehaviour
 {
     public GameObject player;
     public GameObject attack1;
     public GameObject attack2;
+    public GameObject hpBar;
+
     public int speed;
     public float HP;
     public float attackRagne;
     public float foundRange;
 
     private Animator animator;
+    private Image _hpGauge;
+    private Player playerCtrl;
     private int _attackCount;
     private float _direction;
-    private float _attackTime;
+    private float _mxHP;
     private float _i;
     private bool _isWalk;
     private bool _isAttack;
@@ -27,7 +32,11 @@ public class PigCtrl : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        _hpGauge = hpBar.GetComponent<Image>();
+        playerCtrl = FindObjectOfType<Player>();
         _i = 1;
+        _mxHP = HP;
+        hpBar.SetActive(false);
     }
 
     IEnumerator WalkTime()
@@ -61,6 +70,7 @@ public class PigCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _hpGauge.fillAmount = HP / _mxHP;
         var dist = Vector2.Distance(transform.position, player.transform.position);
         _direction = player.transform.position.x - transform.position.x;
         var bPos = (Vector2)transform.position;
@@ -73,9 +83,13 @@ public class PigCtrl : MonoBehaviour
         {
             _isFound = false;
         }
-
+        if (playerCtrl._HP<=0)
+        {
+            _isFound = false;
+        }
         if (!_isFound)
         {
+            hpBar.SetActive(false);
             print("못찾음");
             if (!_isWait)
             {
@@ -97,6 +111,7 @@ public class PigCtrl : MonoBehaviour
         }
         else
         {
+            hpBar.SetActive(true);
             if (!_isAttack)
             {
                 if (dist <= attackRagne)
