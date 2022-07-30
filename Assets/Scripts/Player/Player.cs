@@ -155,6 +155,21 @@ public class Player : MonoBehaviour
         }
 
         _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        
+        if (Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))
+        {
+            _isAttackYet = true;
+            _isDoAttack = false;
+            _isAttack = false;
+            animator.SetBool(AnimIsAttack, false);
+            animator.SetBool(AnimShoot, false);
+            animator.SetBool(AnimIsAttack, false);
+            animator.SetBool(AnimIsAttack2, false);
+            animator.SetBool(AnimIsAttack3, false);
+            animator.SetBool(AnimShoot, false);
+            animator.SetBool(AnimShoot2, false);
+            _currentAttack = AttackMode.None;
+        }
 
         if (!_isDash)
         {
@@ -190,7 +205,7 @@ public class Player : MonoBehaviour
             if (!_isAttack && _input.x != 0) _lastInputX = _input.x;
         }
 
-        if (!_isAttack) Jump();
+        Jump();
 
         var gravityMultiplier = 1f;
 
@@ -464,6 +479,17 @@ public class Player : MonoBehaviour
                         break;
                     }
             }
+            _isAttackYet = true;
+            _isDoAttack = false;
+            _isAttack = false;
+            animator.SetBool(AnimIsAttack, false);
+            animator.SetBool(AnimShoot, false);
+            animator.SetBool(AnimIsAttack, false);
+            animator.SetBool(AnimIsAttack2, false);
+            animator.SetBool(AnimIsAttack3, false);
+            animator.SetBool(AnimShoot, false);
+            animator.SetBool(AnimShoot2, false);
+            _currentAttack = AttackMode.None;
         }
     }
 
