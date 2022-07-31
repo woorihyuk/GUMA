@@ -1,56 +1,49 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Hit : MonoBehaviour
 {
     public GameObject saveMessage;
-
-    Player player;
-    SpriteRenderer sr;
-    // Start is called before the first frame update
+    private Player _player;
+    private SpriteRenderer _sr;
+    
     void Start()
     {
-        sr = GetComponentInChildren<SpriteRenderer>();
-        player = GetComponent<Player>();
+        _sr = GetComponentInChildren<SpriteRenderer>();
+        _player = GetComponent<Player>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public IEnumerator HitAni()
     {
         Debug.Log("맞음");
-        player.isHit = false;
-        sr.color = new Color(1, 1, 1, 0);
-        yield return YieldlnstructionCache.WaitForSeconds(0.15f);
-        sr.color = new Color(1, 1, 1, 1);
-        yield return YieldlnstructionCache.WaitForSeconds(0.15f);
-        sr.color = new Color(1, 1, 1, 0);
-        yield return YieldlnstructionCache.WaitForSeconds(0.15f);
-        sr.color = new Color(1, 1, 1, 1);
-        yield return YieldlnstructionCache.WaitForSeconds(0.15f);
-        sr.color = new Color(1, 1, 1, 1);
-        player.isHit = true;
+        _player.isHit = false;
+        _sr.color = new Color(1, 1, 1, 0);
+        yield return YieldInstructionCache.WaitForSeconds(0.15f);
+        _sr.color = new Color(1, 1, 1, 1);
+        yield return YieldInstructionCache.WaitForSeconds(0.15f);
+        _sr.color = new Color(1, 1, 1, 0);
+        yield return YieldInstructionCache.WaitForSeconds(0.15f);
+        _sr.color = new Color(1, 1, 1, 1);
+        yield return YieldInstructionCache.WaitForSeconds(0.15f);
+        _sr.color = new Color(1, 1, 1, 1);
+        _player.isHit = true;
         yield return null;
     }
 
     public IEnumerator AttackWait(Player.AttackMode attackMode)
     {
-        yield return YieldlnstructionCache.WaitForSeconds(0.5f);
-        if (player._currentAttack == attackMode)
+        yield return YieldInstructionCache.WaitForSeconds(0.5f);
+        if (_player.currentAttack == attackMode)
         {
-            player._currentAttack = Player.AttackMode.None;
-            player.isCombo = false;
+            _player.currentAttack = Player.AttackMode.None;
+            _player.isCombo = false;
         }
     }
 
     public IEnumerator Save()
     {
         saveMessage.SetActive(true);
-        yield return YieldlnstructionCache.WaitForSeconds(1);
+        yield return YieldInstructionCache.WaitForSeconds(1);
         saveMessage.SetActive(false);
     }
 }

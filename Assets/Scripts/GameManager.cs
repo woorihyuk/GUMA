@@ -1,28 +1,30 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-internal static class YieldlnstructionCache
+internal static class YieldInstructionCache
 {
     class FloatComparer : IEqualityComparer<float>
     {
         bool IEqualityComparer<float>.Equals(float x, float y)
         {
-            return x == y;
+            return x.Equals(y);
         }
+
         int IEqualityComparer<float>.GetHashCode(float obj)
         {
             return obj.GetHashCode();
         }
     }
-    public static readonly WaitForEndOfFrame waitForEndOfFrame = new WaitForEndOfFrame();
-    public static readonly WaitForFixedUpdate waitForFixedUpdate = new WaitForFixedUpdate();
-    private static readonly Dictionary<float, WaitForSeconds> _timelnterval = new Dictionary<float, WaitForSeconds>(new FloatComparer());
+
+    public static readonly WaitForEndOfFrame WaitForEndOfFrame = new();
+    public static readonly WaitForFixedUpdate WaitForFixedUpdate = new();
+
+    private static readonly Dictionary<float, WaitForSeconds> TimeInterval = new(new FloatComparer());
+
     public static WaitForSeconds WaitForSeconds(float seconds)
     {
-        WaitForSeconds wfs;
-        if (!_timelnterval.TryGetValue(seconds, out wfs))
-            _timelnterval.Add(seconds, wfs = new WaitForSeconds(seconds));
+        if (!TimeInterval.TryGetValue(seconds, out WaitForSeconds wfs))
+            TimeInterval.Add(seconds, wfs = new WaitForSeconds(seconds));
         return wfs;
     }
 }
@@ -31,64 +33,56 @@ public class GameManager : MonoBehaviour
 {
     public int savePoint;
 
-    
-    public static GameManager instance; 
+    private static GameManager _instance;
+
     public static GameManager Instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
                 var obj = FindObjectOfType<GameManager>();
-                if (obj!=null)
+                if (obj != null)
                 {
-                    instance = obj;
+                    _instance = obj;
                 }
                 else
                 {
                     var newObj = new GameObject().AddComponent<GameManager>();
-                    instance = newObj;
+                    _instance = newObj;
                 }
             }
-            return instance;
+
+            return _instance;
         }
     }
-    // Start is called before the first frame update
 
     private void Awake()
     {
-        var objs = FindObjectsOfType<GameManager>();
-        if (objs.Length!=1)
+        if (_instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
         DontDestroyOnLoad(gameObject);
         GameLoad();
     }
-    void Start()
-    {
-        GameLoad();
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void GameSave()
     {
         PlayerPrefs.SetInt("SavePoint", Instance.savePoint);
         PlayerPrefs.Save();
     }
+
     public void GameLoad()
     {
         if (!PlayerPrefs.HasKey("SavePoint"))
         {
             return;
         }
-        savePoint=PlayerPrefs.GetInt("SavePoint");
-        Debug.Log("gameLoad");
+
+        savePoint = PlayerPrefs.GetInt("SavePoint");
+        Debug.Log("[GameManager] Save Loaded");
     }
 }
-

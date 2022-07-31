@@ -42,7 +42,7 @@ public class PigCtrl : MonoBehaviour
     IEnumerator WalkTime()
     {
         _isWalk = true;
-        yield return YieldlnstructionCache.WaitForSeconds(2);
+        yield return YieldInstructionCache.WaitForSeconds(2);
         _isWait = true;
     }
 
@@ -51,7 +51,7 @@ public class PigCtrl : MonoBehaviour
         animator.SetBool("isWalk", false);
         _isWaiting = true;
         _i = _i == -1 ? 1 : -1;
-        yield return YieldlnstructionCache.WaitForSeconds(1);
+        yield return YieldInstructionCache.WaitForSeconds(1);
         transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : -180, 0);
         animator.SetBool("isWalk", true);
         _isWaiting = false;
@@ -62,7 +62,7 @@ public class PigCtrl : MonoBehaviour
     IEnumerator AttackDelay()
     {
          
-        yield return YieldlnstructionCache.WaitForSeconds(1.5f);
+        yield return YieldInstructionCache.WaitForSeconds(1.5f);
         print('d');
         _isAttack = false;
 
@@ -83,7 +83,7 @@ public class PigCtrl : MonoBehaviour
         {
             _isFound = false;
         }
-        if (playerCtrl._HP<=0)
+        if (playerCtrl.hp<=0)
         {
             _isFound = false;
         }

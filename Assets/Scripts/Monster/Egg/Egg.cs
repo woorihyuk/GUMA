@@ -1,16 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
-using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
+// ReSharper disable Unity.InefficientPropertyAccess
 
 public class Egg : MonoBehaviour
 {
     public GameObject prefab;
     public GameObject shootPoint1;
     public GameObject shootPoint2;
-    public GameObject hpBar;
     public GameObject[] attacks;
 
     public bool isStay;
@@ -19,12 +17,13 @@ public class Egg : MonoBehaviour
     public float speed;
     public float foundRange;
     public float hp;
+    private float _lastHp;
     public float attackRange;
     public float jumpPower;
 
-    Vector2 bPos; 
-    Vector2 aPos;
-    Vector2 gPos;
+    Vector2 _bPos;
+    Vector2 _aPos;
+    Vector2 _gPos;
 
     private int[] _attackType;
 
@@ -33,7 +32,7 @@ public class Egg : MonoBehaviour
     private int _ifSmoking;
 
     private bool _isFound;
-    private bool isGround;
+    private bool _isGround;
     private bool _isMove;
     private bool _isAttack;
     private bool _isWait;
@@ -46,8 +45,8 @@ public class Egg : MonoBehaviour
     public Animator animator;
 
     private Player _player;
-    private Image _hpGauge;
-
+    private GameUIManager _gameUIManager;
+    
     private Vector2 _startPoint;
 
     private RaycastHit2D _hitInfo;
@@ -63,24 +62,32 @@ public class Egg : MonoBehaviour
 
     private void Start()
     {
-        hpBar.SetActive(false);
-        _mxHp = hp;
+        _gameUIManager = FindObjectOfType<GameUIManager>();
+        _mxHp = _lastHp = hp;
         _attackType = new[] { 1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 2, 2, 1, 1, 1, 2 };
         _i = 1;
-        isGround = false;
+        _isGround = false;
         _isWait = true;
-        _player = FindObjectOfType<Player>();
-        _hpGauge = hpBar.GetComponent<Image>();
         _isAttack = true;
         _startPoint = transform.position;
+        _player = FindObjectOfType<Player>();
     }
 
+    private void OnEnable()
+    {
+        GameEvents.OnPlayerDie += PlayerDie;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnPlayerDie -= PlayerDie;
+    }
 
     IEnumerator Wait()
     {
         _isWait = false;
         animator.SetBool(AnimIsWalk, false);
-        yield return YieldlnstructionCache.WaitForSeconds(3);
+        yield return YieldInstructionCache.WaitForSeconds(3);
         _i = _i == -1 ? 1 : -1;
         _isMove = true;
     }
@@ -88,22 +95,23 @@ public class Egg : MonoBehaviour
     IEnumerator Walk()
     {
         _isWalk = true;
-        yield return YieldlnstructionCache.WaitForSeconds(2);
+        yield return YieldInstructionCache.WaitForSeconds(2);
         _isMove = false;
         _isWait = true;
         _isWalk = false;
     }
+
     private void Update()
     {
         var dist = Vector2.Distance(transform.position, _player.transform.position);
         _direction = _player.transform.position.x - transform.position.x;
-        bPos = (Vector2)transform.position;
-        aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
-        gPos = new Vector2(0, _gravity) * Time.deltaTime;
-        transform.position = bPos + gPos;
-        _hpGauge.fillAmount = hp / _mxHp;
+        _bPos = transform.position;
+        _aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
+        _gPos = new Vector2(0, _gravity) * Time.deltaTime;
+        transform.position = _bPos + _gPos;
+        RefreshHp(hp);
 
-        if (dist<foundRange)
+        if (dist < foundRange)
         {
             _isFound = true;
         }
@@ -115,17 +123,16 @@ public class Egg : MonoBehaviour
             }
         }
 
-        
 
         if (isWall)
         {
             _isFound = false;
-            if (transform.position.x>_startPoint.x)
+            if (transform.position.x > _startPoint.x)
             {
                 _i = -1;
                 transform.rotation = Quaternion.Euler(0, 0, 0);
-                transform.position = bPos + aPos + gPos;
-                if (transform.position.x - _startPoint.x<=1)
+                transform.position = _bPos + _aPos + _gPos;
+                if (transform.position.x - _startPoint.x <= 1)
                 {
                     isWall = false;
                 }
@@ -134,30 +141,32 @@ public class Egg : MonoBehaviour
             {
                 _i = 1;
                 transform.rotation = Quaternion.Euler(0, -180, 0);
-                transform.position = bPos + aPos + gPos;
+                transform.position = _bPos + _aPos + _gPos;
                 if (transform.position.x - _startPoint.x >= 1)
                 {
                     isWall = false;
                 }
             }
         }
-        
+
 
         if (!_isFound)
         {
-            hpBar.SetActive(false);
+            _gameUIManager.TryPopHpBar(GetInstanceID().ToString());
+            
             if (!isWall)
             {
                 transform.rotation = Quaternion.Euler(0, _i == -1 ? 0 : 180, 0);
                 if (_isMove)
                 {
                     animator.SetBool(AnimIsWalk, true);
-                    transform.position = bPos + aPos + gPos;
+                    transform.position = _bPos + _aPos + _gPos;
                     if (!_isWalk)
                     {
                         StartCoroutine(Walk());
                     }
                 }
+
                 if (_isWait)
                 {
                     StartCoroutine(Wait());
@@ -166,7 +175,8 @@ public class Egg : MonoBehaviour
         }
         else
         {
-            hpBar.SetActive(true);
+            _gameUIManager.TryPushHpBar(GetInstanceID().ToString(), "달걀 귀신", hp/_mxHp);
+
             if (dist <= attackRange)
             {
                 if (_isAttack)
@@ -174,26 +184,27 @@ public class Egg : MonoBehaviour
                     Attack();
                 }
             }
-            else if(_isAttack)
+            else if (_isAttack)
             {
                 animator.SetBool(AnimIsWalk, true);
                 switch (_direction)
                 {
-                    case > 0://플레이어가 왼쪽
+                    case > 0: //플레이어가 왼쪽
                         _i = 1;
                         transform.rotation = Quaternion.Euler(0, 180, 0);
-                        transform.position = bPos + aPos + gPos;
+                        transform.position = _bPos + _aPos + _gPos;
                         break;
-                    case < 0://플레이어가 오른쪽
+                    case < 0: //플레이어가 오른쪽
                         _i = -1;
                         transform.rotation = Quaternion.Euler(0, 0, 0);
-                        transform.position = bPos + aPos + gPos;
+                        transform.position = _bPos + _aPos + _gPos;
                         break;
                 }
             }
         }
+
         //중력
-        if (isGround == false)
+        if (_isGround == false)
         {
             _gravity = -3;
         }
@@ -202,20 +213,19 @@ public class Egg : MonoBehaviour
             _gravity = 0;
         }
 
-        if (hp<=0)
+        if (hp <= 0)
         {
-            animator.SetBool("isDie", true);
+            animator.SetBool(AnimIsDie, true);
         }
-}
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("ground"))
         {
-            isGround = true;
+            _isGround = true;
         }
-
-        if (other.CompareTag("PlayerAttack"))
+        else if (other.CompareTag("PlayerAttack"))
         {
             Damage damage = other.gameObject.GetComponent<Damage>();
             hp -= damage.dmg;
@@ -227,7 +237,7 @@ public class Egg : MonoBehaviour
     {
         if (collision.CompareTag("ground"))
         {
-            isGround = false;
+            _isGround = false;
         }
     }
 
@@ -247,6 +257,7 @@ public class Egg : MonoBehaviour
                 break;
         }
     }
+
     public void A1()
     {
         animator.SetBool(AnimAttack1R, false);
@@ -277,17 +288,18 @@ public class Egg : MonoBehaviour
     {
         switch (_direction)
         {
-            case > 0://플레이어가 왼쪽
+            case > 0: //플레이어가 왼쪽
                 _i = 1;
                 transform.rotation = Quaternion.Euler(0, 180, 0);
-                transform.position = bPos + aPos + gPos;
+                transform.position = _bPos + _aPos + _gPos;
                 break;
-            case < 0://플레이어가 오른쪽
+            case < 0: //플레이어가 오른쪽
                 _i = -1;
                 transform.rotation = Quaternion.Euler(0, 0, 0);
-                transform.position = bPos + aPos + gPos;
+                transform.position = _bPos + _aPos + _gPos;
                 break;
         }
+
         animator.SetBool(AnimAttack1, false);
         if (_attackCount <= 14)
         {
@@ -377,13 +389,14 @@ public class Egg : MonoBehaviour
     {
         animator.SetBool(AnimAttack3, false);
         _ifSmoking = Random.Range(0, 2);
-        if (_ifSmoking == 0)
+        switch (_ifSmoking)
         {
-            _isAttack = true;
-        }
-        else if (_ifSmoking == 1)
-        {
-            animator.SetBool(AnimIsSit, true);
+            case 0:
+                _isAttack = true;
+                break;
+            case 1:
+                animator.SetBool(AnimIsSit, true);
+                break;
         }
 
         if (_attackCount <= 14)
@@ -421,10 +434,19 @@ public class Egg : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void PlayerDie()
+    private void PlayerDie()
     {
         hp = _mxHp;
         _isFound = false;
         transform.position = _startPoint;
+    }
+    
+    private void RefreshHp(float newHp)
+    {
+        if (!newHp.Equals(_lastHp))
+        {
+            _gameUIManager.SetHpBarPercent(GetInstanceID().ToString(), newHp/_mxHp);
+            _lastHp = newHp;
+        }
     }
 }

@@ -21,7 +21,7 @@ public class Lightning : MonoBehaviour
     {
         for (int i = 0; i < point.Length; i++)
         {
-            yield return YieldlnstructionCache.WaitForSeconds(0.1f);
+            yield return YieldInstructionCache.WaitForSeconds(0.1f);
             Instantiate(lightningEffect, point[i].transform.position, Quaternion.identity);
         }
        

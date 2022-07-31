@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class SeauniCtrl : MonoBehaviour
 {
@@ -13,7 +12,6 @@ public class SeauniCtrl : MonoBehaviour
     public GameObject lightningPoint;
     public GameObject detectPoint;
     public GameObject point4_2;
-    public GameObject hpBar;
 
     public float attackRange;
     public float hp;
@@ -26,18 +24,20 @@ public class SeauniCtrl : MonoBehaviour
     private Lightning _lightning3;
     private Lightning _lightning4;
     private Lightning _lightning5;
-    private Image _hpBar;
 
     private int _nowPosition;
     private int _moveDirection;
 
     private float _direction;
-    private float _mxHp;
+    private float _mxHp, _lastHp;
+    private GameUIManager _gameUIManager;
 
     private bool _isAttack;
-    // Start is called before the first frame update
-    void Start()
+    private static readonly int IsAttack = Animator.StringToHash("isAttack");
+
+    private void Start()
     {
+        _gameUIManager = FindObjectOfType<GameUIManager>();
         _player = FindObjectOfType<Player>();
         anim = GetComponent<Animator>();
         transform.position = movePoint[0].transform.position;
@@ -47,31 +47,36 @@ public class SeauniCtrl : MonoBehaviour
         _lightning3 = lightning2Point[2].GetComponent<Lightning>();
         _lightning4 = lightning2Point[3].GetComponent<Lightning>();
         _lightning5 = lightning2Point[4].GetComponent<Lightning>();
-        _hpBar = hpBar.GetComponent<Image>();
         _mxHp = hp;
-        hpBar.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        _hpBar.fillAmount = hp / _mxHp;
+        _gameUIManager.TryPopHpBar(GetInstanceID().ToString());
+    }
+
+    private void Update()
+    {
         var dist = Vector2.Distance(_player.transform.position, detectPoint.transform.position);
         _direction = _player.transform.position.x - detectPoint.transform.position.x;
-        if (dist<foundRange)
+
+        if (dist < foundRange)
         {
-            hpBar.SetActive(true);
+            _gameUIManager.TryPushHpBar(GetInstanceID().ToString(), "느그우니", hp);
+            RefreshHp(hp);
         }
         else
         {
-            hpBar.SetActive(false);
+            _gameUIManager.TryPopHpBar(GetInstanceID().ToString());
         }
-        if (dist<attackRange)
+        
+        if (dist < attackRange)
         {
             Attack1();
         }
     }
-    void Attack1()
+
+    private void Attack1()
     {
         if (!_isAttack)
         {
@@ -85,11 +90,12 @@ public class SeauniCtrl : MonoBehaviour
                     break;
             }
         }
+
         _isAttack = true;
-        anim.SetBool("isAttack", true);
-        
+        anim.SetBool(IsAttack, true);
     }
-    void Attack2()
+
+    private void Attack2()
     {
         switch (_nowPosition)
         {
@@ -108,6 +114,7 @@ public class SeauniCtrl : MonoBehaviour
                         _nowPosition = 3;
                         break;
                 }
+
                 break;
             case 2:
                 transform.position = movePoint[2].transform.position;
@@ -133,9 +140,9 @@ public class SeauniCtrl : MonoBehaviour
                         _nowPosition = 1;
                         break;
                 }
+
                 break;
         }
-        
     }
 
     public void Die()
@@ -155,6 +162,7 @@ public class SeauniCtrl : MonoBehaviour
         _isAttack = false;
         Attack2();
     }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("PlayerAttack"))
@@ -162,14 +170,31 @@ public class SeauniCtrl : MonoBehaviour
             Damage damage = collision.gameObject.GetComponent<Damage>();
             hp -= damage.dmg;
             Attack2();
-            if (hp<=0)
+            if (hp <= 0)
             {
                 anim.SetBool("isDie", true);
             }
         }
     }
-    public void PlayerDie()
+
+    private void PlayerDie()
     {
         hp = _mxHp;
+    }
+    
+    private void RefreshHp(float newHp)
+    {
+        if (!newHp.Equals(_lastHp))
+        {
+            try
+            {
+                _gameUIManager.SetHpBarPercent(GetInstanceID().ToString(), newHp/_mxHp);
+            }
+            catch
+            {
+                return;
+            }
+            _lastHp = newHp;
+        }
     }
 }

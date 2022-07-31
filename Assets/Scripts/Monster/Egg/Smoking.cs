@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class Smoking : MonoBehaviour
 {
-    public float speed;
-    int _i;
-    float _a;
-    float _direction;
-    bool _isMove;
+    public float speed = 2.5f;
+    private int _intDirection;
+    private float _direction;
+    private bool _isMove;
 
-    Player _player;
-    Animator _animator;
-    Rigidbody2D _rigid;
+    private Player _player;
+    private Animator _animator;
+    private Rigidbody2D _rigid;
+    private static readonly int IsMove = Animator.StringToHash("isMove");
 
     private void Start()
     {
@@ -23,26 +23,17 @@ public class Smoking : MonoBehaviour
 
     private void Update()
     {
-        _direction = _player.transform.position.x - transform.position.x;
-        //_i = direction switch
-        //{
-        //    > 0 => 1,
-        //    < 0 => -1,
-        //    _ => _i
-        //};
+        var curPosVector2 = (Vector2) transform.position;
+        _direction = _player.transform.position.x - curPosVector2.x;
 
-        var aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
-        var bPos = (Vector2) transform.position;
-        if (_isMove)
-        {
-            transform.position = bPos + aPos;
-        }
+        var aPos = new Vector2(speed * _intDirection, 0) * Time.deltaTime;
+        if (_isMove) transform.position = curPosVector2 + aPos;
     }
 
     public void Move()
     {
-        Debug.Log("무브");
-        _animator.SetBool("isMove", true);
+        // Debug.Log("무브");
+        _animator.SetBool(IsMove, true);
         _isMove = true;
         Jump();
         _rigid.gravityScale = 0.5f;
@@ -67,13 +58,12 @@ public class Smoking : MonoBehaviour
 
     private void Jump()
     {
-        _i = _direction switch
+        _intDirection = _direction switch
         {
             > 0 => 1,
             < 0 => -1,
-            _ => _i
+            _ => _intDirection
         };
-        _a = Random.Range(2, 10);
-        _rigid.AddForce(Vector2.up * _a, ForceMode2D.Impulse);
+        _rigid.AddForce(Vector2.up * Random.Range(2, 10), ForceMode2D.Impulse);
     }
 }
