@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Store;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class ItemButton : MonoBehaviour

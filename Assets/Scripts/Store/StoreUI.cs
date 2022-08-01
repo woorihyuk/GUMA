@@ -16,7 +16,6 @@ public class StoreUI : MonoBehaviour
     public Text goldText;
 
     // For Test
-    public int testGold;
     public StoreBuyPopUpTest popUp;
     
     private Sequence _sequence;
@@ -55,7 +54,7 @@ public class StoreUI : MonoBehaviour
         canvasGroup.DOKill(true);
         
         storeText.DOFade(0, 0);
-        DOVirtual.Int(0, testGold, 1, value =>
+        DOVirtual.Int(0, InventoryManager.Instance.gold, 1, value =>
         {
             goldText.text = $"{value} 원";
         }).SetId("goldText01");
@@ -101,14 +100,15 @@ public class StoreUI : MonoBehaviour
         popUp.cancelButton.onClick.RemoveAllListeners();
         popUp.buyButton.onClick.AddListener(() =>
         {
-            if (testGold < storeManager.sellingItems[index].cost) return;
-            var oldGold = testGold;
-            testGold -= storeManager.sellingItems[index].cost;
+            if (InventoryManager.Instance.gold < storeManager.sellingItems[index].cost) return;
+            var oldGold = InventoryManager.Instance.gold;
+            InventoryManager.Instance.gold -= storeManager.sellingItems[index].cost;
             DOTween.Kill("goldText01");
-            DOVirtual.Int(oldGold, testGold, 1, value =>
+            DOVirtual.Int(oldGold, InventoryManager.Instance.gold, 1, value =>
             {
                 goldText.text = $"{value} 원";
             }).SetId("goldText01");
+            InventoryManager.Instance.AddItem(storeManager.sellingItems[index].name);
             popUp.canvasGroup.DOFade(0, 0.5f)
                 .OnComplete(() => popUp.canvasGroup.gameObject.SetActive(false));
             if (--storeManager.sellingItems[index].currentQuantity == 0)

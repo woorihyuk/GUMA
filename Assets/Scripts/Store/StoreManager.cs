@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Store;
 using UnityEngine;
 
 public class StoreManager : MonoBehaviour
