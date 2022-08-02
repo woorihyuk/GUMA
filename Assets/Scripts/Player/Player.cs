@@ -101,9 +101,7 @@ public class Player : MonoBehaviour
 
         _hit = GetComponent<Hit>();
         isHit = true;
-
-        _gameUIManager.keyHintE.gameObject.SetActive(false);
-
+        
         switch (GameManager.Instance.savePoint)
         {
             case 0:
@@ -118,6 +116,7 @@ public class Player : MonoBehaviour
 
         playerAttached.isIn = true;
         _gameUIManager.gameOverImage.gameObject.SetActive(false);
+        _gameUIManager.keyHintE.gameObject.SetActive(false);
         _audio = GetComponent<AudioSource>();
     }
 
