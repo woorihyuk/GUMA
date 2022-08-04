@@ -25,6 +25,10 @@ public class Player : MonoBehaviour
     public SpriteFlipper flipper;
     public PlayerAttachedCamera playerAttached;
     public SpriteRenderer sr;
+    
+    public float hp;
+    public Image hpBar;
+
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
     private static readonly int AnimIsDash = Animator.StringToHash("isDash");
@@ -48,7 +52,6 @@ public class Player : MonoBehaviour
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
     private float _comboTime;
-    public float hp;
     private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isDoAttack, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
@@ -56,7 +59,7 @@ public class Player : MonoBehaviour
     private JumpMode _currentJump;
     private Hit _hit;
     private Controller2D _controller;
-    public Image hpBar;
+    private InteractiveObjectChecker _interactiveObjectChecker;
     private Sign _sign;
     private Doer _door;
     private GameUIManager _gameUIManager;
@@ -78,11 +81,6 @@ public class Player : MonoBehaviour
         SecondShoot
     }
 
-    private void Awake()
-    {
-        Application.targetFrameRate = 60;
-    }
-
     private void Start()
     {
         _gameUIManager = FindObjectOfType<GameUIManager>();
@@ -95,14 +93,13 @@ public class Player : MonoBehaviour
 
         _gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         _jumpVelocity = Mathf.Abs(_gravity) * timeToJumpApex;
-        // print("Gravity: " + _gravity + " Jump Velocity: " + _jumpVelocity);
 
         hp = maxHp;
 
         _hit = GetComponent<Hit>();
         isHit = true;
         
-        switch (GameManager.Instance.savePoint)
+        /*switch (GameManager.Instance.savePoint)
         {
             case 0:
                 transform.position = new Vector3(0.5f, -6.07f, 0);
@@ -112,12 +109,10 @@ public class Player : MonoBehaviour
                 transform.position = new Vector3(89.41f, 2.95f, 0);
                 Time.timeScale = 1;
                 break;
-        }
+        }*/
 
-        playerAttached.isIn = true;
-        _gameUIManager.gameOverImage.gameObject.SetActive(false);
-        _gameUIManager.keyHintE.gameObject.SetActive(false);
         _audio = GetComponent<AudioSource>();
+        _interactiveObjectChecker = GetComponent<InteractiveObjectChecker>();
     }
 
     private void Update()
@@ -134,6 +129,7 @@ public class Player : MonoBehaviour
             _currentJump = JumpMode.None;
             animator.SetBool(AnimIsJump, false);
             animator.SetBool(AnimDoubleJump, false);
+            animator.Update(0);
         }
 
         _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -212,6 +208,17 @@ public class Player : MonoBehaviour
                 animator.SetBool(AnimIsRun, false);
             }
         }
+        
+        if (isCombo)
+        {
+            if (!_isAttack)
+            {
+                if (_isDoAttack)
+                {
+                    DoAttack();
+                }
+            }
+        }
 
         _controller.Move(_velocity * Time.deltaTime);
 
@@ -232,14 +239,29 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (_isSave)
+            if (StateManager.Instance.currentState == StateType.Talking)
+            {
+                
+            }
+            else if (StateManager.Instance.currentState == StateType.None)
+            {
+                if (_interactiveObjectChecker.TryGetLastInteractiveObject(out var iObj))
+                {
+                    if (iObj.objectType == InteractiveObjectType.Sign)
+                    {
+                        TextManager.Instance.OnInput(((InteractiveObjects.Sign)iObj).key);
+                    }
+                }
+            }
+            
+            /*if (_isSave)
             {
                 GameManager.Instance.savePoint = 1;
                 GameManager.Instance.GameSave();
                 StartCoroutine(_hit.Save());
-            }
+            }*/
 
-            if (_isDoor)
+            /*if (_isDoor)
             {
                 transform.position = _doorPos;
                 _isDoor = false;
@@ -247,23 +269,12 @@ public class Player : MonoBehaviour
 
                 _gameUIManager.keyHintE.gameObject.SetActive(false);
                 _door = null;
-            }
+            }*/
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha7))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("Title");
-        }
-
-        if (isCombo)
-        {
-            if (!_isAttack)
-            {
-                if (_isDoAttack)
-                {
-                    DoAttack();
-                }
-            }
         }
     }
 
@@ -402,7 +413,7 @@ public class Player : MonoBehaviour
                     _audio.Play();
                     switch (_isWall)
                     {
-                        case true when _controller.collisions.below:
+                        case true:
                             _velocity.y = _jumpVelocity;
                             _velocity.x = -20 * lastInputX;
                             _currentJump = JumpMode.Normal;
@@ -418,13 +429,6 @@ public class Player : MonoBehaviour
                             _velocity.y = _jumpVelocity;
                             _currentJump = JumpMode.Double;
                             animator.SetBool(AnimDoubleJump, true);
-                            break;
-                        case true when !_controller.collisions.below:
-                            _velocity.y = _jumpVelocity;
-                            _velocity.x = -20 * lastInputX;
-                            _currentJump = JumpMode.Normal;
-                            animator.SetBool(AnimIsJump, true);
-                            lastInputX *= -1;
                             break;
                     }
 
@@ -571,7 +575,7 @@ public class Player : MonoBehaviour
         if (currentAttack == attackMode)
         {
             _isDoAttack = false;
-            Debug.Log(currentAttack);
+            // Debug.Log(currentAttack);
         }
 
         isCombo = true;
@@ -601,11 +605,11 @@ public class Player : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("EnemyAttack"))
+        if (other.CompareTag("EnemyAttack"))
         {
-            Damage damage = collision.GetComponent<Damage>();
+            var damage = other.GetComponent<Damage>();
             if (!isHit)
             {
                 return;
@@ -621,22 +625,22 @@ public class Player : MonoBehaviour
             StartCoroutine(_hit.HitAni());
         }
 
-        else if (collision.CompareTag("Sine"))
+        else if (other.CompareTag("Sign"))
         {
             _isTalk = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
-            _sign = collision.GetComponent<Sign>();
+            _sign = other.GetComponent<Sign>();
         }
 
-        else if (collision.CompareTag("SavePoint"))
+        else if (other.CompareTag("SavePoint"))
         {
             _isSave = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
         }
 
-        else if (collision.CompareTag("Door"))
+        else if (other.CompareTag("Door"))
         {
-            _door = collision.GetComponent<Doer>();
+            _door = other.GetComponent<Doer>();
             _doorPos = _door.monePosition;
             _isDoor = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
@@ -645,7 +649,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Sine"))
+        if (other.CompareTag("Sign"))
         {
             _isTalk = false;
             _isTalking = false;

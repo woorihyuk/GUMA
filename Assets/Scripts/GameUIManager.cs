@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ public class GameUIManager : MonoBehaviour
     public Transform hpBarGroup;
     public readonly Dictionary<string, HpBarController> hpBars = new();
     public Text text1, text2;
+    public CanvasGroup letterBox;
 
     public void SetHpBarPercent(string key, float hpValue)
     {

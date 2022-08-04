@@ -1,0 +1,2 @@
+fr "{CloseUpToPlayer}{w=1}뭐야 너! {w=0.5}다 까먹어버린거야?"
+fr "{ResetCameraPosition}{w=1}A 키를 누르면 왼쪽으로, {w=0.5}D키를 누르면 오른쪽으로 이동할 수 있어."

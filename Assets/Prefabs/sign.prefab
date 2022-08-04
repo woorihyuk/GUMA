@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2772967227368601749}
   m_Layer: 0
   m_Name: sign
-  m_TagString: Sine
+  m_TagString: Sign
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
