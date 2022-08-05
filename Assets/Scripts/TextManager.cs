@@ -38,7 +38,13 @@ public class TextManager : MonoBehaviour
     private Sequence _textSequence;
     private readonly List<string> _parsedStrings = new();
     private GameUIManager _gameUIManager;
+    private string _lastDialogKey;
 
+    public void OnInputWithLast()
+    {
+        OnInput(_lastDialogKey);
+    }
+    
     public void OnInput(string key)
     {
         if (!isOpen)
@@ -46,6 +52,7 @@ public class TextManager : MonoBehaviour
             ((RectTransform)_gameUIManager.letterBox.transform).DOSizeDelta(new Vector2(0, 0), 0.7f)
                 .OnComplete(() =>
                 {
+                    _lastDialogKey = key;
                     dialogBackgroundImage.gameObject.SetActive(true);
                     _textSequence?.Kill();
                     _textSequence = DOTween.Sequence();

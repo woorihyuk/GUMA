@@ -241,7 +241,7 @@ public class Player : MonoBehaviour
 
             if (StateManager.Instance.currentState == StateType.Talking)
             {
-                
+                TextManager.Instance.OnInputWithLast();
             }
             else if (StateManager.Instance.currentState == StateType.None)
             {
