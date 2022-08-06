@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.actioncode.cinemachine-regions": {
+      "version": "https://bitbucket.org/nostgameteam/cinemachine-regions.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.cinemachine": "2.2.0"
+      },
+      "hash": "4791e813e5e0db23663e0f33d9741ef0ad1512cb"
+    },
     "com.unity.2d.animation": {
       "version": "7.0.6",
       "depth": 0,

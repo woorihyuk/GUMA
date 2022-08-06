@@ -1,28 +1,30 @@
 ﻿using System;
-using Camera;
+using Cinemachine;
 using UnityEngine;
 
-namespace Level
+public class LevelPropertiesManager : MonoBehaviour
 {
-    public class LevelPropertiesManager : MonoBehaviour
+    public static LevelPropertiesManager Instance;
+    
+    public Transform[] positionSpots;
+    public Collider2D playerCamCollider;
+    public CinemachineVirtualCamera playerCam;
+
+    private void Awake()
     {
-        [Header("Camera", order = 3)]
-        public Vector2 maxPosition;
-        public Vector2 minPosition;
-        public bool lockToPlayer = true;
+        Instance = this;
+    }
 
-        private TargetCamera _targetCamera;
-        private Player _player;
-        
-        private void Start()
+    public bool TryGetPositionOfLevel(out Vector3 position)
+    {
+        print(GameManager.Instance.positionFlags);
+        if (GameManager.Instance.positionFlags != -1)
         {
-            _targetCamera = FindObjectOfType<TargetCamera>();
-            _player = FindObjectOfType<Player>();
+            position = positionSpots[GameManager.Instance.positionFlags].position;
+            return true;
         }
 
-        private void Update()
-        {
-            if (lockToPlayer) _targetCamera.UpdatePositionToTarget(_player.transform.position, maxPosition, minPosition);
-        }
+        position = Vector3.zero;
+        return false;
     }
 }

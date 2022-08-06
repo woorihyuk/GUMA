@@ -5,21 +5,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class TextManager : MonoBehaviour
+public class TextManager : Singleton<TextManager>
 {
-    public static TextManager Instance;
-
-    private void Awake()
+    protected override void Awake()
     {
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
-        _gameUIManager = FindObjectOfType<GameUIManager>();
-        _endTriangleStartPos = endTriangle.transform.localPosition.y;
+        base.Awake();
+        _endTriangleStartPos = GameUIManager.Instance.endTriangle.transform.localPosition.y;
 
         var files = Directory.GetFiles(new Uri(Path.Combine(Application.streamingAssetsPath, "Dialogs")).AbsolutePath,
             "*.txt");
@@ -30,17 +23,12 @@ public class TextManager : MonoBehaviour
             _loadedData.Add(Path.GetFileNameWithoutExtension(file), strings.ToList());
         }
     }
-
-    public TMP_Text dialogText;
-    public Image dialogBackgroundImage, endTriangle;
-    public Image[] dialogCharacters;
-    public Transform dialogBackgroundStartTf, dialogBackgroundEndTf;
+    
     public bool isOpen;
     public int currentIndex;
     private readonly Dictionary<string, List<string>> _loadedData = new();
     private Sequence _textSequence, _triangleSequence;
     private readonly List<string> _parsedStrings = new();
-    private GameUIManager _gameUIManager;
     private float _endTriangleStartPos;
     private string _lastDialogKey;
     
@@ -51,10 +39,10 @@ public class TextManager : MonoBehaviour
     
     public void OnInput(string key)
     {
-        if (DOTween.IsTweening(dialogBackgroundImage.transform, true) || DOTween.IsTweening((RectTransform)_gameUIManager.letterBox.transform, true)) return;
+        if (DOTween.IsTweening(GameUIManager.Instance.dialogBackgroundImage.transform, true) || DOTween.IsTweening((RectTransform)GameUIManager.Instance.letterBox.transform, true)) return;
         if (!isOpen)
         {
-            ((RectTransform)_gameUIManager.letterBox.transform).DOSizeDelta(new Vector2(0, 0), 0.7f)
+            ((RectTransform)GameUIManager.Instance.letterBox.transform).DOSizeDelta(new Vector2(0, 0), 0.7f)
                 .OnComplete(() =>
                 {
                     StateManager.Instance.currentState = StateType.Talking;
@@ -83,13 +71,13 @@ public class TextManager : MonoBehaviour
     private void Close()
     {
         DeactivateEndTriangle();
-        dialogBackgroundImage.transform.DOLocalMoveY(dialogBackgroundStartTf.localPosition.y, 0.5f);
-        dialogBackgroundImage.transform.DOScale(0, 0.5f);
-        ((RectTransform)_gameUIManager.letterBox.transform).DOSizeDelta(new Vector2(0, 260f), 0.7f)
+        GameUIManager.Instance.dialogBackgroundImage.transform.DOLocalMoveY(GameUIManager.Instance.dialogBackgroundStartTf.localPosition.y, 0.5f);
+        GameUIManager.Instance.dialogBackgroundImage.transform.DOScale(0, 0.5f);
+        ((RectTransform)GameUIManager.Instance.letterBox.transform).DOSizeDelta(new Vector2(0, 260f), 0.7f)
             .OnComplete(() =>
             {
-                dialogBackgroundImage.gameObject.SetActive(false);
-                dialogText.text = "";
+                GameUIManager.Instance.dialogBackgroundImage.gameObject.SetActive(false);
+                GameUIManager.Instance.dialogText.text = "";
                 StateManager.Instance.currentState = StateType.None;
                 isOpen = false;
             });
@@ -104,7 +92,7 @@ public class TextManager : MonoBehaviour
         }
         DeactivateEndTriangle();
         _parsedStrings.Clear();
-        dialogText.text = "";
+        GameUIManager.Instance.dialogText.text = "";
         var text = _loadedData[key][index];
         var charTag = ParseTag(ref text);
         ParseText(text);
@@ -112,7 +100,7 @@ public class TextManager : MonoBehaviour
         if (charTag == "fr")
         {
             DeactivateCharacters();
-            dialogCharacters[0].gameObject.SetActive(true);
+            GameUIManager.Instance.dialogCharacters[0].gameObject.SetActive(true);
         }
         else
         {
@@ -127,15 +115,15 @@ public class TextManager : MonoBehaviour
             sb.Append(str);
             var finalString = sb.ToString();
             _textSequence.Append(DOTween
-                .To(() => dialogText.text, x => dialogText.text = x, finalString, finalString.Length * 0.025f)
+                .To(() => GameUIManager.Instance.dialogText.text, x => GameUIManager.Instance.dialogText.text = x, finalString, finalString.Length * 0.025f)
                 .SetEase(Ease.Linear));
         }
         
         if (!isOpen)
         {
-            dialogBackgroundImage.gameObject.SetActive(true);
-            dialogBackgroundImage.transform.DOLocalMoveY(dialogBackgroundEndTf.localPosition.y, 0.5f);
-            dialogBackgroundImage.transform.DOScale(1, 0.5f)
+            GameUIManager.Instance.dialogBackgroundImage.gameObject.SetActive(true);
+            GameUIManager.Instance.dialogBackgroundImage.transform.DOLocalMoveY(GameUIManager.Instance.dialogBackgroundEndTf.localPosition.y, 0.5f);
+            GameUIManager.Instance.dialogBackgroundImage.transform.DOScale(1, 0.5f)
                 .OnComplete(() =>
                 {
                     isOpen = true;
@@ -150,11 +138,11 @@ public class TextManager : MonoBehaviour
 
     private void ActiveEndTriangle()
     {
-        endTriangle.gameObject.SetActive(true);
+        GameUIManager.Instance.endTriangle.gameObject.SetActive(true);
         _triangleSequence?.Kill(true);
         _triangleSequence = DOTween.Sequence()
-            .Prepend(endTriangle.transform.DOLocalMoveY(_endTriangleStartPos + 5, 0.4f))
-            .Append(endTriangle.transform.DOLocalMoveY(_endTriangleStartPos, 0.4f).SetDelay(0.4f))
+            .Prepend(GameUIManager.Instance.endTriangle.transform.DOLocalMoveY(_endTriangleStartPos + 5, 0.4f))
+            .Append(GameUIManager.Instance.endTriangle.transform.DOLocalMoveY(_endTriangleStartPos, 0.4f).SetDelay(0.4f))
             .SetEase(Ease.Linear).SetLoops(-1);
         _triangleSequence.Restart();
     }
@@ -162,13 +150,13 @@ public class TextManager : MonoBehaviour
     private void DeactivateEndTriangle()
     {
         _triangleSequence?.Kill(true);
-        endTriangle.transform.DOLocalMoveY(_endTriangleStartPos, 0).Play();
-        endTriangle.gameObject.SetActive(false);
+        GameUIManager.Instance.endTriangle.transform.DOLocalMoveY(_endTriangleStartPos, 0).Play();
+        GameUIManager.Instance.endTriangle.gameObject.SetActive(false);
     }
 
     private void DeactivateCharacters()
     {
-        foreach (var image in dialogCharacters)
+        foreach (var image in GameUIManager.Instance.dialogCharacters)
         {
             image.gameObject.SetActive(false);
         }

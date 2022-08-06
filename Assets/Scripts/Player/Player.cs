@@ -1,3 +1,5 @@
+using Cinemachine;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -25,6 +27,7 @@ public class Player : MonoBehaviour
     public SpriteFlipper flipper;
     public PlayerAttachedCamera playerAttached;
     public SpriteRenderer sr;
+    private LevelPropertiesManager _levelProperties;
     
     public float hp;
     public Image hpBar;
@@ -55,7 +58,6 @@ public class Player : MonoBehaviour
     private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isDoAttack, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
-    private Vector3 _doorPos;
     private JumpMode _currentJump;
     private Hit _hit;
     private Controller2D _controller;
@@ -79,6 +81,16 @@ public class Player : MonoBehaviour
         Third,
         FirstShoot,
         SecondShoot
+    }
+
+    private void OnEnable()
+    {
+        GameEvents.OnLevelLoaded += SetPosition;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnLevelLoaded -= SetPosition;
     }
 
     private void Start()
@@ -113,6 +125,17 @@ public class Player : MonoBehaviour
 
         _audio = GetComponent<AudioSource>();
         _interactiveObjectChecker = GetComponent<InteractiveObjectChecker>();
+        _levelProperties = FindObjectOfType<LevelPropertiesManager>();
+        SetPosition();
+    }
+
+    private void SetPosition()
+    {
+        if (_levelProperties.TryGetPositionOfLevel(out var pos))
+        {
+            print(pos);
+            transform.position = pos;
+        }
     }
 
     private void Update()
@@ -199,13 +222,14 @@ public class Player : MonoBehaviour
 
         if (!_isDash)
         {
-            if (targetVelocityX < 0 || targetVelocityX > 0)
+            switch (targetVelocityX)
             {
-                animator.SetBool(AnimIsRun, true);
-            }
-            else if (targetVelocityX == 0)
-            {
-                animator.SetBool(AnimIsRun, false);
+                case < 0 or > 0:
+                    animator.SetBool(AnimIsRun, true);
+                    break;
+                case 0:
+                    animator.SetBool(AnimIsRun, false);
+                    break;
             }
         }
         
@@ -250,6 +274,14 @@ public class Player : MonoBehaviour
                     if (iObj.objectType == InteractiveObjectType.Sign)
                     {
                         TextManager.Instance.OnInput(((InteractiveObjects.Sign)iObj).key);
+                    }
+                    else if (iObj.objectType == InteractiveObjectType.Door)
+                    {
+                        var door = (InteractiveObjects.Teleport)iObj;
+                        GameManager.Instance.positionFlags = door.teleportFlags;
+                        print(GameManager.Instance.positionFlags);
+                        DOTween.KillAll(true);
+                        SceneManager.LoadScene(door.levelName);
                     }
                 }
             }
@@ -641,7 +673,6 @@ public class Player : MonoBehaviour
         else if (other.CompareTag("Door"))
         {
             _door = other.GetComponent<Doer>();
-            _doorPos = _door.monePosition;
             _isDoor = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
         }
