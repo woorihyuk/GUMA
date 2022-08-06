@@ -126,6 +126,10 @@ public class Player : MonoBehaviour
         _audio = GetComponent<AudioSource>();
         _interactiveObjectChecker = GetComponent<InteractiveObjectChecker>();
         _levelProperties = FindObjectOfType<LevelPropertiesManager>();
+        if (GameManager.Instance.CheckIsLoaded())
+        {
+            transform.position = _levelProperties.savePoints[GameManager.Instance.savePoint].position;
+        }
         SetPosition();
     }
 
@@ -133,7 +137,6 @@ public class Player : MonoBehaviour
     {
         if (_levelProperties.TryGetPositionOfLevel(out var pos))
         {
-            print(pos);
             transform.position = pos;
         }
     }
@@ -248,21 +251,6 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (_isTalk)
-            {
-                if (!_isTalking)
-                {
-                    // Debug.Log(_isTalking);
-                    _isTalking = true;
-                    _gameUIManager.keyHintE.gameObject.SetActive(false);
-                    _sign.TalkStart();
-                }
-                else
-                {
-                    _sign.NextText();
-                }
-            }
-
             if (StateManager.Instance.currentState == StateType.Talking)
             {
                 TextManager.Instance.OnInputWithLast();
@@ -279,12 +267,31 @@ public class Player : MonoBehaviour
                     {
                         var door = (InteractiveObjects.Teleport)iObj;
                         GameManager.Instance.positionFlags = door.teleportFlags;
-                        print(GameManager.Instance.positionFlags);
                         DOTween.KillAll(true);
                         SceneManager.LoadScene(door.levelName);
                     }
+                    else if (iObj.objectType == InteractiveObjectType.SavePoint)
+                    {
+                        var point = (InteractiveObjects.SavePoint)iObj;
+                        GameManager.Instance.SaveGame(point.pointFlags, point.levelName);
+                    }
                 }
             }
+            
+            /*if (_isTalk)
+            {
+                if (!_isTalking)
+                {
+                    // Debug.Log(_isTalking);
+                    _isTalking = true;
+                    _gameUIManager.keyHintE.gameObject.SetActive(false);
+                    _sign.TalkStart();
+                }
+                else
+                {
+                    _sign.NextText();
+                }
+            }*/
             
             /*if (_isSave)
             {

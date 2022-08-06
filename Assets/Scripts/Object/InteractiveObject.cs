@@ -5,7 +5,8 @@ public enum InteractiveObjectType
 {
     None,
     Sign,
-    Door
+    Door,
+    SavePoint
 }
 
 public class InteractiveObject : MonoBehaviour

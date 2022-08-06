@@ -7,7 +7,7 @@ public class LevelPropertiesManager : MonoBehaviour
     public static LevelPropertiesManager Instance;
     
     public Transform[] positionSpots;
-    public Collider2D playerCamCollider;
+    public Transform[] savePoints;
     public CinemachineVirtualCamera playerCam;
 
     private void Awake()
@@ -17,7 +17,6 @@ public class LevelPropertiesManager : MonoBehaviour
 
     public bool TryGetPositionOfLevel(out Vector3 position)
     {
-        print(GameManager.Instance.positionFlags);
         if (GameManager.Instance.positionFlags != -1)
         {
             position = positionSpots[GameManager.Instance.positionFlags].position;

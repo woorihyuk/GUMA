@@ -5,14 +5,15 @@ public class Director : MonoBehaviour
 {
     public void NewGame()
     {
-        GameManager.Instance.savePoint = 0;
-        SceneManager.LoadScene("PlayScene");
+        GameManager.Instance.savePoint = -1;
+        SceneManager.LoadScene("01");
     }
 
     public void LoadGame()
     {
-        GameManager.Instance.GameLoad();
-        SceneManager.LoadScene("PlayScene");
+        // GameManager.Instance.GameLoad();
+        GameManager.Instance.LoadGame();
+        // SceneManager.LoadScene("PlayScene");
     }
 
     public void Settings()
