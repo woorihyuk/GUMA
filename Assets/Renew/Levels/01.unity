@@ -14942,10 +14942,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1898825261, guid: 6ba6235248bd6ae4cab646fba04f87e4, type: 3}
-      propertyPath: m_BoundingShape2D
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 6296065804859348162, guid: 6ba6235248bd6ae4cab646fba04f87e4, type: 3}
       propertyPath: m_RootOrder
       value: 7

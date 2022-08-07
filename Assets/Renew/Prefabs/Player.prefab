@@ -378,7 +378,7 @@ MonoBehaviour:
   jumpHeight: 4
   timeToJumpApex: 0.35
   moveSpeed: 8
-  dashSpeed: 24
+  dashSpeed: 16
   defaultSpeed: 8
   dashCoolTime: 0.09
   lastInputX: 0
@@ -388,10 +388,10 @@ MonoBehaviour:
   isCombo: 0
   currentAttack: 0
   attackPrefabs:
-  - {fileID: 7526511960744633938, guid: 5bb6c743483e1254cb68f563a8a5cb9c, type: 3}
-  - {fileID: 8840058109200526657, guid: 027607a3acc215c44ae8f8b6e19d1e1e, type: 3}
-  - {fileID: 3312183653054510614, guid: a9cc85c8402021a4fbb5b5687c2eb9ab, type: 3}
-  - {fileID: 6590579378420555589, guid: f384586e59b3eb84c997ea23734a8518, type: 3}
+  - {fileID: 3943416970267518028, guid: b13f8d85f8f39da41b2cf5ee6789fbd5, type: 3}
+  - {fileID: 8840058109200526657, guid: 3e774dd351bb98e4cb82ce3b18290f21, type: 3}
+  - {fileID: 3312183653054510614, guid: b8c60005b8b2b604ab516b8290552bf5, type: 3}
+  - {fileID: 6590579378420555589, guid: b037454f25799c242b695eb7366f23e6, type: 3}
   wallRayCheckTfs:
   - {fileID: 6296065803588820456}
   - {fileID: 6296065805482234947}
@@ -404,7 +404,6 @@ MonoBehaviour:
   flipper: {fileID: 5249175575137518420}
   playerAttached: {fileID: 0}
   sr: {fileID: 5249175575137518421}
-  playerCam: {fileID: 0}
   hp: 0
   hpBar: {fileID: 0}
 --- !u!114 &6296065804859348026
