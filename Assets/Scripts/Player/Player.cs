@@ -274,6 +274,7 @@ public class Player : MonoBehaviour
                     {
                         var point = (InteractiveObjects.SavePoint)iObj;
                         GameManager.Instance.SaveGame(point.pointFlags, point.levelName);
+                        GameUIManager.Instance.ShowSaveMsg();
                     }
                 }
             }
