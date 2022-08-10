@@ -1,159 +1,72 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class MonsterMove : MonoBehaviour
 {
-    public float HP;
-    public float speed;
-    public float foundRange;
-    public float waitTime;
-    public float maxX;
-    public float minX;
-    public float attackRange;
-    public float dist;
+    private Collider2D _collider;
+    private readonly List<Collider2D> _colliders = new();
+    private ContactFilter2D _filter;
+    public LayerMask contactLayerMask;
 
-    public int _i;
-    private int _x;
+    private TargetPlayerData _lastTargetPlayer;
 
-    public float _direction;
+    private class TargetPlayerData
+    {
+        public float distance;
+        public Player player;
 
-    public bool _isWait;
-    public bool _isMove;
-    public bool _isWalk;
-    public bool _isFound;
-    public bool _isAttack;
-    public bool doAttack;
+        public TargetPlayerData(float dst, Player player)
+        {
+            distance = dst;
+            this.player = player;
+        }
+    }
 
-    public Vector2 _aPos;
-    public Vector2 _bPos;
-
-    public GameUIManager _gameUIManager;
-    public Player _player;
-    public Animator _animator;
-
-    //public static readonly int AnimIsWalk;
-    //public static readonly int AnimIsDie;
-    // Start is called before the first frame update
     protected virtual void Start()
     {
-        _gameUIManager = FindObjectOfType<GameUIManager>();
-        _player = FindObjectOfType<Player>();
-        _animator = GetComponent<Animator>();
-        _i = 1;
-        _isMove = true;
+        _collider = GetComponentInChildren<BoxCollider2D>();
+        _colliders.Clear();
+        _filter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = contactLayerMask
+        };
     }
 
-    // Update is called once per frame
     protected virtual void Update()
     {
-        dist = Vector2.Distance(transform.position, _player.transform.position);
-        _direction = _player.transform.position.x - transform.position.x;
-        _bPos = transform.position;
-        _aPos = new Vector2(speed * _i, 0) * Time.deltaTime;
-        print(transform.position);
-        //RefreshHp(HP);
-
-        if (dist < foundRange)
+        var counts = _collider.OverlapCollider(_filter, _colliders);
+        if (counts == 0) // 아무것도 못 찾았으면
         {
-            _isFound = true;
+            _lastTargetPlayer = null;
+            return;
         }
-        else
+        
+        foreach (var col in _colliders)
         {
-            if (_isAttack)
+            var player = col.GetComponent<Player>();
+
+            if (_lastTargetPlayer == null) // 현재까지 찾은 플레이어가 없을 때
             {
-                _isFound = false;
+                _lastTargetPlayer = new TargetPlayerData(Vector2.Distance(transform.position, player.transform.position), player);
             }
-        }
-
-
-        if (!_isFound)
-        {
-            //_gameUIManager.TryPopHpBar(GetInstanceID().ToString());
-            if (_isMove)
+            else // 찾은 플레이어가 이미 있는데 또 다른 플레이어를 찾을 때
             {
-                //_animator.SetBool(AnimIsWalk, true);
-                transform.position = _bPos + _aPos;
-                print("a");
-                if (transform.position.x>=maxX)
+                var dst = Vector2.Distance(transform.position, player.transform.position);
+                if (_lastTargetPlayer.distance < dst) // 마지막으로 찾은 플레이어가 더 가까울때
                 {
-                    if (_i==1)
-                    {
-                        _isWait = true;
-                        _x = -1;
-                    }
+                    _lastTargetPlayer.distance = dst; // 거리 갱신
+                    continue; // 반복문 다시 돌기
                 }
-                else if (transform.position.x <= minX)
+                
+                // 새로 찾은 플레이어가 더 가까울 때
+                if (_lastTargetPlayer.player != player) // 이전에 찾은 플레이어가 지금 찾은 플레이어랑 다르면
                 {
-                    if (_i == -1)
-                    {
-                        _isWait = true;
-                        _x = 1;
-                    }
+                    // 새 플레이어를 찾았을 때 동작
                 }
-            }
 
-            if (_isWait)
-            {
-                base.StartCoroutine(Wait(waitTime, _x));
+                _lastTargetPlayer = new TargetPlayerData(dst, player); // 플레이어 데이터 갱신
             }
-        }
-        if (_isFound)
-        {
-            if (dist > attackRange)
-            {
-                if (!_isAttack)
-                {
-                    switch (_direction)
-                    {
-                        case < 0:
-                            _i = -1;
-                            break;
-                        case > 0:
-                            _i = 1;
-                            break;
-                    }
-                    transform.position = _aPos + _bPos;
-                }
-            }
-            else
-            {
-                doAttack = true;
-            }
-        }
-
-        if (HP <= 0)
-        {
-            //_animator.SetBool(AnimIsDie, true);
         }
     }
-
-    protected virtual IEnumerator Wait(float waitTime, int directon)
-    {
-        _isWait = false;
-        _isMove = false;
-        //_animator.SetBool(AnimIsWalk, false);
-        yield return YieldInstructionCache.WaitForSeconds(waitTime);
-        _i = directon;
-        _isMove = true;
-    }
-
-    //IEnumerator Walk(float walkTime)
-    //{
-    //    _isWalk = true;
-    //    yield return YieldInstructionCache.WaitForSeconds(walkTime);
-    //    _isMove = false;
-    //    _isWait = true;
-    //    _isWalk = false;
-    //}
-
-    //private void RefreshHp(float newHp)
-    //{
-    //    if (!newHp.Equals(_lastHp))
-    //    {
-    //        _gameUIManager.SetHpBarPercent(GetInstanceID().ToString(), newHp / _mxHp);
-    //        _lastHp = newHp;
-    //    }
-    //}
 }

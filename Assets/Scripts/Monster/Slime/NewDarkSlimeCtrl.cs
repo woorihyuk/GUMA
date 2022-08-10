@@ -14,16 +14,16 @@ public class NewDarkSlimeCtrl : MonsterMove
     protected override void Update()
     {
         base.Update();
-        if (doAttack)
+        /*if (doAttack)
         {
             _isAttack = true;
             _animator.SetBool("isAttack", true);
-        }
+        }*/
     }
 
     public void AttackEnd()
     {
-        _animator.SetBool("isAttack", false);
-        _isAttack = false;
+        /*_animator.SetBool("isAttack", false);
+        _isAttack = false;*/
     }
 }
