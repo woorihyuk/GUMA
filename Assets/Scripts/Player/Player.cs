@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -25,6 +26,11 @@ public class Player : MonoBehaviour
     public SpriteFlipper flipper;
     public PlayerAttachedCamera playerAttached;
     public SpriteRenderer sr;
+    private LevelPropertiesManager _levelProperties;
+    
+    public float hp;
+    public Image hpBar;
+
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
     private static readonly int AnimIsDash = Animator.StringToHash("isDash");
@@ -48,15 +54,13 @@ public class Player : MonoBehaviour
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
     private float _comboTime;
-    public float hp;
     private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isDoAttack, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
-    private Vector3 _doorPos;
     private JumpMode _currentJump;
     private Hit _hit;
     private Controller2D _controller;
-    public Image hpBar;
+    private InteractiveObjectChecker _interactiveObjectChecker;
     private Sign _sign;
     private Doer _door;
     private GameUIManager _gameUIManager;
@@ -78,9 +82,14 @@ public class Player : MonoBehaviour
         SecondShoot
     }
 
-    private void Awake()
+    private void OnEnable()
     {
-        Application.targetFrameRate = 60;
+        GameEvents.OnLevelLoaded += SetPosition;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.OnLevelLoaded -= SetPosition;
     }
 
     private void Start()
@@ -95,16 +104,13 @@ public class Player : MonoBehaviour
 
         _gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         _jumpVelocity = Mathf.Abs(_gravity) * timeToJumpApex;
-        // print("Gravity: " + _gravity + " Jump Velocity: " + _jumpVelocity);
 
         hp = maxHp;
 
         _hit = GetComponent<Hit>();
         isHit = true;
-
-        _gameUIManager.keyHintE.gameObject.SetActive(false);
-
-        switch (GameManager.Instance.savePoint)
+        
+        /*switch (GameManager.Instance.savePoint)
         {
             case 0:
                 transform.position = new Vector3(0.5f, -6.07f, 0);
@@ -114,11 +120,24 @@ public class Player : MonoBehaviour
                 transform.position = new Vector3(89.41f, 2.95f, 0);
                 Time.timeScale = 1;
                 break;
-        }
+        }*/
 
-        playerAttached.isIn = true;
-        _gameUIManager.gameOverImage.gameObject.SetActive(false);
         _audio = GetComponent<AudioSource>();
+        _interactiveObjectChecker = GetComponent<InteractiveObjectChecker>();
+        _levelProperties = FindObjectOfType<LevelPropertiesManager>();
+        if (GameManager.Instance.CheckIsLoaded())
+        {
+            transform.position = _levelProperties.savePoints[GameManager.Instance.savePoint].position;
+        }
+        SetPosition();
+    }
+
+    private void SetPosition()
+    {
+        if (_levelProperties.TryGetPositionOfLevel(out var pos))
+        {
+            transform.position = pos;
+        }
     }
 
     private void Update()
@@ -135,6 +154,7 @@ public class Player : MonoBehaviour
             _currentJump = JumpMode.None;
             animator.SetBool(AnimIsJump, false);
             animator.SetBool(AnimDoubleJump, false);
+            animator.Update(0);
         }
 
         _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
@@ -204,13 +224,25 @@ public class Player : MonoBehaviour
 
         if (!_isDash)
         {
-            if (targetVelocityX < 0 || targetVelocityX > 0)
+            switch (targetVelocityX)
             {
-                animator.SetBool(AnimIsRun, true);
+                case < 0 or > 0:
+                    animator.SetBool(AnimIsRun, true);
+                    break;
+                case 0:
+                    animator.SetBool(AnimIsRun, false);
+                    break;
             }
-            else if (targetVelocityX == 0)
+        }
+        
+        if (isCombo)
+        {
+            if (!_isAttack)
             {
-                animator.SetBool(AnimIsRun, false);
+                if (_isDoAttack)
+                {
+                    DoAttack();
+                }
             }
         }
 
@@ -218,7 +250,35 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (_isTalk)
+            if (StateManager.Instance.currentState == StateType.Talking)
+            {
+                TextManager.Instance.OnInputWithLast();
+            }
+            else if (StateManager.Instance.currentState == StateType.None)
+            {
+                if (_interactiveObjectChecker.TryGetLastInteractiveObject(out var iObj))
+                {
+                    if (iObj.objectType == InteractiveObjectType.Sign)
+                    {
+                        TextManager.Instance.OnInput(((InteractiveObjects.Sign)iObj).key);
+                    }
+                    else if (iObj.objectType == InteractiveObjectType.Door)
+                    {
+                        var door = (InteractiveObjects.Teleport)iObj;
+                        GameManager.Instance.positionFlags = door.teleportFlags;
+                        DOTween.KillAll(true);
+                        SceneManager.LoadScene(door.levelName);
+                    }
+                    else if (iObj.objectType == InteractiveObjectType.SavePoint)
+                    {
+                        var point = (InteractiveObjects.SavePoint)iObj;
+                        GameManager.Instance.SaveGame(point.pointFlags, point.levelName);
+                        GameUIManager.Instance.ShowSaveMsg();
+                    }
+                }
+            }
+            
+            /*if (_isTalk)
             {
                 if (!_isTalking)
                 {
@@ -231,16 +291,16 @@ public class Player : MonoBehaviour
                 {
                     _sign.NextText();
                 }
-            }
-
-            if (_isSave)
+            }*/
+            
+            /*if (_isSave)
             {
                 GameManager.Instance.savePoint = 1;
                 GameManager.Instance.GameSave();
                 StartCoroutine(_hit.Save());
-            }
+            }*/
 
-            if (_isDoor)
+            /*if (_isDoor)
             {
                 transform.position = _doorPos;
                 _isDoor = false;
@@ -248,23 +308,12 @@ public class Player : MonoBehaviour
 
                 _gameUIManager.keyHintE.gameObject.SetActive(false);
                 _door = null;
-            }
+            }*/
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha7))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             SceneManager.LoadScene("Title");
-        }
-
-        if (isCombo)
-        {
-            if (!_isAttack)
-            {
-                if (_isDoAttack)
-                {
-                    DoAttack();
-                }
-            }
         }
     }
 
@@ -403,7 +452,7 @@ public class Player : MonoBehaviour
                     _audio.Play();
                     switch (_isWall)
                     {
-                        case true when _controller.collisions.below:
+                        case true:
                             _velocity.y = _jumpVelocity;
                             _velocity.x = -20 * lastInputX;
                             _currentJump = JumpMode.Normal;
@@ -419,13 +468,6 @@ public class Player : MonoBehaviour
                             _velocity.y = _jumpVelocity;
                             _currentJump = JumpMode.Double;
                             animator.SetBool(AnimDoubleJump, true);
-                            break;
-                        case true when !_controller.collisions.below:
-                            _velocity.y = _jumpVelocity;
-                            _velocity.x = -20 * lastInputX;
-                            _currentJump = JumpMode.Normal;
-                            animator.SetBool(AnimIsJump, true);
-                            lastInputX *= -1;
                             break;
                     }
 
@@ -572,7 +614,7 @@ public class Player : MonoBehaviour
         if (currentAttack == attackMode)
         {
             _isDoAttack = false;
-            Debug.Log(currentAttack);
+            // Debug.Log(currentAttack);
         }
 
         isCombo = true;
@@ -602,11 +644,11 @@ public class Player : MonoBehaviour
         Time.timeScale = 1;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("EnemyAttack"))
+        if (other.CompareTag("EnemyAttack"))
         {
-            Damage damage = collision.GetComponent<Damage>();
+            var damage = other.GetComponent<Damage>();
             if (!isHit)
             {
                 return;
@@ -622,23 +664,22 @@ public class Player : MonoBehaviour
             StartCoroutine(_hit.HitAni());
         }
 
-        else if (collision.CompareTag("Sine"))
+        else if (other.CompareTag("Sign"))
         {
             _isTalk = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
-            _sign = collision.GetComponent<Sign>();
+            _sign = other.GetComponent<Sign>();
         }
 
-        else if (collision.CompareTag("SavePoint"))
+        else if (other.CompareTag("SavePoint"))
         {
             _isSave = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
         }
 
-        else if (collision.CompareTag("Door"))
+        else if (other.CompareTag("Door"))
         {
-            _door = collision.GetComponent<Doer>();
-            _doorPos = _door.monePosition;
+            _door = other.GetComponent<Doer>();
             _isDoor = true;
             _gameUIManager.keyHintE.gameObject.SetActive(true);
         }
@@ -646,7 +687,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Sine"))
+        if (other.CompareTag("Sign"))
         {
             _isTalk = false;
             _isTalking = false;

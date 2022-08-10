@@ -9,9 +9,9 @@ TagManager:
   - PlayerAttack
   - wall
   - isground
-  - Sine
   - SavePoint
   - Door
+  - Sign
   layers:
   - Default
   - TransparentFX
@@ -20,7 +20,7 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
+  - Interactive Object
   - 
   - 
   - 
