@@ -2,7 +2,6 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-// ReSharper disable Unity.InefficientPropertyAccess
 
 [RequireComponent(typeof(Controller2D))]
 public class Player : MonoBehaviour
