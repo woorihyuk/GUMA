@@ -1,7 +1,8 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public abstract class MonsterMove : MonoBehaviour
 {
@@ -79,12 +80,12 @@ public abstract class MonsterMove : MonoBehaviour
 
     public void Move(float speed, int direction)
     {
-        var bPos = transform.position;
-        var aPos = new Vector3(speed * direction, 0);
-        transform.position = bPos + aPos;
+        transform.position += new Vector3(speed * direction, 0);
     }
 
     public float maxX, minX, waitTime, speed;
+    public Vector3 spawnedPosition;
+    
     public void MoveAround()
     {
         var i = 1;
@@ -95,9 +96,66 @@ public abstract class MonsterMove : MonoBehaviour
         if (transform.position.x <= minX)
         {
             i = 1;
-            //Observable.Timer(TimeSpan.FromMilliseconds(waitTime)).Subscribe
         }
-        Move(speed, i);
+    }
+
+    protected IEnumerator AIMove(float maxFreezeDelay, float minMoveTime, float maxMoveTime)
+    {
+        while (gameObject)
+        {
+            yield return new WaitForSeconds(Random.Range(0, maxFreezeDelay)); // 프리징
+
+            // 방향 정하기
+            int direction;
+            if (transform.position.x >= spawnedPosition.x + maxX) // 오른쪽 끝에 도달했으면
+            {
+                direction = -1; // 왼쪽으로
+                Debug.Log($"오른쪽 끝에 도달함 : {direction}");
+            }
+            else if (transform.position.x <= spawnedPosition.x - maxX) // 왼쪽 끝에 도달했으면
+            {
+                direction = 1; // 오른쪽으로
+                Debug.Log($"왼쪽 끝에 도달함 : {direction}");
+            }
+            else // 그 중간에 있다면
+            {
+                direction = Random.value < 0.5f ? -1 : 1; // 랜덤으로 왼쪽 이동 or 오른쪽 이동
+                Debug.Log($"중간에 위치함 : {direction}");
+            }
+            
+            // 이동하기
+            var moveTime = Random.Range(minMoveTime, maxMoveTime);
+            Debug.Log($"이동 시작 : {moveTime}");
+            var timer = 0f;
+            
+            while (moveTime > timer)
+            {
+                Move(speed * Time.deltaTime, direction);
+                timer += Time.deltaTime;
+                
+                if (direction == -1)
+                {
+                    if (transform.position.x <= spawnedPosition.x - maxX)
+                    {
+                        Vector3 pos = transform.position;
+                        pos.x = spawnedPosition.x - maxX;
+                        transform.position = pos;
+                    }
+                }
+                else if (transform.position.x >= spawnedPosition.x + maxX)
+                {
+                    Vector3 pos = transform.position;
+                    pos.x = spawnedPosition.x + maxX;
+                    transform.position = pos;
+                }
+                
+                yield return null;
+            }
+            
+            Debug.Log("이동 완료");
+
+            yield return null;
+        }
     }
 
     protected abstract void OnPlayerFound();

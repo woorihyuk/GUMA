@@ -539,12 +539,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1916558233}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef613e5bac9757d4585bca387fbc8b2d, type: 3}
+  m_Script: {fileID: 11500000, guid: 3897763ec024932498048273769a4ec3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   contactLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  maxX: 5
+  minX: 0
+  waitTime: 0
+  speed: 1
+  spawnedPosition: {x: 0, y: 0, z: 0}
 --- !u!212 &1916558235
 SpriteRenderer:
   m_ObjectHideFlags: 0

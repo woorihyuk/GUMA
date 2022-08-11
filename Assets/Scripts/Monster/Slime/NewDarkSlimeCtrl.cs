@@ -8,6 +8,7 @@ public class NewDarkSlimeCtrl : MonsterMove
     protected override void Start()
     {
         base.Start();
+        StartCoroutine(base.AIMove(3f, 0.3f, 3f));
     }
 
     // Update is called once per frame
@@ -24,6 +25,5 @@ public class NewDarkSlimeCtrl : MonsterMove
 
     protected override void OnPlayerFound()
     {
-        throw new System.NotImplementedException();
     }
 }
