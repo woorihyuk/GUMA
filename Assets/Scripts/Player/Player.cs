@@ -319,6 +319,8 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            GameUIManager.Instance.SetActivePlayerHud(false);
+            DOTween.Kill(true);
             SceneManager.LoadScene("Title");
         }
     }
@@ -672,6 +674,7 @@ public class Player : MonoBehaviour
             _ => transform.position
         };*/
         GameUIManager.Instance.SetActivePlayerHud(false);
+        DOTween.Kill(true);
         SceneManager.LoadScene("Title");
     }
 
