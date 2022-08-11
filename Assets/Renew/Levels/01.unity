@@ -14942,6 +14942,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6296065804859348025, guid: 6ba6235248bd6ae4cab646fba04f87e4, type: 3}
+      propertyPath: attackPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 7526511960744633938, guid: c7cfa5ec21c3d0e4696484331a52254f, type: 3}
     - target: {fileID: 6296065804859348162, guid: 6ba6235248bd6ae4cab646fba04f87e4, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -15056,7 +15060,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3747578223982738682}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.6652775, z: -20}
+  m_LocalPosition: {x: 0.0000019073486, y: -0.6652775, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

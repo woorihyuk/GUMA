@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
-public class MonsterMove : MonoBehaviour
+public abstract class MonsterMove : MonoBehaviour
 {
     private Collider2D _collider;
     private readonly List<Collider2D> _colliders = new();
@@ -68,5 +70,35 @@ public class MonsterMove : MonoBehaviour
                 _lastTargetPlayer = new TargetPlayerData(dst, player); // 플레이어 데이터 갱신
             }
         }
+
+        if (_lastTargetPlayer != null)
+        {
+            OnPlayerFound();
+        }
     }
+
+    public void Move(float speed, int direction)
+    {
+        var bPos = transform.position;
+        var aPos = new Vector3(speed * direction, 0);
+        transform.position = bPos + aPos;
+    }
+
+    public float maxX, minX, waitTime, speed;
+    public void MoveAround()
+    {
+        var i = 1;
+        if (transform.position.x>=maxX)
+        {
+            i = -1;
+        }
+        if (transform.position.x <= minX)
+        {
+            i = 1;
+            //Observable.Timer(TimeSpan.FromMilliseconds(waitTime)).Subscribe
+        }
+        Move(speed, i);
+    }
+
+    protected abstract void OnPlayerFound();
 }
