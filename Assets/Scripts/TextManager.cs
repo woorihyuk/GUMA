@@ -42,6 +42,8 @@ public class TextManager : Singleton<TextManager>
         if (DOTween.IsTweening(GameUIManager.Instance.dialogBackgroundImage.transform, true) || DOTween.IsTweening((RectTransform)GameUIManager.Instance.letterBox.transform, true)) return;
         if (!isOpen)
         {
+            GameUIManager.Instance.SetActivePlayerHud(false);
+            GameUIManager.Instance.letterBox.gameObject.SetActive(true);
             ((RectTransform)GameUIManager.Instance.letterBox.transform).DOSizeDelta(new Vector2(0, 0), 0.7f)
                 .OnComplete(() =>
                 {
@@ -77,6 +79,8 @@ public class TextManager : Singleton<TextManager>
             .OnComplete(() =>
             {
                 GameUIManager.Instance.dialogBackgroundImage.gameObject.SetActive(false);
+                GameUIManager.Instance.letterBox.gameObject.SetActive(false);
+                GameUIManager.Instance.SetActivePlayerHud(true);
                 GameUIManager.Instance.dialogText.text = "";
                 StateManager.Instance.currentState = StateType.None;
                 isOpen = false;

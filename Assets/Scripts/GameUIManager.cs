@@ -18,10 +18,23 @@ public class GameUIManager : PrefabSingleton<GameUIManager>
     public Image[] dialogCharacters;
     public Transform dialogBackgroundStartTf, dialogBackgroundEndTf;
 
+    public Image hpBackgroundImage, hpImage;
+    public Image[] inventorySlots;
+
     public Transform saveStart, saveEnd;
     public TMP_Text saveText;
     private Sequence _saveTextSequence;
 
+    public void SetActivePlayerHud(bool value)
+    {
+        hpBackgroundImage.gameObject.SetActive(value);
+        hpImage.gameObject.SetActive(value);
+        foreach (Image image in inventorySlots)
+        {
+            image.gameObject.SetActive(value);
+        }
+    }
+    
     public void ShowSaveMsg()
     {
         _saveTextSequence?.Kill(true);

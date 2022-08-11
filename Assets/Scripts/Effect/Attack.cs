@@ -5,17 +5,11 @@ using UnityEngine;
 public class Attack : MonoBehaviour
 {
     private float attackTime;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
+    
     void Update()
     {
         attackTime += Time.deltaTime;
-        if (attackTime >= 0.01)
+        if (attackTime >= 0.01f)
         {
             Destroy(gameObject);
         }

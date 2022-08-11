@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Controller2D))]
@@ -26,10 +26,9 @@ public class Player : MonoBehaviour
     public PlayerAttachedCamera playerAttached;
     public SpriteRenderer sr;
     private LevelPropertiesManager _levelProperties;
-    
-    public float hp;
-    public Image hpBar;
 
+    public Collider2D leftMeleeAttackCollider, rightMeleeAttackCollider;
+    public float hp;
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
     private static readonly int AnimIsDash = Animator.StringToHash("isDash");
@@ -63,6 +62,8 @@ public class Player : MonoBehaviour
     private Sign _sign;
     private Doer _door;
     private GameUIManager _gameUIManager;
+    private ContactFilter2D _attackCheckFilter;
+    public LayerMask attackContactLayerMask;
 
     private enum JumpMode
     {
@@ -93,8 +94,6 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        _gameUIManager = FindObjectOfType<GameUIManager>();
-
         _isAttackYet = true;
         _controller = GetComponent<Controller2D>();
 
@@ -105,6 +104,8 @@ public class Player : MonoBehaviour
         _jumpVelocity = Mathf.Abs(_gravity) * timeToJumpApex;
 
         hp = maxHp;
+        GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
+        GameUIManager.Instance.SetActivePlayerHud(true);
 
         _hit = GetComponent<Hit>();
         isHit = true;
@@ -120,6 +121,12 @@ public class Player : MonoBehaviour
                 Time.timeScale = 1;
                 break;
         }*/
+        
+        _attackCheckFilter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = attackContactLayerMask
+        };
 
         _audio = GetComponent<AudioSource>();
         _interactiveObjectChecker = GetComponent<InteractiveObjectChecker>();
@@ -546,6 +553,34 @@ public class Player : MonoBehaviour
         //dTime = 0;
     }
 
+    private void GiveDamage(int dmg)
+    {
+        if (!sr.flipX)
+        {
+            var enemies = new List<Collider2D>();
+            var counts = rightMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            if (counts == 0) return;
+            foreach (var col in enemies)
+            {
+                var entity = col.GetComponent<MonsterMove>();
+                entity.hp -= dmg;
+                entity.RefreshHp(entity.hp);
+            }
+        }
+        else
+        {
+            var enemies = new List<Collider2D>();
+            var counts = leftMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            if (counts == 0) return;
+            foreach (var col in enemies)
+            {
+                var entity = col.GetComponent<MonsterMove>();
+                entity.hp -= dmg;
+                entity.RefreshHp(entity.hp);
+            }
+        }
+    }
+
     public void OnAnimationAttackFx(AttackMode attackMode)
     {
         var thisTransform = transform;
@@ -554,16 +589,19 @@ public class Player : MonoBehaviour
         {
             case AttackMode.First:
                 _audio.PlayOneShot(clip[1]);
+                GiveDamage(10);
                 Instantiate(attackPrefabs[0], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Second:
                 _audio.PlayOneShot(clip[1]);
+                GiveDamage(10);
                 Instantiate(attackPrefabs[1], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Third:
                 _audio.PlayOneShot(clip[1]);
+                GiveDamage(10);
                 Instantiate(attackPrefabs[2], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
@@ -572,6 +610,7 @@ public class Player : MonoBehaviour
                 _audio.PlayOneShot(clip[2]);
                 Instantiate(attackPrefabs[3], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
+                GiveDamage(20);
                 break;
         }
     }
@@ -622,7 +661,7 @@ public class Player : MonoBehaviour
 
     public void IsDie()
     {
-        GameManager.Instance.GameLoad();
+        /*GameManager.Instance.GameLoad();
         Time.timeScale = 0;
         _gameUIManager.gameOverImage.gameObject.SetActive(true);
         GameEvents.OnPlayerDie.Invoke();
@@ -631,13 +670,24 @@ public class Player : MonoBehaviour
             0 => new Vector3(0, -1.5f, 0),
             1 => new Vector3(86, 8.25f, 0),
             _ => transform.position
-        };
+        };*/
+        GameUIManager.Instance.SetActivePlayerHud(false);
+        SceneManager.LoadScene("Title");
+    }
+
+    public void RefreshHp()
+    {
+        GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
+        if (hp <= 0)
+        {
+            animator.SetBool(AnimIsDie, true);
+        }
     }
 
     public void Restart()
     {
         hp = maxHp;
-        hpBar.fillAmount = hp / maxHp;
+        GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
         _gameUIManager.gameOverImage.gameObject.SetActive(false);
         animator.SetBool(AnimIsDie, false);
         Time.timeScale = 1;
@@ -654,7 +704,7 @@ public class Player : MonoBehaviour
             }
 
             hp -= damage.dmg;
-            hpBar.fillAmount = hp / maxHp;
+            GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
             if (hp <= 0)
             {
                 animator.SetBool(AnimIsDie, true);

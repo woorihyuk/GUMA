@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,6 +9,7 @@ public abstract class MonsterMove : MonoBehaviour
     private readonly List<Collider2D> _colliders = new();
     private ContactFilter2D _filter;
     public LayerMask contactLayerMask;
+    public bool isPlayerFound;
 
     private TargetPlayerData _lastTargetPlayer;
 
@@ -27,13 +27,15 @@ public abstract class MonsterMove : MonoBehaviour
 
     protected virtual void Start()
     {
-        _collider = GetComponentInChildren<BoxCollider2D>();
+        hp = maxHp;
+        _collider = GetComponentsInChildren<BoxCollider2D>()[1];
         _colliders.Clear();
         _filter = new ContactFilter2D
         {
             useLayerMask = true,
             layerMask = contactLayerMask
         };
+        spawnedPosition = transform.position;
     }
 
     protected virtual void Update()
@@ -42,6 +44,7 @@ public abstract class MonsterMove : MonoBehaviour
         if (counts == 0) // 아무것도 못 찾았으면
         {
             _lastTargetPlayer = null;
+            isPlayerFound = true;
             return;
         }
         
@@ -74,7 +77,8 @@ public abstract class MonsterMove : MonoBehaviour
 
         if (_lastTargetPlayer != null)
         {
-            OnPlayerFound();
+            isPlayerFound = false;
+            OnPlayerFound(_lastTargetPlayer.player);
         }
     }
 
@@ -85,6 +89,32 @@ public abstract class MonsterMove : MonoBehaviour
 
     public float maxX, minX, waitTime, speed;
     public Vector3 spawnedPosition;
+    public int hp, maxHp, lastHp;
+
+    protected abstract void OnHpDrown();
+
+    protected abstract void OnDirectionSet(int direction);
+
+    public void RefreshHp(int newHp)
+    {
+        if (!newHp.Equals(lastHp))
+        {
+            try
+            {
+                GameUIManager.Instance.SetHpBarPercent(GetInstanceID().ToString(), (float)newHp/maxHp);
+            }
+            catch
+            {
+                return;
+            }
+            lastHp = newHp;
+            
+            if (hp <= 0)
+            {
+                OnHpDrown();
+            }
+        }
+    }
     
     public void MoveAround()
     {
@@ -122,6 +152,8 @@ public abstract class MonsterMove : MonoBehaviour
                 direction = Random.value < 0.5f ? -1 : 1; // 랜덤으로 왼쪽 이동 or 오른쪽 이동
                 Debug.Log($"중간에 위치함 : {direction}");
             }
+
+            OnDirectionSet(direction);
             
             // 이동하기
             var moveTime = Random.Range(minMoveTime, maxMoveTime);
@@ -158,5 +190,5 @@ public abstract class MonsterMove : MonoBehaviour
         }
     }
 
-    protected abstract void OnPlayerFound();
+    protected abstract void OnPlayerFound(Player player);
 }

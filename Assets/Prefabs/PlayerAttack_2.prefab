@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: -292711035032006108}
   - component: {fileID: -4576865498825538123}
   m_Layer: 0
-  m_Name: 1_1_1_6
+  m_Name: PlayerAttack_2
   m_TagString: PlayerAttack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
