@@ -1327,7 +1327,7 @@ TilemapRenderer:
   m_MaxChunkCount: 16
   m_MaxFrameAge: 16
   m_SortOrder: 0
-  m_Mode: 0
+  m_Mode: 1
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
 --- !u!1839735485 &367227593
@@ -21389,13 +21389,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6850060339853397321, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
-      propertyPath: maxX
-      value: 2
+    - target: {fileID: 6850060339555083360, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
+      propertyPath: m_Size.x
+      value: 15.158205
       objectReference: {fileID: 0}
-    - target: {fileID: 6850060339853397321, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
-      propertyPath: speed
-      value: 1.2
+    - target: {fileID: 6850060339555083360, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
+      propertyPath: m_Size.y
+      value: 5.990641
+      objectReference: {fileID: 0}
+    - target: {fileID: 6850060339555083360, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
+      propertyPath: m_Offset.y
+      value: 1.5960972
       objectReference: {fileID: 0}
     - target: {fileID: 6850060339853397322, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
       propertyPath: m_Name
@@ -21407,7 +21411,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6850060339853397327, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 67.72
+      value: 69.94
       objectReference: {fileID: 0}
     - target: {fileID: 6850060339853397327, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
       propertyPath: m_LocalPosition.y

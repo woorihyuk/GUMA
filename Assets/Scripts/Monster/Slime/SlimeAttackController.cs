@@ -5,23 +5,29 @@ namespace Game.Monster.Slime
 {
     public class SlimeAttackController : MonoBehaviour
     {
-        public LayerMask attackContactLayerMask;
-        private Collider2D _collider;
+        public LayerMask attackContactLayerMask, groundContactLayerMask;
         
         private Animator _animator;
-        private ContactFilter2D _attackCheckFilter;
+        private Collider2D _collider;
+        private SpriteRenderer _spriteRenderer;
+        private ContactFilter2D _attackCheckFilter, _groundCheckFilter;
         private static readonly int IsAttack = Animator.StringToHash("isAttack");
 
-        private void Start()
+        public void Initialize()
         {
             _animator = GetComponent<Animator>();
             _collider = GetComponent<BoxCollider2D>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
             _attackCheckFilter = new ContactFilter2D
             {
                 useLayerMask = true,
                 layerMask = attackContactLayerMask
             };
-            gameObject.SetActive(false);
+            _groundCheckFilter = new ContactFilter2D
+            {
+                useLayerMask = true,
+                layerMask = groundContactLayerMask
+            };
         }
 
         public void Attack()
@@ -30,12 +36,17 @@ namespace Game.Monster.Slime
             _animator.SetBool(IsAttack, true);
         }
 
-        public void SetPosition(float newX)
+        public void SetPosition(Vector3 newPos)
         {
-            var transform1 = transform;
-            Vector3 transformPosition = transform1.position;
-            transformPosition.x = newX;
-            transform1.position = transformPosition;
+            var list = new List<RaycastHit2D>();
+            var count = Physics2D.Raycast(newPos, Vector2.down, _groundCheckFilter, list);
+            if (count == 0) return;
+            transform.position = new Vector3(newPos.x, list[0].point.y + _spriteRenderer.bounds.size.y / 2);
+        }
+
+        public void Flip(bool x)
+        {
+            _spriteRenderer.flipX = x;
         }
 
         public void AttackRange()

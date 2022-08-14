@@ -140,24 +140,24 @@ public abstract class MonsterMove : MonoBehaviour
             if (transform.position.x >= spawnedPosition.x + maxX) // 오른쪽 끝에 도달했으면
             {
                 direction = -1; // 왼쪽으로
-                Debug.Log($"오른쪽 끝에 도달함 : {direction}");
+                // Debug.Log($"오른쪽 끝에 도달함 : {direction}");
             }
             else if (transform.position.x <= spawnedPosition.x - maxX) // 왼쪽 끝에 도달했으면
             {
                 direction = 1; // 오른쪽으로
-                Debug.Log($"왼쪽 끝에 도달함 : {direction}");
+                // Debug.Log($"왼쪽 끝에 도달함 : {direction}");
             }
             else // 그 중간에 있다면
             {
                 direction = Random.value < 0.5f ? -1 : 1; // 랜덤으로 왼쪽 이동 or 오른쪽 이동
-                Debug.Log($"중간에 위치함 : {direction}");
+                // Debug.Log($"중간에 위치함 : {direction}");
             }
 
             OnDirectionSet(direction);
             
             // 이동하기
             var moveTime = Random.Range(minMoveTime, maxMoveTime);
-            Debug.Log($"이동 시작 : {moveTime}");
+            // Debug.Log($"이동 시작 : {moveTime}");
             var timer = 0f;
             
             while (moveTime > timer)
@@ -184,7 +184,7 @@ public abstract class MonsterMove : MonoBehaviour
                 yield return null;
             }
             
-            Debug.Log("이동 완료");
+            // Debug.Log("이동 완료");
 
             yield return null;
         }

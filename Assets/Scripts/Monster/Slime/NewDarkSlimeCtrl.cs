@@ -18,6 +18,7 @@ public class NewDarkSlimeCtrl : MonsterMove
         _animator = GetComponent<Animator>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         _aiMoveCoroutine = StartCoroutine(base.AIMove(0, 0.3f, 3f));
+        slimeAttackController.Initialize();
     }
 
     protected override void Update()
@@ -63,6 +64,7 @@ public class NewDarkSlimeCtrl : MonsterMove
     protected override void OnDirectionSet(int direction)
     {
         _spriteRenderer.flipX = direction == 1;
+        slimeAttackController.Flip(direction == 1);
     }
 
     protected override void OnPlayerFound(Player player)
@@ -78,7 +80,7 @@ public class NewDarkSlimeCtrl : MonsterMove
             _isAttack = true;
             if (transform.position.x - player.transform.position.x > 0) OnDirectionSet(-1);
             else if (transform.position.x - player.transform.position.x < 0) OnDirectionSet(1);
-            slimeAttackController.SetPosition(player.transform.position.x);
+            slimeAttackController.SetPosition(player.transform.position);
         }
     }
 }
