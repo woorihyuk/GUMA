@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using Game;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
     public AttackMode currentAttack;
     public GameObject[] attackPrefabs;
     public Transform[] wallRayCheckTfs;
+    public Transform directionalObjectGroup;
+    public Transform[] hitEffectPoints;
     public AudioClip[] clip;
     public Animator animator;
     public SpriteFlipper flipper;
@@ -27,7 +30,7 @@ public class Player : MonoBehaviour
     public SpriteRenderer sr;
     private LevelPropertiesManager _levelProperties;
 
-    public Collider2D leftMeleeAttackCollider, rightMeleeAttackCollider;
+    public Collider2D[] attackColliders;
     public float hp;
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
@@ -52,7 +55,7 @@ public class Player : MonoBehaviour
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
     private float _comboTime;
-    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isDoAttack, _isAttackYet;
+    private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
     private JumpMode _currentJump;
@@ -283,38 +286,6 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            
-            /*if (_isTalk)
-            {
-                if (!_isTalking)
-                {
-                    // Debug.Log(_isTalking);
-                    _isTalking = true;
-                    _gameUIManager.keyHintE.gameObject.SetActive(false);
-                    _sign.TalkStart();
-                }
-                else
-                {
-                    _sign.NextText();
-                }
-            }*/
-            
-            /*if (_isSave)
-            {
-                GameManager.Instance.savePoint = 1;
-                GameManager.Instance.GameSave();
-                StartCoroutine(_hit.Save());
-            }*/
-
-            /*if (_isDoor)
-            {
-                transform.position = _doorPos;
-                _isDoor = false;
-                playerAttached.isIn = !playerAttached.isIn;
-
-                _gameUIManager.keyHintE.gameObject.SetActive(false);
-                _door = null;
-            }*/
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -555,31 +526,45 @@ public class Player : MonoBehaviour
         //dTime = 0;
     }
 
-    private void GiveDamage(int dmg)
+    private void GiveDamage(int dmg, int atkNum)
     {
         if (!sr.flipX)
         {
             var enemies = new List<Collider2D>();
-            var counts = rightMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            directionalObjectGroup.transform.localScale = new Vector3(1, 1, 1);
+            
+            if (atkNum == -1) return;
+            var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
             if (counts == 0) return;
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<MonsterMove>();
-                entity.hp -= dmg;
-                entity.RefreshHp(entity.hp);
+                entity.OnMonsterGetDamaged(dmg);
             }
+            
+            FxPoolManager.Instance.playerHitFxPool.Get(out var v);
+            var vTf = v.transform;
+            vTf.position = hitEffectPoints[atkNum].position;
+            vTf.localScale = new Vector3(1, 1, 1);
         }
         else
         {
             var enemies = new List<Collider2D>();
-            var counts = leftMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            directionalObjectGroup.transform.localScale = new Vector3(-1, 1, 1);
+            
+            if (atkNum == -1) return;
+            var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
             if (counts == 0) return;
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<MonsterMove>();
-                entity.hp -= dmg;
-                entity.RefreshHp(entity.hp);
+                entity.OnMonsterGetDamaged(dmg);
             }
+            
+            FxPoolManager.Instance.playerHitFxPool.Get(out var v);
+            var vTf = v.transform;
+            vTf.position = hitEffectPoints[atkNum].position;
+            vTf.localScale = new Vector3(-1, 1, 1);
         }
     }
 
@@ -591,19 +576,19 @@ public class Player : MonoBehaviour
         {
             case AttackMode.First:
                 _audio.PlayOneShot(clip[1]);
-                GiveDamage(10);
+                GiveDamage(10, 0);
                 Instantiate(attackPrefabs[0], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Second:
                 _audio.PlayOneShot(clip[1]);
-                GiveDamage(10);
+                GiveDamage(10, 1);
                 Instantiate(attackPrefabs[1], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Third:
                 _audio.PlayOneShot(clip[1]);
-                GiveDamage(10);
+                GiveDamage(10, 2);
                 Instantiate(attackPrefabs[2], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
@@ -612,7 +597,7 @@ public class Player : MonoBehaviour
                 _audio.PlayOneShot(clip[2]);
                 Instantiate(attackPrefabs[3], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
-                GiveDamage(20);
+                GiveDamage(20, -1);
                 break;
         }
     }
@@ -714,48 +699,6 @@ public class Player : MonoBehaviour
             }
 
             StartCoroutine(_hit.HitAni());
-        }
-
-        else if (other.CompareTag("Sign"))
-        {
-            _isTalk = true;
-            _gameUIManager.keyHintE.gameObject.SetActive(true);
-            _sign = other.GetComponent<Sign>();
-        }
-
-        else if (other.CompareTag("SavePoint"))
-        {
-            _isSave = true;
-            _gameUIManager.keyHintE.gameObject.SetActive(true);
-        }
-
-        else if (other.CompareTag("Door"))
-        {
-            _door = other.GetComponent<Doer>();
-            _isDoor = true;
-            _gameUIManager.keyHintE.gameObject.SetActive(true);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Sign"))
-        {
-            _isTalk = false;
-            _isTalking = false;
-            _gameUIManager.keyHintE.gameObject.SetActive(false);
-            _sign.TextEnd();
-        }
-        else if (other.CompareTag("SavePoint"))
-        {
-            _isSave = false;
-            _gameUIManager.keyHintE.gameObject.SetActive(false);
-        }
-        else if (other.CompareTag("Door"))
-        {
-            _isDoor = false;
-            _gameUIManager.keyHintE.gameObject.SetActive(false);
-            _door = null;
         }
     }
 }
