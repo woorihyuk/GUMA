@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using Game;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,6 +21,8 @@ public class Player : MonoBehaviour
     public AttackMode currentAttack;
     public GameObject[] attackPrefabs;
     public Transform[] wallRayCheckTfs;
+    public Transform directionalObjectGroup;
+    public Transform[] hitEffectPoints;
     public AudioClip[] clip;
     public Animator animator;
     public SpriteFlipper flipper;
@@ -27,7 +30,7 @@ public class Player : MonoBehaviour
     public SpriteRenderer sr;
     private LevelPropertiesManager _levelProperties;
 
-    public Collider2D rightMeleeAttackCollider;
+    public Collider2D[] attackColliders;
     public float hp;
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
@@ -523,31 +526,43 @@ public class Player : MonoBehaviour
         //dTime = 0;
     }
 
-    private void GiveDamage(int dmg)
+    private void GiveDamage(int dmg, int atkNum)
     {
         if (!sr.flipX)
         {
             var enemies = new List<Collider2D>();
-            rightMeleeAttackCollider.transform.localScale = new Vector3(1, 1, 1);
-            var counts = rightMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            directionalObjectGroup.transform.localScale = new Vector3(1, 1, 1);
+            
+            if (atkNum == -1) return;
+            var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
             if (counts == 0) return;
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<MonsterMove>();
                 entity.OnMonsterGetDamaged(dmg);
             }
+            
+            FxPoolManager.Instance.playerHitFxPool.Get(out var v);
+            v.transform.position = hitEffectPoints[atkNum].position;
+            v.transform.localScale = new Vector3(1, 1, 1);
         }
         else
         {
             var enemies = new List<Collider2D>();
-            rightMeleeAttackCollider.transform.localScale = new Vector3(-1, 1, 1);
-            var counts = rightMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            directionalObjectGroup.transform.localScale = new Vector3(-1, 1, 1);
+            
+            if (atkNum == -1) return;
+            var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
             if (counts == 0) return;
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<MonsterMove>();
                 entity.OnMonsterGetDamaged(dmg);
             }
+            
+            FxPoolManager.Instance.playerHitFxPool.Get(out var v);
+            v.transform.position = hitEffectPoints[atkNum].position;
+            v.transform.localScale = new Vector3(-1, 1, 1);
         }
     }
 
@@ -559,19 +574,19 @@ public class Player : MonoBehaviour
         {
             case AttackMode.First:
                 _audio.PlayOneShot(clip[1]);
-                GiveDamage(10);
+                GiveDamage(10, 0);
                 Instantiate(attackPrefabs[0], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Second:
                 _audio.PlayOneShot(clip[1]);
-                GiveDamage(10);
+                GiveDamage(10, 1);
                 Instantiate(attackPrefabs[1], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Third:
                 _audio.PlayOneShot(clip[1]);
-                GiveDamage(10);
+                GiveDamage(10, 2);
                 Instantiate(attackPrefabs[2], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
@@ -580,7 +595,7 @@ public class Player : MonoBehaviour
                 _audio.PlayOneShot(clip[2]);
                 Instantiate(attackPrefabs[3], thisTransform.position,
                     !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
-                GiveDamage(20);
+                GiveDamage(20, -1);
                 break;
         }
     }
