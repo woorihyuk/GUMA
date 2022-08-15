@@ -543,8 +543,9 @@ public class Player : MonoBehaviour
             }
             
             FxPoolManager.Instance.playerHitFxPool.Get(out var v);
-            v.transform.position = hitEffectPoints[atkNum].position;
-            v.transform.localScale = new Vector3(1, 1, 1);
+            var vTf = v.transform;
+            vTf.position = hitEffectPoints[atkNum].position;
+            vTf.localScale = new Vector3(1, 1, 1);
         }
         else
         {
@@ -561,8 +562,9 @@ public class Player : MonoBehaviour
             }
             
             FxPoolManager.Instance.playerHitFxPool.Get(out var v);
-            v.transform.position = hitEffectPoints[atkNum].position;
-            v.transform.localScale = new Vector3(-1, 1, 1);
+            var vTf = v.transform;
+            vTf.position = hitEffectPoints[atkNum].position;
+            vTf.localScale = new Vector3(-1, 1, 1);
         }
     }
 
