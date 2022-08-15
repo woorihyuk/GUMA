@@ -1,4 +1,5 @@
 using Game.Monster.Slime;
+using UniRx;
 using UnityEngine;
 
 public class NewDarkSlimeCtrl : MonsterMove
@@ -59,6 +60,17 @@ public class NewDarkSlimeCtrl : MonsterMove
     public void Die()
     {
         Destroy(gameObject);
+    }
+
+    public override void OnMonsterGetDamaged(int dmg)
+    {
+        if (lastHp <= 0) return;
+        base.OnMonsterGetDamaged(dmg);
+        _spriteRenderer.material.color = Color.white;
+        Observable.TimerFrame(1, FrameCountType.EndOfFrame).Do(_ => { }, () =>
+        {
+            _spriteRenderer.material.color = Color.black;
+        }).Subscribe().AddTo(gameObject);
     }
 
     protected override void OnDirectionSet(int direction)

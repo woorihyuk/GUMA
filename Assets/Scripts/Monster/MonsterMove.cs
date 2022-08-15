@@ -95,6 +95,12 @@ public abstract class MonsterMove : MonoBehaviour
 
     protected abstract void OnDirectionSet(int direction);
 
+    public virtual void OnMonsterGetDamaged(int dmg)
+    {
+        hp -= dmg;
+        RefreshHp(hp);
+    }
+
     public void RefreshHp(int newHp)
     {
         if (!newHp.Equals(lastHp))

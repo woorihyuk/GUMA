@@ -565,8 +565,7 @@ public class Player : MonoBehaviour
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<MonsterMove>();
-                entity.hp -= dmg;
-                entity.RefreshHp(entity.hp);
+                entity.OnMonsterGetDamaged(dmg);
             }
         }
         else
@@ -577,8 +576,7 @@ public class Player : MonoBehaviour
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<MonsterMove>();
-                entity.hp -= dmg;
-                entity.RefreshHp(entity.hp);
+                entity.OnMonsterGetDamaged(dmg);
             }
         }
     }
