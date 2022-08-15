@@ -27,7 +27,7 @@ public class Player : MonoBehaviour
     public SpriteRenderer sr;
     private LevelPropertiesManager _levelProperties;
 
-    public Collider2D leftMeleeAttackCollider, rightMeleeAttackCollider;
+    public Collider2D rightMeleeAttackCollider;
     public float hp;
 
     private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
@@ -52,7 +52,7 @@ public class Player : MonoBehaviour
     private float _velocityXSmoothing;
     private float _sinceLastDashTime = 10f;
     private float _comboTime;
-    private bool _isDash, _isAttack, _isWall, _isTalk, _isTalking, _isSave, _isDoor, _isDoAttack, _isAttackYet;
+    private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet;
     private Vector2 _input;
     private Vector3 _velocity;
     private JumpMode _currentJump;
@@ -283,38 +283,6 @@ public class Player : MonoBehaviour
                     }
                 }
             }
-            
-            /*if (_isTalk)
-            {
-                if (!_isTalking)
-                {
-                    // Debug.Log(_isTalking);
-                    _isTalking = true;
-                    _gameUIManager.keyHintE.gameObject.SetActive(false);
-                    _sign.TalkStart();
-                }
-                else
-                {
-                    _sign.NextText();
-                }
-            }*/
-            
-            /*if (_isSave)
-            {
-                GameManager.Instance.savePoint = 1;
-                GameManager.Instance.GameSave();
-                StartCoroutine(_hit.Save());
-            }*/
-
-            /*if (_isDoor)
-            {
-                transform.position = _doorPos;
-                _isDoor = false;
-                playerAttached.isIn = !playerAttached.isIn;
-
-                _gameUIManager.keyHintE.gameObject.SetActive(false);
-                _door = null;
-            }*/
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -560,6 +528,7 @@ public class Player : MonoBehaviour
         if (!sr.flipX)
         {
             var enemies = new List<Collider2D>();
+            rightMeleeAttackCollider.transform.localScale = new Vector3(1, 1, 1);
             var counts = rightMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
             if (counts == 0) return;
             foreach (var col in enemies)
@@ -571,7 +540,8 @@ public class Player : MonoBehaviour
         else
         {
             var enemies = new List<Collider2D>();
-            var counts = leftMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            rightMeleeAttackCollider.transform.localScale = new Vector3(-1, 1, 1);
+            var counts = rightMeleeAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
             if (counts == 0) return;
             foreach (var col in enemies)
             {
@@ -712,48 +682,6 @@ public class Player : MonoBehaviour
             }
 
             StartCoroutine(_hit.HitAni());
-        }
-
-        else if (other.CompareTag("Sign"))
-        {
-            _isTalk = true;
-            _gameUIManager.keyHintE.gameObject.SetActive(true);
-            _sign = other.GetComponent<Sign>();
-        }
-
-        else if (other.CompareTag("SavePoint"))
-        {
-            _isSave = true;
-            _gameUIManager.keyHintE.gameObject.SetActive(true);
-        }
-
-        else if (other.CompareTag("Door"))
-        {
-            _door = other.GetComponent<Doer>();
-            _isDoor = true;
-            _gameUIManager.keyHintE.gameObject.SetActive(true);
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Sign"))
-        {
-            _isTalk = false;
-            _isTalking = false;
-            _gameUIManager.keyHintE.gameObject.SetActive(false);
-            _sign.TextEnd();
-        }
-        else if (other.CompareTag("SavePoint"))
-        {
-            _isSave = false;
-            _gameUIManager.keyHintE.gameObject.SetActive(false);
-        }
-        else if (other.CompareTag("Door"))
-        {
-            _isDoor = false;
-            _gameUIManager.keyHintE.gameObject.SetActive(false);
-            _door = null;
         }
     }
 }
