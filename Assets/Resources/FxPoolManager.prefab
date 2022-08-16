@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   group: {fileID: 2986031125721863562}
   playerHitFxPrefab: {fileID: 2783178640653355716, guid: a3183c63885ed6043abac1fa27284262, type: 3}
+  bulletPrefab: {fileID: 8708317545058912479, guid: 42703c8492a12a14f9cfac3ebd4dfc46, type: 3}
 --- !u!1 &2986031125721863563
 GameObject:
   m_ObjectHideFlags: 0

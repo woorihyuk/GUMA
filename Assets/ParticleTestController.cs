@@ -27,7 +27,7 @@ public class ParticleTestController : MonoBehaviour
                 test.gameObject.SetActive(false), test => Destroy(test.gameObject)
         );
 
-        Observable.IntervalFrame(4, FrameCountType.EndOfFrame)
+        Observable.IntervalFrame(1, FrameCountType.EndOfFrame)
             .Do(_ => { testPool.Get(); }).Subscribe().AddTo(gameObject);
     }
     

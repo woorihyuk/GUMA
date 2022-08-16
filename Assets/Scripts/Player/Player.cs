@@ -68,6 +68,8 @@ public class Player : MonoBehaviour
     private ContactFilter2D _attackCheckFilter;
     public LayerMask attackContactLayerMask;
 
+    public Transform cannonFirePoint;
+
     private enum JumpMode
     {
         None,
@@ -532,71 +534,83 @@ public class Player : MonoBehaviour
         {
             var enemies = new List<Collider2D>();
             directionalObjectGroup.transform.localScale = new Vector3(1, 1, 1);
-            
-            if (atkNum == -1) return;
-            var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
-            if (counts == 0) return;
-            foreach (var col in enemies)
+
+            if (atkNum == -1) // 모포 공격
             {
-                var entity = col.GetComponent<MonsterMove>();
-                entity.OnMonsterGetDamaged(dmg);
+                FxPoolManager.Instance.bulletPool.Get(out var v);
+                v.transform.position = cannonFirePoint.position;
+                v.sr.flipX = sr.flipX;
+                v.dmg = dmg;
+                v.attackCheckFilter = _attackCheckFilter;
+                v.PlayTween();
             }
+            else // 창 공격
+            {
+                var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
+                if (counts == 0) return;
+                foreach (var col in enemies)
+                {
+                    var entity = col.GetComponent<MonsterMove>();
+                    entity.OnMonsterGetDamaged(dmg);
+                }
             
-            FxPoolManager.Instance.playerHitFxPool.Get(out var v);
-            var vTf = v.transform;
-            vTf.position = hitEffectPoints[atkNum].position;
-            vTf.localScale = new Vector3(1, 1, 1);
+                FxPoolManager.Instance.playerHitFxPool.Get(out var v);
+                var vTf = v.transform;
+                vTf.position = hitEffectPoints[atkNum].position;
+                vTf.localScale = new Vector3(1, 1, 1);
+            }
         }
         else
         {
             var enemies = new List<Collider2D>();
             directionalObjectGroup.transform.localScale = new Vector3(-1, 1, 1);
             
-            if (atkNum == -1) return;
-            var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
-            if (counts == 0) return;
-            foreach (var col in enemies)
+            if (atkNum == -1) // 모포 공격
             {
-                var entity = col.GetComponent<MonsterMove>();
-                entity.OnMonsterGetDamaged(dmg);
+                FxPoolManager.Instance.bulletPool.Get(out var v);
+                v.transform.position = cannonFirePoint.position;
+                v.sr.flipX = sr.flipX;
+                v.dmg = dmg;
+                v.attackCheckFilter = _attackCheckFilter;
+                v.PlayTween();
             }
+            else
+            {
+                var counts = attackColliders[atkNum].OverlapCollider(_attackCheckFilter, enemies);
+                if (counts == 0) return;
+                foreach (var col in enemies)
+                {
+                    var entity = col.GetComponent<MonsterMove>();
+                    entity.OnMonsterGetDamaged(dmg);
+                }
             
-            FxPoolManager.Instance.playerHitFxPool.Get(out var v);
-            var vTf = v.transform;
-            vTf.position = hitEffectPoints[atkNum].position;
-            vTf.localScale = new Vector3(-1, 1, 1);
+                FxPoolManager.Instance.playerHitFxPool.Get(out var v);
+                var vTf = v.transform;
+                vTf.position = hitEffectPoints[atkNum].position;
+                vTf.localScale = new Vector3(-1, 1, 1);
+            }
         }
     }
 
     public void OnAnimationAttackFx(AttackMode attackMode)
     {
-        var thisTransform = transform;
-
         switch (attackMode)
         {
             case AttackMode.First:
                 _audio.PlayOneShot(clip[1]);
                 GiveDamage(10, 0);
-                Instantiate(attackPrefabs[0], thisTransform.position,
-                    !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Second:
                 _audio.PlayOneShot(clip[1]);
                 GiveDamage(10, 1);
-                Instantiate(attackPrefabs[1], thisTransform.position,
-                    !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.Third:
                 _audio.PlayOneShot(clip[1]);
                 GiveDamage(10, 2);
-                Instantiate(attackPrefabs[2], thisTransform.position,
-                    !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 break;
             case AttackMode.FirstShoot:
             case AttackMode.SecondShoot:
                 _audio.PlayOneShot(clip[2]);
-                Instantiate(attackPrefabs[3], thisTransform.position,
-                    !sr.flipX ? thisTransform.rotation : Quaternion.Euler(0, -180, 0));
                 GiveDamage(20, -1);
                 break;
         }
