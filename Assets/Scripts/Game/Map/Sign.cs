@@ -1,3 +1,4 @@
+using Game;
 using UnityEngine;
 
 public class Sign : MonoBehaviour
@@ -59,12 +60,12 @@ public class Sign : MonoBehaviour
         {
             if (textType % 2 == 1)
             {
-                _gameUIManager.text2.text = talkText[textType++];
+                //_gameUIManager.text2.text = talkText[textType++];
             }
             else
             {
-                _gameUIManager.text1.text = talkText[textType++];
-                _gameUIManager.text2.text = "";
+                //_gameUIManager.text1.text = talkText[textType++];
+                //_gameUIManager.text2.text = "";
             }
         }
         else

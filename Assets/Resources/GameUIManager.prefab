@@ -172,6 +172,8 @@ MonoBehaviour:
   - {fileID: 6937989724132548473}
   dialogBackgroundStartTf: {fileID: 6937989725406746105}
   dialogBackgroundEndTf: {fileID: 6937989725431777473}
+  hpAnimator: {fileID: 8496446623601152874}
+  hpBackgroundAnimator: {fileID: 2336603562463399144}
   hpBackgroundImage: {fileID: 3389598802189207429}
   hpImage: {fileID: 639582341463628963}
   inventorySlots:

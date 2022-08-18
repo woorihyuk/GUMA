@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using DG.Tweening;
+using Game;
 using UnityEngine;
 
 public class TextManager : Singleton<TextManager>
