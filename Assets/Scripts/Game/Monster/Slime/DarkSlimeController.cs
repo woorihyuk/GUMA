@@ -26,18 +26,12 @@ namespace Game.Monster.Slime
             base.Start();
             _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _aiMoveCoroutine = StartCoroutine(AIMove(0, 0, 0.3f, 3f));
+            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(0, 0, 0.3f, 3f));
             slimeAttackController.Initialize();
             _playerFoundSubscription = isPlayerFounded.DistinctUntilChanged().Subscribe(v =>
             {
                 if (!v) GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
             }).AddTo(gameObject);
-        }
-
-        protected override void Update()
-        {
-            if (_isAttack) StopCoroutine(_aiMoveCoroutine);
-            base.Update();
         }
 
         private void OnDestroy()
@@ -55,20 +49,18 @@ namespace Game.Monster.Slime
             _animator.SetBool(IsAttack, false);
             _animator.Update(0);
             _isAttack = false;
-            _aiMoveCoroutine = StartCoroutine(AIMove(0, 0, 0.3f, 3f));
 
             if (isPlayerFounded.Value)
             {
-                if (!_isAttack)
-                {
-                    StopCoroutine(_aiMoveCoroutine);
-                    _animator.SetBool(IsAttack, true);
-                    _animator.Update(0);
-                    _isAttack = true;
-                    SetDirection();
-
-                    slimeAttackController.SetPosition(lastTargetPlayer.player.transform.position);
-                }
+                _animator.SetBool(IsAttack, true);
+                _animator.Update(0);
+                _isAttack = true;
+                SetDirection();
+                slimeAttackController.SetPosition(lastTargetPlayer.player.transform.position);
+            }
+            else
+            {
+                StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(0, 0, 0.3f, 3f));
             }
         }
 

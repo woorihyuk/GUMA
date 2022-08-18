@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -123,12 +122,6 @@ namespace Game.Monster.Egg
                     OnDirectionSet(1);
                     break;
             }
-        }
-
-        private void StartCoroutineWithRunningCheck(ref Coroutine lastCoroutine, IEnumerator newRoutine)
-        {
-            if (lastCoroutine != null) StopCoroutine(lastCoroutine);
-            lastCoroutine = StartCoroutine(newRoutine);
         }
 
         #region 애니메이션 이벤트

@@ -197,5 +197,11 @@ namespace Game.Monster
         protected abstract void OnPlayerLost();
 
         protected abstract void OnPlayerFound();
+        
+        protected void StartCoroutineWithRunningCheck(ref Coroutine lastCoroutine, IEnumerator newRoutine)
+        {
+            if (lastCoroutine != null) StopCoroutine(lastCoroutine);
+            lastCoroutine = StartCoroutine(newRoutine);
+        }
     }
 }
