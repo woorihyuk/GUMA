@@ -84,7 +84,7 @@ public class PigCtrl : MonoBehaviour
         {
             _isFound = false;
         }
-        if (playerCtrl.hp<=0)
+        if (playerCtrl.hp.Value<=0)
         {
             _isFound = false;
         }

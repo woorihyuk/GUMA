@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -30,7 +32,7 @@ namespace Game.Player
         private LevelPropertiesManager _levelProperties;
 
         public Collider2D[] attackColliders;
-        public float hp;
+        public FloatReactiveProperty hp;
 
         private static readonly int AnimIsBackStep = Animator.StringToHash("isBackStep");
         private static readonly int AnimIsDash = Animator.StringToHash("isDash");
@@ -55,12 +57,11 @@ namespace Game.Player
         private Vector2 _input;
         private Vector3 _velocity;
         private JumpMode _currentJump;
-        private Hit _hit;
         private Controller2D _controller;
         private InteractiveObjectChecker _interactiveObjectChecker;
-        private GameUIManager _gameUIManager;
         private ContactFilter2D _attackCheckFilter;
         public LayerMask attackContactLayerMask;
+        private Sequence _flickerSequence;
 
         public Transform cannonFirePoint;
 
@@ -102,11 +103,11 @@ namespace Game.Player
             _gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
             _jumpVelocity = Mathf.Abs(_gravity) * timeToJumpApex;
 
-            hp = maxHp;
-            GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
+            hp.Value = maxHp;
+            GameUIManager.Instance.hpImage.fillAmount = hp.Value / maxHp;
             GameUIManager.Instance.SetActivePlayerHud(true);
 
-            _hit = GetComponent<Hit>();
+            hp.DistinctUntilChanged().Subscribe(f => GameUIManager.Instance.hpImage.fillAmount = f / maxHp).AddTo(gameObject);
             isHit = true;
         
             /*switch (GameManager.Instance.savePoint)
@@ -651,7 +652,7 @@ namespace Game.Player
             }
 
             isCombo = true;
-            StartCoroutine(_hit.AttackWait(attackMode));
+            StartCoroutine(AttackWait(attackMode));
         }
 
         public void IsDie()
@@ -668,28 +669,19 @@ namespace Game.Player
         };*/
             GameUIManager.Instance.SetActivePlayerHud(false);
             DOTween.Kill(true);
+            Time.timeScale = 1;
             SceneManager.LoadScene("Title");
-        }
-
-        public void RefreshHp()
-        {
-            GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
-            if (hp <= 0)
-            {
-                animator.SetBool(AnimIsDie, true);
-            }
         }
 
         public void Restart()
         {
-            hp = maxHp;
-            GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
-            _gameUIManager.gameOverImage.gameObject.SetActive(false);
+            hp.Value = maxHp;
+            GameUIManager.Instance.gameOverImage.gameObject.SetActive(false);
             animator.SetBool(AnimIsDie, false);
             Time.timeScale = 1;
         }
 
-        private void OnTriggerEnter2D(Collider2D other)
+        /*private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("EnemyAttack"))
             {
@@ -706,8 +698,46 @@ namespace Game.Player
                     animator.SetBool(AnimIsDie, true);
                 }
 
-                StartCoroutine(_hit.HitAni());
+                StartCoroutine(HitAni());
             }
+        }*/
+
+        public void GetDamage(int dmg)
+        {
+            if (!isHit)
+            {
+                return;
+            }
+
+            hp.Value -= dmg;
+            if (hp.Value <= 0)
+            {
+                _flickerSequence.Kill(true);
+                Time.timeScale = 0;
+                animator.updateMode = AnimatorUpdateMode.UnscaledTime;
+                animator.SetBool(AnimIsDie, true);
+            }
+            else OnHit();
+        }
+        
+        private void OnHit()
+        {
+            _flickerSequence.Kill(true);
+            _flickerSequence = DOTween.Sequence()
+                .Insert(0, sr.DOFade(0, 0.1f))
+                .Insert(0.1f, sr.DOFade(1, 0.1f))
+                .SetLoops(3)
+                .OnPlay(() => isHit = false)
+                .OnComplete(() => isHit = true)
+                .Play();
+        }
+
+        private IEnumerator AttackWait(AttackMode attackMode)
+        {
+            yield return YieldInstructionCache.WaitForSeconds(0.5f);
+            if (currentAttack != attackMode) yield break;
+            currentAttack = AttackMode.None;
+            isCombo = false;
         }
     }
 }

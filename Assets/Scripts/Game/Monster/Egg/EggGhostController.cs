@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -8,7 +9,7 @@ namespace Game.Monster.Egg
 {
     public class EggGhostController : Monster
     {
-        private bool _isAttack;
+        private bool _isAttack, _attack4Waiting;
         private Animator _animator;
         private SpriteRenderer _spriteRenderer;
         private Coroutine _aiMoveCoroutine;
@@ -33,7 +34,7 @@ namespace Game.Monster.Egg
             base.Start();
             _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            _aiMoveCoroutine = StartCoroutine(AIMove(1, 3, 1f, 2f));
+            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
             _moveStateSubscription = isMonsterMoving.DistinctUntilChanged()
                 .Subscribe(v => { _animator.SetBool(IsWalk, v); }).AddTo(gameObject);
             _attackContactFilter = new ContactFilter2D
@@ -91,7 +92,7 @@ namespace Game.Monster.Egg
             GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "달걀귀신", (float) hp.Value / maxHp.Value);
             RefreshHp();
 
-            if (!_isAttack)
+            if (!_isAttack && !_attack4Waiting)
             {
                 StopCoroutine(_aiMoveCoroutine);
                 _animator.SetBool(IsWalk, false);
@@ -107,8 +108,7 @@ namespace Game.Monster.Egg
             foreach (var col in players)
             {
                 var player = col.GetComponent<Player.Player>();
-                player.hp -= dmg;
-                player.RefreshHp();
+                player.GetDamage(dmg);
             }
         }
 
@@ -123,6 +123,12 @@ namespace Game.Monster.Egg
                     OnDirectionSet(1);
                     break;
             }
+        }
+
+        private void StartCoroutineWithRunningCheck(ref Coroutine lastCoroutine, IEnumerator newRoutine)
+        {
+            if (lastCoroutine != null) StopCoroutine(lastCoroutine);
+            lastCoroutine = StartCoroutine(newRoutine);
         }
 
         #region 애니메이션 이벤트
@@ -172,8 +178,8 @@ namespace Game.Monster.Egg
                             _animator.Play("Attack4Wait");
                             return;
                         }
-
-                        _aiMoveCoroutine = StartCoroutine(AIMove(1, 3, 0.3f, 3f));
+                        
+                        StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
                         return;
                     }
 
@@ -237,6 +243,21 @@ namespace Game.Monster.Egg
         {
             AttackRange(13, 20);
         }
+        
+        public void OnAttack3Event1()
+        {
+            AttackRange(14, 30);
+        }
+        
+        public void OnAttack3Event2()
+        {
+            AttackRange(15, 30);
+        }
+        
+        public void OnAttack3Event3()
+        {
+            AttackRange(16, 30);
+        }
 
         public void OnAttack3End()
         {
@@ -258,8 +279,8 @@ namespace Game.Monster.Egg
                             _animator.Play("Attack4Wait");
                             return;
                         }
-
-                        _aiMoveCoroutine = StartCoroutine(AIMove(1, 3, 0.3f, 3f));
+                        
+                        StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
                         return;
                     }
 
@@ -276,11 +297,13 @@ namespace Game.Monster.Egg
         public void OnAttack4End()
         {
             _isAttack = false;
+            _attack4Waiting = true;
 
-            _aiMoveCoroutine = StartCoroutine(AIMove(1, 3, 1f, 2f));
+            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
             _attack2WaitSubscription = Observable.Timer(TimeSpan.FromMilliseconds(1000)).Subscribe(
                 _ =>
                 {
+                    _attack4Waiting = false;
                     if (!isPlayerFounded.Value) return;
                     StopCoroutine(_aiMoveCoroutine);
                     _animator.SetBool(IsWalk, false);

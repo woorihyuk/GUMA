@@ -57,8 +57,7 @@ namespace Game.Monster.Slime
             foreach (var col in players)
             {
                 var player = col.GetComponent<Player.Player>();
-                player.hp -= 10;
-                player.RefreshHp();
+                player.GetDamage(10);
             }
         }
 
