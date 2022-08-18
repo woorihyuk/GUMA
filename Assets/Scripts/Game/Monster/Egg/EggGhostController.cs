@@ -193,6 +193,51 @@ namespace Game.Monster.Egg
                 }).AddTo(gameObject);
         }
 
+        public void OnAttack2Event1()
+        {
+            AttackRange(5, 20);
+        }
+        
+        public void OnAttack2Event2()
+        {
+            AttackRange( 6, 20);
+        }
+        
+        public void OnAttack2Event3()
+        {
+            AttackRange(7, 20);
+        }
+        
+        public void OnAttack2Event4()
+        {
+            AttackRange(8, 20);
+        }
+        
+        public void OnAttack2Event5()
+        {
+            AttackRange(9, 20);
+        }
+        
+        public void OnAttack2Event6()
+        {
+            AttackRange(10, 20);
+        }
+        
+        public void OnAttack2Event7()
+        {
+            AttackRange(11, 20);
+        }
+        
+        public void OnAttack2Event8()
+        {
+            AttackRange(12, 20);
+        }
+        
+        public void OnAttack2Event9()
+        {
+            AttackRange(13, 20);
+        }
+
         public void OnAttack3End()
         {
             _animator.SetBool(Attack2, false);
