@@ -17,7 +17,6 @@ namespace Game.Monster.Slime
         #region 애니메이터 해쉬
 
         private static readonly int IsAttack = Animator.StringToHash("isAttack");
-        private static readonly int IsDie = Animator.StringToHash("isDie");
 
         #endregion
 
@@ -39,43 +38,13 @@ namespace Game.Monster.Slime
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
         }
 
-        public void AttackEffect()
-        {
-            slimeAttackController.Attack();
-        }
-
-        public void AttackEnd()
-        {
-            _animator.SetBool(IsAttack, false);
-            _animator.Update(0);
-            _isAttack = false;
-
-            if (isPlayerFounded.Value)
-            {
-                _animator.SetBool(IsAttack, true);
-                _animator.Update(0);
-                _isAttack = true;
-                SetDirection();
-                slimeAttackController.SetPosition(lastTargetPlayer.player.transform.position);
-            }
-            else
-            {
-                StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(0, 0, 0.3f, 3f));
-            }
-        }
-
         protected override void OnHpDrown()
         {
             _animator.SetBool(IsAttack, false);
-            _animator.SetBool(IsDie, true);
-            _animator.Update(0);
+            _animator.Play("Die");
             _playerFoundSubscription.Dispose();
         }
 
-        public void Die()
-        {
-            Destroy(gameObject);
-        }
 
         public override void OnMonsterGetDamaged(int dmg)
         {
@@ -126,5 +95,39 @@ namespace Game.Monster.Slime
                     break;
             }
         }
+
+        #region 애니메이션 이벤트
+
+        public void OnDieEnd()
+        {
+            Destroy(gameObject);
+        }
+
+        public void AttackEffect()
+        {
+            slimeAttackController.Attack();
+        }
+
+        public void AttackEnd()
+        {
+            _animator.SetBool(IsAttack, false);
+            _animator.Update(0);
+            _isAttack = false;
+
+            if (isPlayerFounded.Value)
+            {
+                _animator.SetBool(IsAttack, true);
+                _animator.Update(0);
+                _isAttack = true;
+                SetDirection();
+                slimeAttackController.SetPosition(lastTargetPlayer.player.transform.position);
+            }
+            else
+            {
+                StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(0, 0, 0.3f, 3f));
+            }
+        }
+
+        #endregion
     }
 }

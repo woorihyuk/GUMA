@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Game.State;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -191,7 +192,7 @@ namespace Game.Player
                 animator.SetBool(AnimIsShoot2, false);
                 currentAttack = AttackMode.None;
             }
-
+            
             if (!_isDash)
             {
                 WallCheck();
@@ -214,7 +215,7 @@ namespace Game.Player
                 }
             }
 
-            float targetVelocityX = _input.x * moveSpeed;
+            var targetVelocityX = _input.x * moveSpeed;
 
             if (_isDash)
             {
@@ -225,7 +226,11 @@ namespace Game.Player
                 if (!_isAttack && _input.x != 0) lastInputX = _input.x;
             }
 
-            Jump();
+            if (StateManager.Instance.currentState == StateType.None)
+            {
+                Jump();
+                SetDirectionForce(lastInputX);
+            }
 
             var gravityMultiplier = 1f;
 
@@ -233,13 +238,12 @@ namespace Game.Player
             else gravityMultiplier = 0.4f;
 
             if (_isAttack) targetVelocityX = 0;
-
+            if (StateManager.Instance.currentState != StateType.None) targetVelocityX = 0;
+            
             _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing,
                 _controller.collisions.below ? AccelerationTimeGrounded : AccelerationTimeAirborne);
             _velocity.y += _gravity * Time.deltaTime * gravityMultiplier;
-
-            SetDirectionForce(lastInputX);
-
+            
             if (!_isDash)
             {
                 switch (targetVelocityX)
@@ -263,9 +267,14 @@ namespace Game.Player
                     }
                 }
             }
+            
+            PlayerInteractions();
 
             _controller.Move(_velocity * Time.deltaTime);
+        }
 
+        private void PlayerInteractions()
+        {
             if (Input.GetKeyDown(KeyCode.E))
             {
                 if (StateManager.Instance.currentState == StateType.Talking)
@@ -297,8 +306,7 @@ namespace Game.Player
                     }
                 }
             }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
+            else if (Input.GetKeyDown(KeyCode.Escape) && StateManager.Instance.currentState == StateType.None)
             {
                 GameUIManager.Instance.SetActivePlayerHud(false);
                 DOTween.KillAll(true);

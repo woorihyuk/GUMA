@@ -21426,6 +21426,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DarkSlime
       objectReference: {fileID: 0}
+    - target: {fileID: 6850060339853397322, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6850060339853397327, guid: df3af7ac31fd8d64685987b9535af1c2, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -26009,6 +26013,10 @@ PrefabInstance:
     - target: {fileID: 2502647079867464295, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
       propertyPath: m_Name
       value: EggGhost
+      objectReference: {fileID: 0}
+    - target: {fileID: 2502647079867464295, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}

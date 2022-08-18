@@ -58,7 +58,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: dark_silme_attack_fx_0
+  m_Name: DarkSlime_AttackController
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: isAttack
@@ -94,7 +94,7 @@ AnimatorStateMachine:
     m_Position: {x: 250, y: 10, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5020951030199176780}
-    m_Position: {x: 250, y: 130, z: 0}
+    m_Position: {x: 250, y: 120, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []

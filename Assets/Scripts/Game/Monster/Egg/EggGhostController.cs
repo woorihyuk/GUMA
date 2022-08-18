@@ -126,6 +126,11 @@ namespace Game.Monster.Egg
 
         #region 애니메이션 이벤트
 
+        public void OnDieEnd()
+        {
+            Destroy(gameObject);
+        }
+        
         public void OnAttack1Event1()
         {
             AttackRange(0, 20);

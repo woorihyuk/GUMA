@@ -1,5 +1,9 @@
-﻿public enum StateType
+﻿namespace Game.State
 {
-    None,
-    Talking
+    public enum StateType
+    {
+        None,
+        Talking,
+        Waiting
+    }
 }
