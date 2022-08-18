@@ -5,6 +5,7 @@ public class GameManager : Singleton<GameManager>
 {
     public int savePoint;
     public int positionFlags = -1;
+    public float lastDirection;
     private bool _isSaveLoaded;
 
     protected override void Awake()
@@ -19,10 +20,11 @@ public class GameManager : Singleton<GameManager>
         PlayerPrefs.Save();
     }
     
-    public void SaveGame(int pointFlag, string levelName)
+    public void SaveGame(int pointFlag, string levelName, float direction)
     {
         PlayerPrefs.SetInt("SavePointFlag", pointFlag);
         PlayerPrefs.SetString("SavePointLevel", levelName);
+        PlayerPrefs.SetFloat("SaveLastDirection", direction);
         PlayerPrefs.Save();
         Debug.Log("[GameManager] Game Saved");
     }
@@ -41,8 +43,10 @@ public class GameManager : Singleton<GameManager>
 
         var flag = PlayerPrefs.GetInt("SavePointFlag");
         var level = PlayerPrefs.GetString("SavePointLevel");
+        var direction = PlayerPrefs.GetFloat("SaveLastDirection");
 
         savePoint = flag;
+        lastDirection = direction;
         _isSaveLoaded = true;
         Debug.Log("[GameManager] Save Loaded");
         SceneManager.LoadScene(level);

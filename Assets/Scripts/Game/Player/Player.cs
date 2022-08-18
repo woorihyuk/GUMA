@@ -136,6 +136,8 @@ namespace Game.Player
                 transform.position = _levelProperties.savePoints[GameManager.Instance.savePoint].position;
             }
             SetPosition();
+            lastInputX = GameManager.Instance.lastDirection;
+            SetDirectionForce(lastInputX);
         }
 
         private void SetPosition()
@@ -144,6 +146,16 @@ namespace Game.Player
             {
                 transform.position = pos;
             }
+        }
+
+        private void SetDirectionForce(float value)
+        {
+            sr.flipX = value switch
+            {
+                < 0 => true,
+                > 0 => false,
+                _ => sr.flipX
+            };
         }
 
         private void Update()
@@ -226,7 +238,7 @@ namespace Game.Player
                 _controller.collisions.below ? AccelerationTimeGrounded : AccelerationTimeAirborne);
             _velocity.y += _gravity * Time.deltaTime * gravityMultiplier;
 
-            flipper.Flip(lastInputX);
+            SetDirectionForce(lastInputX);
 
             if (!_isDash)
             {
@@ -272,13 +284,14 @@ namespace Game.Player
                         {
                             var door = (InteractiveObjects.Teleport)iObj;
                             GameManager.Instance.positionFlags = door.teleportFlags;
+                            GameManager.Instance.lastDirection = lastInputX;
                             DOTween.KillAll(true);
                             SceneManager.LoadScene(door.levelName);
                         }
                         else if (iObj.objectType == InteractiveObjectType.SavePoint)
                         {
                             var point = (InteractiveObjects.SavePoint)iObj;
-                            GameManager.Instance.SaveGame(point.pointFlags, point.levelName);
+                            GameManager.Instance.SaveGame(point.pointFlags, point.levelName, lastInputX);
                             GameUIManager.Instance.ShowSaveMsg();
                         }
                     }
@@ -288,7 +301,7 @@ namespace Game.Player
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 GameUIManager.Instance.SetActivePlayerHud(false);
-                DOTween.Kill(true);
+                DOTween.KillAll(true);
                 SceneManager.LoadScene("Title");
             }
         }
