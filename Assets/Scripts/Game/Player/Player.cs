@@ -747,7 +747,7 @@ namespace Game.Player
             _flickerSequence = DOTween.Sequence()
                 .Insert(0, sr.DOFade(0, 0.1f))
                 .Insert(0.1f, sr.DOFade(1, 0.1f))
-                .SetLoops(3)
+                .SetLoops(5)
                 .OnPlay(() => isHit = false)
                 .OnComplete(() => isHit = true)
                 .Play();

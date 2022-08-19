@@ -14,10 +14,9 @@ GameObject:
   - component: {fileID: 6663192077270443842}
   - component: {fileID: -5674978140773534180}
   - component: {fileID: 2480622431164627395}
-  - component: {fileID: -2961330275369956441}
   m_Layer: 0
-  m_Name: smoking_make-Sheet_4
-  m_TagString: EnemyAttack
+  m_Name: EggGhost_Smoke
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -121,7 +120,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 567127138a9098f4a94c1bfa8bca1588, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  anim: {fileID: 4151228986567067529}
+  rb: {fileID: -5674978140773534180}
+  checkCollider: {fileID: 2480622431164627395}
+  groundFilter:
+    useTriggers: 0
+    useLayerMask: 1
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 4096
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
+  attackFilter:
+    useTriggers: 0
+    useLayerMask: 1
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 64
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
 --- !u!50 &-5674978140773534180
 Rigidbody2D:
   serializedVersion: 4
@@ -158,17 +187,4 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.21191514
---- !u!114 &-2961330275369956441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6760010762264570268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 781bcf80c38a9cc4ca5716a06c068f82, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  dmg: 10
+  m_Radius: 0.33

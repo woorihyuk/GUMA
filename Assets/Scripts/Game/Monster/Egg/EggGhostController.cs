@@ -291,9 +291,18 @@ namespace Game.Monster.Egg
 
         public void OnAttack4Event()
         {
+            var dirMultiplier = directionalObjectGroup.localScale.x switch
+            {
+                > 0 => -1,
+                < 0 => 1,
+                _ => 0
+            };
+
             for (var i = 0; i < 20; i++)
             {
-                Instantiate(smoke, smokingPoint.transform.position, Quaternion.identity);
+                FxPoolManager.Instance.eggGhostSmokePool.Get(out var v);
+                v.transform.position = smokingPoint.transform.position;
+                v.direction = dirMultiplier;
             }
         }
 
