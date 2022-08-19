@@ -25966,10 +25966,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576395766}
     m_Modifications:
-    - target: {fileID: 2502647079867464291, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 10.666667
-      objectReference: {fileID: 0}
     - target: {fileID: 2502647079867464292, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -26018,14 +26014,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: EggGhost
       objectReference: {fileID: 0}
-    - target: {fileID: 2502647079867464295, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2502647079867464300, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
-      propertyPath: smoke
-      value: 
-      objectReference: {fileID: 6760010762264570268, guid: 14184c46671692746950ccba03de4dc0, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 099f606f107ea83499bb9b3fbf90060b, type: 3}
 --- !u!4 &6957209558606479200 stripped

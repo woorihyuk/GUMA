@@ -27,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2502647079867464295}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -167,6 +167,7 @@ MonoBehaviour:
   attackContactLayerMask:
     serializedVersion: 2
     m_Bits: 64
+  smoke: {fileID: 6760010762264570268, guid: 14184c46671692746950ccba03de4dc0, type: 3}
   attackColliders:
   - {fileID: 4771503854252258816}
   - {fileID: 4771503855716858404}
@@ -1185,7 +1186,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 13, y: 5.3999996}
+  m_Size: {x: 12, y: 5.3999996}
   m_EdgeRadius: 0
 --- !u!1 &4771503855289004513
 GameObject:
