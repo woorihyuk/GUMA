@@ -28,7 +28,6 @@ namespace Game.Player
         public Transform[] hitEffectPoints;
         public AudioClip[] clip;
         public Animator animator;
-        public SpriteFlipper flipper;
         public SpriteRenderer sr;
         private LevelPropertiesManager _levelProperties;
 
@@ -108,9 +107,10 @@ namespace Game.Player
             GameUIManager.Instance.hpImage.fillAmount = hp.Value / maxHp;
             GameUIManager.Instance.SetActivePlayerHud(true);
 
-            hp.DistinctUntilChanged().Subscribe(f => GameUIManager.Instance.hpImage.fillAmount = f / maxHp).AddTo(gameObject);
+            hp.DistinctUntilChanged().Subscribe(f => GameUIManager.Instance.hpImage.fillAmount = f / maxHp)
+                .AddTo(gameObject);
             isHit = true;
-        
+
             /*switch (GameManager.Instance.savePoint)
         {
             case 0:
@@ -122,7 +122,7 @@ namespace Game.Player
                 Time.timeScale = 1;
                 break;
         }*/
-        
+
             _attackCheckFilter = new ContactFilter2D
             {
                 useLayerMask = true,
@@ -136,6 +136,7 @@ namespace Game.Player
             {
                 transform.position = _levelProperties.savePoints[GameManager.Instance.savePoint].position;
             }
+
             SetPosition();
             lastInputX = GameManager.Instance.lastDirection;
             SetDirectionForce(lastInputX);
@@ -192,7 +193,7 @@ namespace Game.Player
                 animator.SetBool(AnimIsShoot2, false);
                 currentAttack = AttackMode.None;
             }
-            
+
             if (!_isDash)
             {
                 WallCheck();
@@ -239,11 +240,11 @@ namespace Game.Player
 
             if (_isAttack) targetVelocityX = 0;
             if (StateManager.Instance.currentState != StateType.None) targetVelocityX = 0;
-            
+
             _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing,
                 _controller.collisions.below ? AccelerationTimeGrounded : AccelerationTimeAirborne);
             _velocity.y += _gravity * Time.deltaTime * gravityMultiplier;
-            
+
             if (!_isDash)
             {
                 switch (targetVelocityX)
@@ -256,7 +257,7 @@ namespace Game.Player
                         break;
                 }
             }
-        
+
             if (isCombo)
             {
                 if (!_isAttack)
@@ -267,7 +268,7 @@ namespace Game.Player
                     }
                 }
             }
-            
+
             PlayerInteractions();
 
             _controller.Move(_velocity * Time.deltaTime);
@@ -569,7 +570,7 @@ namespace Game.Player
                         var entity = col.GetComponent<Monster.Monster>();
                         entity.OnMonsterGetDamaged(dmg);
                     }
-            
+
                     FxPoolManager.Instance.playerHitFxPool.Get(out var v);
                     var vTf = v.transform;
                     vTf.position = hitEffectPoints[atkNum].position;
@@ -580,7 +581,7 @@ namespace Game.Player
             {
                 var enemies = new List<Collider2D>();
                 directionalObjectGroup.transform.localScale = new Vector3(-1, 1, 1);
-            
+
                 if (atkNum == -1) // 모포 공격
                 {
                     FxPoolManager.Instance.bulletPool.Get(out var v);
@@ -599,7 +600,7 @@ namespace Game.Player
                         var entity = col.GetComponent<Monster.Monster>();
                         entity.OnMonsterGetDamaged(dmg);
                     }
-            
+
                     FxPoolManager.Instance.playerHitFxPool.Get(out var v);
                     var vTf = v.transform;
                     vTf.position = hitEffectPoints[atkNum].position;
@@ -725,10 +726,7 @@ namespace Game.Player
 
         public void GetDamage(int dmg)
         {
-            if (!isHit)
-            {
-                return;
-            }
+            if (!isHit) return;
 
             hp.Value -= dmg;
             if (hp.Value <= 0)
@@ -740,15 +738,15 @@ namespace Game.Player
             }
             else OnHit();
         }
-        
+
         private void OnHit()
         {
             _flickerSequence.Kill(true);
+            isHit = false;
             _flickerSequence = DOTween.Sequence()
                 .Insert(0, sr.DOFade(0, 0.1f))
                 .Insert(0.1f, sr.DOFade(1, 0.1f))
                 .SetLoops(5)
-                .OnPlay(() => isHit = false)
                 .OnComplete(() => isHit = true)
                 .Play();
         }
