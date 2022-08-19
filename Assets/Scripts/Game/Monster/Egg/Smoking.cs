@@ -19,7 +19,7 @@ public class Smoking : MonoBehaviour
         _animator = GetComponent<Animator>();
         _rigid = GetComponent<Rigidbody2D>();
         _rigid.gravityScale = 0;
-        speed = Random.Range(1, 15);
+        speed = Random.Range(1, 7);
     }
 
     private void Update()
@@ -40,10 +40,10 @@ public class Smoking : MonoBehaviour
         _rigid.gravityScale = 0.5f;
     }
 
-    public void End()
-    {
-        Destroy(gameObject);
-    }
+    //public void End()
+    //{
+    //    Destroy(gameObject);
+    //}
 
     private void OnTriggerEnter2D(Collider2D other)
     {

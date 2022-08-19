@@ -16,6 +16,7 @@ namespace Game.Monster.Egg
         public float attack2Distance;
         public Transform directionalObjectGroup, smokingPoint;
         public LayerMask attackContactLayerMask;
+        public GameObject smoke;
 
         public PolygonCollider2D[] attackColliders;
         private ContactFilter2D _attackContactFilter;
@@ -290,6 +291,10 @@ namespace Game.Monster.Egg
 
         public void OnAttack4Event()
         {
+            for (var i = 0; i < 20; i++)
+            {
+                Instantiate(smoke, smokingPoint.transform.position, Quaternion.identity);
+            }
         }
 
         public void OnAttack4End()
