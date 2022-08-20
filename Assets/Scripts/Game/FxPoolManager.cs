@@ -1,4 +1,5 @@
-﻿using Game.Monster.Egg;
+﻿using Game.Effect;
+using Game.Monster.Egg;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -14,6 +15,8 @@ namespace Game
         public CannonBullet bulletPrefab;
         public IObjectPool<Smoke> eggGhostSmokePool;
         public Smoke eggGhostSmokePrefab;
+        public IObjectPool<DamageText> damageTextPool;
+        public DamageText damageTextPrefab;
 
         protected override void Awake()
         {
@@ -37,6 +40,14 @@ namespace Game
                 }, o => Destroy(o.gameObject));
             eggGhostSmokePool = new ObjectPool<Smoke>(
                 () => Instantiate(eggGhostSmokePrefab, group), o =>
+                {
+                    o.gameObject.SetActive(true);
+                }, o =>
+                {
+                    o.gameObject.SetActive(false);
+                }, o => Destroy(o.gameObject));
+            damageTextPool = new ObjectPool<DamageText>(
+                () => Instantiate(damageTextPrefab, group), o =>
                 {
                     o.gameObject.SetActive(true);
                 }, o =>

@@ -49,6 +49,7 @@ MonoBehaviour:
   playerHitFxPrefab: {fileID: 2783178640653355716, guid: a3183c63885ed6043abac1fa27284262, type: 3}
   bulletPrefab: {fileID: 8708317545058912479, guid: 42703c8492a12a14f9cfac3ebd4dfc46, type: 3}
   eggGhostSmokePrefab: {fileID: 6663192077270443842, guid: 14184c46671692746950ccba03de4dc0, type: 3}
+  damageTextPrefab: {fileID: 2938633763682349073, guid: 4b6692f2ce193564e96260141cd42002, type: 3}
 --- !u!1 &2986031125721863563
 GameObject:
   m_ObjectHideFlags: 0

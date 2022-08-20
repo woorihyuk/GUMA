@@ -23,23 +23,25 @@ public class CannonBullet : MonoBehaviour
         var originPosX = transform.position.x;
         sr.sprite = animationSprites[0];
         _sequence = DOTween.Sequence()
-            .Insert(0.1f, transform.DOMoveX(originPosX + xMoveAmounts[1] * (!sr.flipX ? 1 : -1), 0.1f)
+            .Insert(0, transform.DOMoveX(originPosX + xMoveAmounts[6] * (!sr.flipX ? 1 : -1), 0.6f)
                 .SetEase(Ease.Linear))
+            /*.Insert(0.1f, transform.DOMoveX(originPosX + xMoveAmounts[1] * (!sr.flipX ? 1 : -1), 0.1f)
+                .SetEase(Ease.Linear))*/
             .InsertCallback(0.1f, () => sr.sprite = animationSprites[1])
-            .Insert(0.2f, transform.DOMoveX(originPosX + xMoveAmounts[2] * (!sr.flipX ? 1 : -1), 0.1f)
-                .SetEase(Ease.Linear))
+            /*.Insert(0.2f, transform.DOMoveX(originPosX + xMoveAmounts[2] * (!sr.flipX ? 1 : -1), 0.1f)
+                .SetEase(Ease.Linear))*/
             .InsertCallback(0.2f, () => sr.sprite = animationSprites[2])
-            .Insert(0.3f, transform.DOMoveX(originPosX + xMoveAmounts[3] * (!sr.flipX ? 1 : -1), 0.1f)
-                .SetEase(Ease.Linear))
+            /*.Insert(0.3f, transform.DOMoveX(originPosX + xMoveAmounts[3] * (!sr.flipX ? 1 : -1), 0.1f)
+                .SetEase(Ease.Linear))*/
             .InsertCallback(0.3f, () => sr.sprite = animationSprites[3])
-            .Insert(0.4f, transform.DOMoveX(originPosX + xMoveAmounts[4] * (!sr.flipX ? 1 : -1), 0.1f)
-                .SetEase(Ease.Linear))
+            /*.Insert(0.4f, transform.DOMoveX(originPosX + xMoveAmounts[4] * (!sr.flipX ? 1 : -1), 0.1f)
+                .SetEase(Ease.Linear))*/
             .InsertCallback(0.4f, () => sr.sprite = animationSprites[4])
-            .Insert(0.5f, transform.DOMoveX(originPosX + xMoveAmounts[5] * (!sr.flipX ? 1 : -1), 0.1f)
-                .SetEase(Ease.Linear))
+            /*.Insert(0.5f, transform.DOMoveX(originPosX + xMoveAmounts[5] * (!sr.flipX ? 1 : -1), 0.1f)
+                .SetEase(Ease.Linear))*/
             .InsertCallback(0.5f, () => sr.sprite = animationSprites[5])
-            .Insert(0.6f, transform.DOMoveX(originPosX + xMoveAmounts[6] * (!sr.flipX ? 1 : -1), 0.1f)
-                .SetEase(Ease.Linear))
+            /*.Insert(0.6f, transform.DOMoveX(originPosX + xMoveAmounts[6] * (!sr.flipX ? 1 : -1), 0.1f)
+                .SetEase(Ease.Linear))*/
             .InsertCallback(0.6f, () => sr.sprite = animationSprites[6])
             .OnUpdate(AttackEffect).OnComplete(OnAnimationEnd).Play();
     }

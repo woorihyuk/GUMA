@@ -14,6 +14,7 @@ namespace Game.Monster
         private ContactFilter2D _filter;
         public LayerMask contactLayerMask;
         public BoolReactiveProperty isPlayerFounded, isMonsterMoving;
+        public Collider2D hitBoxCollider;
         protected IDisposable PlayerFoundSubscription;
 
         protected TargetPlayerData lastTargetPlayer;
@@ -111,6 +112,15 @@ namespace Game.Monster
         public virtual void OnMonsterGetDamaged(int dmg)
         {
             hp.Value -= dmg;
+            
+            FxPoolManager.Instance.damageTextPool.Get(out var vText);
+            var yMax = hitBoxCollider.bounds.max.y;
+            var currentPos = transform.position;
+
+            vText.transform.position = new Vector3(currentPos.x + Random.Range(-1f, 1f),
+                yMax + Random.Range(-1.5f, 1f), currentPos.z);
+            vText.SetText(dmg);
+            vText.Play();
         }
 
         protected void RefreshHp()

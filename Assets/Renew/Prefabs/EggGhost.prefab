@@ -154,6 +154,7 @@ MonoBehaviour:
     value: 0
   isMonsterMoving:
     value: 0
+  hitBoxCollider: {fileID: 2502647079867464291}
   maxX: 5
   speed: 1.5
   spawnedPosition: {x: 0, y: 0, z: 0}
