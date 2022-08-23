@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Lightning : MonoBehaviour
 {
-    public GameObject[] point;
     public GameObject lightningEffect;
     // Start is called before the first frame update
     void Start()
@@ -17,13 +16,8 @@ public class Lightning : MonoBehaviour
     {
         
     }
-    public IEnumerator StartLightning()
+    public void LightningEffectPlay()
     {
-        for (int i = 0; i < point.Length; i++)
-        {
-            yield return YieldInstructionCache.WaitForSeconds(0.1f);
-            Instantiate(lightningEffect, point[i].transform.position, Quaternion.identity);
-        }
-       
+
     }
 }
