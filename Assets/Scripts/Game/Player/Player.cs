@@ -29,6 +29,8 @@ namespace Game.Player
         public AudioClip[] clip;
         public Animator animator;
         public SpriteRenderer sr;
+        public Transform groundCheckTf;
+        public float groundCheckDistance = 4;
         private LevelPropertiesManager _levelProperties;
 
         public Collider2D[] attackColliders;
@@ -64,6 +66,7 @@ namespace Game.Player
         private Sequence _flickerSequence;
 
         public Transform cannonFirePoint;
+        private static readonly int IsJumpAttack = Animator.StringToHash("IsJumpAttack");
 
         private enum JumpMode
         {
@@ -79,7 +82,8 @@ namespace Game.Player
             Second,
             Third,
             FirstShoot,
-            SecondShoot
+            SecondShoot,
+            JumpAttack
         }
 
         private void OnEnable()
@@ -174,6 +178,7 @@ namespace Game.Player
                 _currentJump = JumpMode.None;
                 animator.SetBool(AnimIsJump, false);
                 animator.SetBool(AnimDoubleJump, false);
+                animator.SetBool(IsJumpAttack, false);
                 animator.Update(0);
             }
 
@@ -181,17 +186,20 @@ namespace Game.Player
 
             if (Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))
             {
-                _isAttackYet = true;
-                _isDoAttack = false;
-                _isAttack = false;
-                animator.SetBool(AnimIsAttack, false);
-                animator.SetBool(AnimIsShoot, false);
-                animator.SetBool(AnimIsAttack, false);
-                animator.SetBool(AnimIsAttack2, false);
-                animator.SetBool(AnimIsAttack3, false);
-                animator.SetBool(AnimIsShoot, false);
-                animator.SetBool(AnimIsShoot2, false);
-                currentAttack = AttackMode.None;
+                if (currentAttack != AttackMode.JumpAttack)
+                {
+                    _isAttackYet = true;
+                    _isDoAttack = false;
+                    _isAttack = false;
+                    animator.SetBool(AnimIsAttack, false);
+                    animator.SetBool(AnimIsShoot, false);
+                    animator.SetBool(AnimIsAttack, false);
+                    animator.SetBool(AnimIsAttack2, false);
+                    animator.SetBool(AnimIsAttack3, false);
+                    animator.SetBool(AnimIsShoot, false);
+                    animator.SetBool(AnimIsShoot2, false);
+                    currentAttack = AttackMode.None;
+                }
             }
 
             if (!_isDash)
@@ -227,7 +235,7 @@ namespace Game.Player
                 if (!_isAttack && _input.x != 0) lastInputX = _input.x;
             }
 
-            if (StateManager.Instance.currentState == StateType.None)
+            if (StateManager.Instance.currentState == StateType.None || currentAttack != AttackMode.JumpAttack)
             {
                 Jump();
                 SetDirectionForce(lastInputX);
@@ -235,11 +243,17 @@ namespace Game.Player
 
             var gravityMultiplier = 1f;
 
-            if (!_isWall) Attack();
+            if (!_isWall)
+            {
+                JumpAttackAndAttack();
+            }
             else gravityMultiplier = 0.4f;
 
             if (_isAttack) targetVelocityX = 0;
-            if (StateManager.Instance.currentState != StateType.None) targetVelocityX = 0;
+            if (StateManager.Instance.currentState != StateType.None || currentAttack == AttackMode.JumpAttack)
+            {
+                targetVelocityX = 0;
+            }
 
             _velocity.x = Mathf.SmoothDamp(_velocity.x, targetVelocityX, ref _velocityXSmoothing,
                 _controller.collisions.below ? AccelerationTimeGrounded : AccelerationTimeAirborne);
@@ -272,6 +286,11 @@ namespace Game.Player
             PlayerInteractions();
 
             _controller.Move(_velocity * Time.deltaTime);
+        }
+
+        public void OnPlayerJumpAttackEnd()
+        {
+            currentAttack = AttackMode.None;
         }
 
         private void PlayerInteractions()
@@ -391,6 +410,34 @@ namespace Game.Player
             }
         }
 
+        private void JumpAttackAndAttack()
+        {
+            Debug.DrawRay(groundCheckTf.position, Vector3.down * groundCheckDistance, Color.red, 0,
+                false);
+            if (!_controller.collisions.below)
+            {
+                if (_isAttackYet)
+                {
+                    if (Input.GetMouseButtonDown(0))
+                    {
+                        _isDoAttack = true;
+                        var mask = 1 << LayerMask.NameToLayer("WorldGround");
+                        var ray = Physics2D.Raycast(groundCheckTf.position, groundCheckDistance * Vector3.down, groundCheckDistance, mask);
+                        if (ray.transform)
+                        {
+                            Attack();
+                            return;
+                        }
+                        animator.SetBool(IsJumpAttack, true);
+                        animator.Play("JumpAttack", -1, 0);
+                        currentAttack = AttackMode.JumpAttack;
+                        _isAttackYet = false;
+                    }
+                }
+            }
+            else Attack();
+        }
+
         private void Attack()
         {
             if (_isAttackYet)
@@ -417,7 +464,6 @@ namespace Game.Player
 
                     _isDoAttack = true;
                 }
-
                 else if (Input.GetMouseButtonDown(1))
                 {
                     if (currentAttack == AttackMode.None)

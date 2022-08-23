@@ -20,4 +20,9 @@ public class Lightning : MonoBehaviour
     {
 
     }
+
+    public IEnumerator StartLightning()
+    {
+        yield return null;
+    }
 }

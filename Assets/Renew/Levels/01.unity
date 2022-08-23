@@ -26104,6 +26104,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shirimp
       objectReference: {fileID: 0}
+    - target: {fileID: 8946192387043427163, guid: 4e58b776f24039b47bae3ea1532018ce, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e58b776f24039b47bae3ea1532018ce, type: 3}
 --- !u!4 &5397014624433639725 stripped

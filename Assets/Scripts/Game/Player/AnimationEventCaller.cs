@@ -62,4 +62,9 @@ public class AnimationEventCaller : MonoBehaviour
     {
         player.OnAnimationAttackEnd(Player.AttackMode.SecondShoot);
     }
+
+    public void OnJumpAttackEnd()
+    {
+        player.OnPlayerJumpAttackEnd();
+    }
 }
