@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class Lightning : MonoBehaviour
 {
-    public GameObject lightningEffect;
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(LightningAnim());
     }
 
     // Update is called once per frame
@@ -16,8 +15,10 @@ public class Lightning : MonoBehaviour
     {
         
     }
-    public void LightningEffectPlay()
-    {
 
+    IEnumerator LightningAnim()
+    {
+        yield return YieldInstructionCache.WaitForSeconds(0.01f);
+        Destroy(gameObject);
     }
 }
