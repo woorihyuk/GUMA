@@ -227,7 +227,7 @@ MonoBehaviour:
   - {x: 133.5, y: 7.08}
   - {x: 140, y: -0.9}
   lightningPoint: {fileID: 0}
-  lightning: {fileID: 0}
+  lightning: {fileID: 5401434286570836014, guid: 6cdba9e036db6a541ba50ee0f14af13e, type: 3}
 --- !u!61 &3145625505498213025
 BoxCollider2D:
   m_ObjectHideFlags: 0

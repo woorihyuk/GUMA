@@ -20,11 +20,12 @@ namespace Game.Monster.Seauni
             base.Start();
             _animator = GetComponent<Animator>();
             transform.position = movePoint[0];
-            position = 1;
+            position = 0;
 
         }
         protected override void OnDirectionSet(int direction)
         {
+            transform.rotation = Quaternion.Euler(0, direction, 0);
         }
 
         protected override void OnHpDrown()
@@ -43,41 +44,47 @@ namespace Game.Monster.Seauni
 
         protected override void OnPlayerLost()
         {
+            GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
         }
 
         private void Move()
         {
-            int i = Random.Range(1, 3);
+            int i = Random.Range(0, 2);
             Vector2 startPos = transform.position;
             switch (position)
             {
-                case 1:
+                case 0:
                     switch (i)
                     {
-                        case 1:
+                        case 0:
                             transform.position = movePoint[1];
+                            position = 1;
                             break;
-                        case 2:
+                        case 1:
                             transform.position = movePoint[2];
+                            position = 2;
                             break;
                     }
                     break;
-                case 2:
+                case 1:
                     transform.position = movePoint[2];
+                    position = 2;
                     break;
-                case 3:
+                case 2:
                     transform.position = movePoint[3];
+                    position = 3;
                     break;
 
-                case 4:
+                case 3:
                     switch (i)
                     {
-                        case 1:
+                        case 0:
                             transform.position = movePoint[0];
-
+                            position = 0;
                             break;
-                        case 2:
+                        case 1:
                             transform.position = movePoint[1];
+                            position = 1;
                             break;
                     }
                     break;
@@ -90,6 +97,15 @@ namespace Game.Monster.Seauni
 
         private void Attack()
         {
+            switch (transform.position.x - lastTargetPlayer.player.transform.position.x)
+            {
+                case > 0:
+                    OnDirectionSet(-180);
+                    break;
+                case < 0:
+                    OnDirectionSet(0);
+                    break;
+            }
             _animator.Play("Attack_Motion");
         }
 
