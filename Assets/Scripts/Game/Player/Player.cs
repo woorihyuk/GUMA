@@ -65,6 +65,10 @@ namespace Game.Player
         public LayerMask attackContactLayerMask;
         private Sequence _flickerSequence;
 
+        public BoxCollider2D jumpAttackCollider;
+        public GameObject particleObj;
+        private bool _alreadyDoJumpAttack, _isJumpAttackReady;
+
         public Transform cannonFirePoint;
         private static readonly int IsJumpAttack = Animator.StringToHash("IsJumpAttack");
 
@@ -115,18 +119,6 @@ namespace Game.Player
                 .AddTo(gameObject);
             isHit = true;
 
-            /*switch (GameManager.Instance.savePoint)
-        {
-            case 0:
-                transform.position = new Vector3(0.5f, -6.07f, 0);
-                Time.timeScale = 1;
-                break;
-            case 1:
-                transform.position = new Vector3(89.41f, 2.95f, 0);
-                Time.timeScale = 1;
-                break;
-        }*/
-
             _attackCheckFilter = new ContactFilter2D
             {
                 useLayerMask = true,
@@ -164,6 +156,21 @@ namespace Game.Player
             };
         }
 
+        private void OnJumpAttack()
+        {
+            if (_alreadyDoJumpAttack) return;
+            _alreadyDoJumpAttack = true;
+            particleObj.SetActive(false);
+            var enemies = new List<Collider2D>();
+            var cnt = jumpAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
+            if (cnt == 0) return;
+            foreach (var col in enemies)
+            {
+                var entity = col.GetComponent<Monster.Monster>();
+                entity.OnMonsterGetDamaged(20);
+            }
+        }
+
         private void Update()
         {
             _sinceLastDashTime += Time.deltaTime;
@@ -179,6 +186,10 @@ namespace Game.Player
                 animator.SetBool(AnimIsJump, false);
                 animator.SetBool(AnimDoubleJump, false);
                 animator.SetBool(IsJumpAttack, false);
+                if (currentAttack == AttackMode.JumpAttack)
+                {
+                    OnJumpAttack();
+                }
                 animator.Update(0);
             }
 
@@ -248,6 +259,17 @@ namespace Game.Player
                 JumpAttackAndAttack();
             }
             else gravityMultiplier = 0.4f;
+            
+            if (currentAttack == AttackMode.JumpAttack)
+            {
+                if (!_isJumpAttackReady)
+                {
+                    _velocity.x = 0;
+                    _velocity.y = 0;
+                    gravityMultiplier = 0;
+                }
+                else gravityMultiplier = 2f;
+            }
 
             if (_isAttack) targetVelocityX = 0;
             if (StateManager.Instance.currentState != StateType.None || currentAttack == AttackMode.JumpAttack)
@@ -288,9 +310,17 @@ namespace Game.Player
             _controller.Move(_velocity * Time.deltaTime);
         }
 
+        public void OnPlayerJumpAttackReadyEnd()
+        {
+            _isJumpAttackReady = true;
+        }
+
         public void OnPlayerJumpAttackEnd()
         {
             currentAttack = AttackMode.None;
+            _alreadyDoJumpAttack = false;
+            _isAttackYet = true;
+            _isAttack = false;
         }
 
         private void PlayerInteractions()
@@ -369,8 +399,7 @@ namespace Game.Player
                     _currentJump = JumpMode.None;
                     animator.SetBool(AnimIsJump, false);
                     animator.SetBool(AnimDoubleJump, false);
-
-                    _velocity.y = 0;
+                    if (currentAttack != AttackMode.JumpAttack) _velocity.y = 0;
                 }
             }
             else
@@ -431,7 +460,10 @@ namespace Game.Player
                         animator.SetBool(IsJumpAttack, true);
                         animator.Play("JumpAttack", -1, 0);
                         currentAttack = AttackMode.JumpAttack;
+                        particleObj.SetActive(true);
                         _isAttackYet = false;
+                        _alreadyDoJumpAttack = false;
+                        _isJumpAttackReady = false;
                     }
                 }
             }
@@ -716,7 +748,6 @@ namespace Game.Player
             if (currentAttack == attackMode)
             {
                 _isDoAttack = false;
-                // Debug.Log(currentAttack);
             }
 
             isCombo = true;
@@ -748,27 +779,6 @@ namespace Game.Player
             animator.SetBool(AnimIsDie, false);
             Time.timeScale = 1;
         }
-
-        /*private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other.CompareTag("EnemyAttack"))
-            {
-                var damage = other.GetComponent<Damage>();
-                if (!isHit)
-                {
-                    return;
-                }
-
-                hp -= damage.dmg;
-                GameUIManager.Instance.hpImage.fillAmount = hp / maxHp;
-                if (hp <= 0)
-                {
-                    animator.SetBool(AnimIsDie, true);
-                }
-
-                StartCoroutine(HitAni());
-            }
-        }*/
 
         public void GetDamage(int dmg)
         {
