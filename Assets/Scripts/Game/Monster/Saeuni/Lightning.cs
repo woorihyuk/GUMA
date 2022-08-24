@@ -2,23 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lightning : MonoBehaviour
+
+namespace Game.Monster
 {
-    // Start is called before the first frame update
-    void Start()
+    public class Lightning : MonoBehaviour
     {
-        StartCoroutine(LightningAnim());
-    }
+        public LayerMask attackContactLayerMask;
+        public BoxCollider2D attackRange;
+        private ContactFilter2D _attackContactFilter;
+        private void AttackRange(int index, int dmg)
+        {
+            var players = new List<Collider2D>();
+            var counts = attackRange.OverlapCollider(_attackContactFilter, players);
+            if (counts == 0) return;
+            foreach (var col in players)
+            {
+                var player = col.GetComponent<Player.Player>();
+                player.GetDamage(dmg);
+            }
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            StartCoroutine(LightningAnim());
+        }
 
-    IEnumerator LightningAnim()
-    {
-        yield return YieldInstructionCache.WaitForSeconds(0.01f);
-        Destroy(gameObject);
+        // Update is called once per frame
+        void Update()
+        {
+
+        }
+
+        IEnumerator LightningAnim()
+        {
+            yield return YieldInstructionCache.WaitForSeconds(0.01f);
+            Destroy(gameObject);
+        }
+
+
     }
+    
 }
