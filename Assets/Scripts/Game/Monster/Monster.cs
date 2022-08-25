@@ -125,14 +125,13 @@ namespace Game.Monster
 
         protected void RefreshHp()
         {
-            print("dff");
             try
             {
                 GameUIManager.Instance.SetHpBarPercent(GetInstanceID().ToString(), (float)hp.Value / maxHp.Value);
             }
             catch
             {
-                //return;
+                //
             }
 
             if (hp.Value <= 0)

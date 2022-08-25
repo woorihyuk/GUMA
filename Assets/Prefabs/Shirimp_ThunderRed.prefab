@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 8737401485135258028}
   - component: {fileID: 4762954113874377477}
   - component: {fileID: 8369583822338165581}
-  - component: {fileID: 456293929686148828}
-  - component: {fileID: 8088906914403502098}
+  - component: {fileID: 4235579020147690598}
+  - component: {fileID: 8308792855277816877}
   m_Layer: 0
-  m_Name: Shirimp_Lightning
+  m_Name: Shirimp_ThunderRed
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -107,7 +107,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &456293929686148828
+--- !u!114 &4235579020147690598
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -116,19 +116,50 @@ MonoBehaviour:
   m_GameObject: {fileID: 5401434286570836014}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db5770009c3e24144bde7562f6ce0df9, type: 3}
+  m_Script: {fileID: 11500000, guid: f51358115c30c264cbe0934d1ec42b89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8088906914403502098
-MonoBehaviour:
+  animator: {fileID: 8369583822338165581}
+  attackRangeCollider: {fileID: 8308792855277816877}
+  type: 0
+  attackContactFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
+  dmg: 15
+--- !u!61 &8308792855277816877
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5401434286570836014}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: faf1e175d57856345acd19b2f137c517, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  attack: {fileID: 7691529174892246277, guid: 763e5bd0a2918fe4da4d838313635b85, type: 3}
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3.3333333, y: 6.6666665}
+    newSize: {x: 10, y: 20}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.477587, y: 6.6666665}
+  m_EdgeRadius: 0

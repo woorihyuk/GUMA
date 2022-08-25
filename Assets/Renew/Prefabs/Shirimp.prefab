@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4647541417832351402}
   - component: {fileID: 1592274617849933285}
   - component: {fileID: 3145625505498213025}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Shirimp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,7 +113,7 @@ Transform:
   m_GameObject: {fileID: 3774631299170564296}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 133.5, y: 7.08, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0.49949998}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 567978077884198899}
@@ -143,7 +143,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: d2bc80e02a92faf4f81a50d9daaa72af, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -221,7 +221,7 @@ MonoBehaviour:
   hp:
     value: 0
   maxHp:
-    value: 0
+    value: 200
   movePoint:
   - {x: 120, y: 0.3}
   - {x: 130, y: 0.3}
