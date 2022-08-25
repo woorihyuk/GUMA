@@ -1,7 +1,9 @@
-using Game.Monster;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Game.Monster.Seauni
 {
@@ -18,6 +20,7 @@ namespace Game.Monster.Seauni
         private ContactFilter2D _attackContactFilter;
         private BoxCollider2D FollowinglightningCollider;
         private BoxCollider2D FollowinglightningRange;
+        private SpriteRenderer _spriteRenderer;
         private Animator _animator;
         private int position;
         private float FollowinglightningColliderSizeX;
@@ -27,6 +30,7 @@ namespace Game.Monster.Seauni
         {
             base.Start();
             _animator = GetComponent<Animator>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
             FollowinglightningCollider = Followinglightning.GetComponent<BoxCollider2D>();
             FollowinglightningColliderSizeX = FollowinglightningCollider.size.x;
             transform.position = movePoint[0];
@@ -37,6 +41,17 @@ namespace Game.Monster.Seauni
                 useLayerMask = true
             };
         }
+
+        public override void OnMonsterGetDamaged(int dmg)
+        {
+            if (hp.Value <= 0) return;
+            base.OnMonsterGetDamaged(dmg);
+            _spriteRenderer.material.color = Color.white;
+            Observable.TimerFrame(1, FrameCountType.EndOfFrame)
+                .Do(_ => { }, () => { _spriteRenderer.material.color = Color.black; }).Subscribe().AddTo(gameObject);
+            if (hp.Value>0) Move();
+        }
+
         protected override void OnDirectionSet(int direction)
         {
             transform.rotation = Quaternion.Euler(0, direction, 0);
@@ -44,7 +59,9 @@ namespace Game.Monster.Seauni
 
         protected override void OnHpDrown()
         {
-            _animator.Play("die");
+            print("die");
+            _animator.Play("Die");
+            _animator.Update(0);
         }
 
         protected override void OnPlayerFound()
