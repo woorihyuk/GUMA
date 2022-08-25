@@ -1,29 +1,23 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Game.Monster.Seauni
+namespace Game.Monster.Saeuni
 {
-    public class NewSeauniCtrl : Monster
+    public class NewSaeuniCtrl : Monster
     {
         public Vector2[] movePoint;
         public Transform lightningPoint;
-        public GameObject lightning;
-        public GameObject Followinglightning;
-        public GameObject attakEffect;
         public BoxCollider2D attackRange;
         public LayerMask attackContactLayerMask;
 
         private ContactFilter2D _attackContactFilter;
-        private BoxCollider2D FollowinglightningCollider;
-        private BoxCollider2D FollowinglightningRange;
         private SpriteRenderer _spriteRenderer;
         private Animator _animator;
-        private int position;
-        private float FollowinglightningColliderSizeX;
+        private int _positionIndex;
+        private float _followingLightningColliderSizeX;
         private bool _isAttack;
 
         protected override void Start()
@@ -31,15 +25,18 @@ namespace Game.Monster.Seauni
             base.Start();
             _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            FollowinglightningCollider = Followinglightning.GetComponent<BoxCollider2D>();
-            FollowinglightningColliderSizeX = FollowinglightningCollider.size.x;
             transform.position = movePoint[0];
-            position = 0;
+            _positionIndex = 0;
             _attackContactFilter = new ContactFilter2D
             {
                 layerMask = attackContactLayerMask,
                 useLayerMask = true
             };
+        }
+
+        private void OnDestroy()
+        {
+            GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
         }
 
         public override void OnMonsterGetDamaged(int dmg)
@@ -49,7 +46,7 @@ namespace Game.Monster.Seauni
             _spriteRenderer.material.color = Color.white;
             Observable.TimerFrame(1, FrameCountType.EndOfFrame)
                 .Do(_ => { }, () => { _spriteRenderer.material.color = Color.black; }).Subscribe().AddTo(gameObject);
-            if (hp.Value>0) Move();
+            if (hp.Value > 0) Move();
         }
 
         protected override void OnDirectionSet(int direction)
@@ -59,14 +56,13 @@ namespace Game.Monster.Seauni
 
         protected override void OnHpDrown()
         {
-            print("die");
             _animator.Play("Die");
             _animator.Update(0);
         }
 
         protected override void OnPlayerFound()
         {
-            GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "ªıøÏ¥œ", (float)hp.Value / maxHp.Value);
+            GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "ÏÉàÏö∞Îãà", (float)hp.Value / maxHp.Value);
             if (!_isAttack)
             {
                 Attack();
@@ -82,28 +78,29 @@ namespace Game.Monster.Seauni
         {
             int i = Random.Range(0, 2);
             Vector2 startPos = transform.position;
-            switch (position)
+            switch (_positionIndex)
             {
                 case 0:
                     switch (i)
                     {
                         case 0:
                             transform.position = movePoint[1];
-                            position = 1;
+                            _positionIndex = 1;
                             break;
                         case 1:
                             transform.position = movePoint[2];
-                            position = 2;
+                            _positionIndex = 2;
                             break;
                     }
+
                     break;
                 case 1:
                     transform.position = movePoint[2];
-                    position = 2;
+                    _positionIndex = 2;
                     break;
                 case 2:
                     transform.position = movePoint[3];
-                    position = 3;
+                    _positionIndex = 3;
                     break;
 
                 case 3:
@@ -111,19 +108,18 @@ namespace Game.Monster.Seauni
                     {
                         case 0:
                             transform.position = movePoint[0];
-                            position = 0;
+                            _positionIndex = 0;
                             break;
                         case 1:
                             transform.position = movePoint[1];
-                            position = 1;
+                            _positionIndex = 1;
                             break;
                     }
+
                     break;
-
-
             }
-            StartCoroutine(LightningEffectPlay(startPos.x, transform.position.x));
 
+            StartCoroutine(LightningEffectPlay(startPos.x, transform.position.x));
         }
 
         private void Attack()
@@ -137,34 +133,39 @@ namespace Game.Monster.Seauni
                     OnDirectionSet(0);
                     break;
             }
+
             _animator.Play("Attack_Motion");
         }
 
-        public IEnumerator LightningEffectPlay(float startPos, float endPos)
+        private IEnumerator LightningEffectPlay(float startPos, float endPos)
         {
+            _followingLightningColliderSizeX =
+                FxPoolManager.Instance.saeuniThunderEffectBluePrefab.attackRangeCollider.size.x;
+
             int lightningCount;
             int leftRight;
             if (startPos - endPos > 0)
             {
-                lightningCount = (int)((startPos - endPos) / FollowinglightningColliderSizeX);
+                lightningCount = (int)((startPos - endPos) / _followingLightningColliderSizeX);
                 leftRight = -1;
             }
             else
             {
-                lightningCount = (int)((endPos - startPos) / FollowinglightningColliderSizeX);
+                lightningCount = (int)((endPos - startPos) / _followingLightningColliderSizeX);
                 leftRight = 1;
             }
-            for (int i = 0; i < lightningCount; i++)
+
+            for (var i = 0; i < lightningCount; i++)
             {
-                var lightningPos = new Vector2(startPos + FollowinglightningColliderSizeX * i*leftRight, -1.3f);
-                GameObject lightning = Instantiate(Followinglightning, lightningPos, Quaternion.identity);
-                FollowinglightningRange = lightning.GetComponent<BoxCollider2D>();
-                AttackRange(FollowinglightningRange, 15);
+                var lightningPos = new Vector2(startPos + _followingLightningColliderSizeX * i * leftRight, -1.3f);
+                FxPoolManager.Instance.saeuniThunderEffectBluePool.Get(out var vThunderEffect);
+                vThunderEffect.transform.position = lightningPos;
+                vThunderEffect.attackContactFilter = _attackContactFilter;
                 yield return YieldInstructionCache.WaitForSeconds(0.05f);
             }
         }
 
-        private void AttackRange(BoxCollider2D range, int dmg)
+        private void AttackRange(Collider2D range, int dmg)
         {
             var players = new List<Collider2D>();
             var counts = range.OverlapCollider(_attackContactFilter, players);
@@ -176,27 +177,29 @@ namespace Game.Monster.Seauni
             }
         }
 
-       
-        #region æ÷¥œ∏ﬁ¿Ãº« ¿Ã∫•∆Æ
+
+        #region Ïï†ÎãàÎ©îÏù¥ÏÖò Ïù¥Î≤§Ìä∏
 
         public void OnDieEnd()
         {
             Destroy(gameObject);
         }
 
-        public void AttackEvent1()
+        public void OnAttackEvent1()
         {
-            Instantiate(lightning, lightningPoint.position, Quaternion.identity);
-            Instantiate(attakEffect, transform.position, transform.rotation);
-            AttackRange(attackRange,15);
+            FxPoolManager.Instance.saeuniThunderEffectRedPool.Get(out var vThunderEffect);
+            vThunderEffect.transform.position = lightningPoint.position;
+            vThunderEffect.attackContactFilter = _attackContactFilter;
+            FxPoolManager.Instance.saeuniAttackEffectPool.Get(out var vAttackEffect);
+            vAttackEffect.transform.position = transform.position;
+            AttackRange(attackRange, 15);
         }
 
-        public void AttackEvent2()
+        public void OnAttackEvent2()
         {
-            _animator.Play("New State");
             Move();
         }
+
         #endregion
     }
 }
-

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 namespace Game.Monster
 {
     public class Lightning : MonoBehaviour
@@ -10,6 +9,7 @@ namespace Game.Monster
         public LayerMask attackContactLayerMask;
         public BoxCollider2D attackRange;
         private ContactFilter2D _attackContactFilter;
+        
         private void AttackRange(int index, int dmg)
         {
             var players = new List<Collider2D>();

@@ -29319,14 +29319,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 576395766}
     m_Modifications:
-    - target: {fileID: 1592274617849933285, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
-      propertyPath: hp.value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1592274617849933285, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
-      propertyPath: maxHp.value
-      value: 200
-      objectReference: {fileID: 0}
     - target: {fileID: 1617703950693008197, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -29371,17 +29363,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3563444108085865687, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: d2bc80e02a92faf4f81a50d9daaa72af, type: 2}
     - target: {fileID: 3774631299170564296, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
       propertyPath: m_Name
       value: Shirimp
-      objectReference: {fileID: 0}
-    - target: {fileID: 3774631299170564296, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
-      propertyPath: m_Layer
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
