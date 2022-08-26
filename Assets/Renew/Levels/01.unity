@@ -29367,6 +29367,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shirimp
       objectReference: {fileID: 0}
+    - target: {fileID: 8987505064053109390, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2fff575555e03f84f9cff820a8b8ceb7, type: 3}
 --- !u!1001 &2986031123716670093
