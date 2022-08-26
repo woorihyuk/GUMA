@@ -167,7 +167,7 @@ namespace Game.Player
             foreach (var col in enemies)
             {
                 var entity = col.GetComponent<Monster.Monster>();
-                entity.OnMonsterGetDamaged(20);
+                entity.OnMonsterGetDamaged(30);
             }
         }
 
@@ -791,6 +791,7 @@ namespace Game.Player
                 Time.timeScale = 0;
                 animator.updateMode = AnimatorUpdateMode.UnscaledTime;
                 animator.SetBool(AnimIsDie, true);
+                animator.Play("Die", -1, 0);
             }
             else OnHit();
         }
