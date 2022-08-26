@@ -464,7 +464,9 @@ namespace Game.Player
                         _isAttackYet = false;
                         _alreadyDoJumpAttack = false;
                         _isJumpAttackReady = false;
+                        return;
                     }
+                    Attack();
                 }
             }
             else Attack();
