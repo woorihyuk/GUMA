@@ -8,7 +8,7 @@ namespace Game.Monster.Egg
 {
     public class EggGhostController : Monster
     {
-        private bool _isAttack, _attack4Waiting;
+        private bool _isAttack, _attack1Waiting, _attack4Waiting;
         private Animator _animator;
         private SpriteRenderer _spriteRenderer;
         private Coroutine _aiMoveCoroutine;
@@ -92,7 +92,7 @@ namespace Game.Monster.Egg
             GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "달걀귀신", (float) hp.Value / maxHp.Value);
             RefreshHp();
 
-            if (!_isAttack && !_attack4Waiting)
+            if (!_isAttack && !_attack4Waiting && !_attack1Waiting)
             {
                 StopCoroutine(_aiMoveCoroutine);
                 _animator.SetBool(IsWalk, false);
@@ -161,10 +161,12 @@ namespace Game.Monster.Egg
         {
             _animator.SetBool(Attack1, false);
             _isAttack = false;
+            _attack1Waiting = true;
 
             _attack2WaitSubscription = Observable.Timer(TimeSpan.FromMilliseconds(1000))
                 .Subscribe(_ =>
                 {
+                    _attack1Waiting = false;
                     if (!isPlayerFounded.Value)
                     {
                         var playAttack4 = Random.value >= 0.5f;

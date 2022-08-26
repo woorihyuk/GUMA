@@ -1658,7 +1658,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.496783, y: 0.40280604}
+  m_Size: {x: 4.3903093, y: 0.40280604}
   m_EdgeRadius: 0
 --- !u!1 &8197304579209303819
 GameObject:
