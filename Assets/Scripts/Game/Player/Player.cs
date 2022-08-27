@@ -66,7 +66,6 @@ namespace Game.Player
         private Sequence _flickerSequence;
 
         public BoxCollider2D jumpAttackCollider;
-        public GameObject particleObj;
         private bool _alreadyDoJumpAttack, _isJumpAttackReady;
 
         public Transform cannonFirePoint;
@@ -160,7 +159,6 @@ namespace Game.Player
         {
             if (_alreadyDoJumpAttack) return;
             _alreadyDoJumpAttack = true;
-            particleObj.SetActive(false);
             var enemies = new List<Collider2D>();
             var cnt = jumpAttackCollider.OverlapCollider(_attackCheckFilter, enemies);
             if (cnt == 0) return;
@@ -460,7 +458,6 @@ namespace Game.Player
                         animator.SetBool(IsJumpAttack, true);
                         animator.Play("JumpAttack", -1, 0);
                         currentAttack = AttackMode.JumpAttack;
-                        particleObj.SetActive(true);
                         _isAttackYet = false;
                         _alreadyDoJumpAttack = false;
                         _isJumpAttackReady = false;
