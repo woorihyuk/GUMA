@@ -56,6 +56,7 @@ namespace Game.Player
         private float _gravity, _jumpVelocity, _velocityXSmoothing;
         private float _sinceLastDashTime = 10f, _comboTime;
         private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet;
+        private bool _canPause = true;
         private Vector2 _input;
         private Vector3 _velocity;
         private JumpMode _currentJump;
@@ -171,6 +172,10 @@ namespace Game.Player
 
         private void Update()
         {
+            PlayerInteractions();
+            
+            if (GameUIManager.Instance.pauseGroup.gameObject.activeSelf) return;
+
             _sinceLastDashTime += Time.deltaTime;
 
             if (_controller.collisions.above || _controller.collisions.below)
@@ -302,9 +307,7 @@ namespace Game.Player
                     }
                 }
             }
-
-            PlayerInteractions();
-
+            
             _controller.Move(_velocity * Time.deltaTime);
         }
 
@@ -323,7 +326,7 @@ namespace Game.Player
 
         private void PlayerInteractions()
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (Input.GetKeyDown(KeyCode.E) && !GameUIManager.Instance.pauseGroup.gameObject.activeSelf)
             {
                 if (StateManager.Instance.currentState == StateType.Talking)
                 {
@@ -356,9 +359,21 @@ namespace Game.Player
             }
             else if (Input.GetKeyDown(KeyCode.Escape) && StateManager.Instance.currentState == StateType.None)
             {
-                GameUIManager.Instance.SetActivePlayerHud(false);
-                DOTween.KillAll(true);
-                SceneManager.LoadScene("Title");
+                if (_canPause)
+                {
+                    if (!GameUIManager.Instance.pauseGroup.gameObject.activeSelf) // 퍼즈걸기
+                    {
+                        
+                        GameUIManager.Instance.ShowPauseScreen();
+                    }
+                    else // 퍼즈 풀기
+                    {
+                        GameUIManager.Instance.SetActivePlayerHud(true);
+                        Time.timeScale = 1;
+                        GameUIManager.Instance.ClosePauseScreen();
+                    }
+                }
+                
             }
         }
 
@@ -753,7 +768,7 @@ namespace Game.Player
             StartCoroutine(AttackWait(attackMode));
         }
 
-        public void IsDie()
+        public void OnDie()
         {
             /*GameManager.Instance.GameLoad();
         Time.timeScale = 0;
@@ -768,7 +783,7 @@ namespace Game.Player
             GameUIManager.Instance.SetActivePlayerHud(false);
             DOTween.Kill(true);
             Time.timeScale = 1;
-            SceneManager.LoadScene("Title");
+            SceneManager.LoadScene("GameOver");
         }
 
         public void Restart()
@@ -787,6 +802,7 @@ namespace Game.Player
             if (hp.Value <= 0)
             {
                 _flickerSequence.Kill(true);
+                _canPause = false;
                 Time.timeScale = 0;
                 animator.updateMode = AnimatorUpdateMode.UnscaledTime;
                 animator.SetBool(AnimIsDie, true);

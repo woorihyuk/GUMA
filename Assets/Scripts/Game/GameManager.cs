@@ -36,10 +36,10 @@ public class GameManager : Singleton<GameManager>
         return true;
     }
     
-    public void LoadGame()
+    public bool LoadGame()
     {
-        if (!PlayerPrefs.HasKey("SavePointFlag")) return;
-        if (!PlayerPrefs.HasKey("SavePointLevel")) return;
+        if (!PlayerPrefs.HasKey("SavePointFlag")) return false;
+        if (!PlayerPrefs.HasKey("SavePointLevel")) return false;
 
         var flag = PlayerPrefs.GetInt("SavePointFlag");
         var level = PlayerPrefs.GetString("SavePointLevel");
@@ -50,6 +50,7 @@ public class GameManager : Singleton<GameManager>
         _isSaveLoaded = true;
         Debug.Log("[GameManager] Save Loaded");
         SceneManager.LoadScene(level);
+        return true;
     }
 
     public void GameLoad()

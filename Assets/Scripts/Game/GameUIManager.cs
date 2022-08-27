@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Game
@@ -27,12 +28,35 @@ namespace Game
         public TMP_Text saveText;
         private Sequence _saveTextSequence;
 
+        public CanvasGroup pauseGroup;
+
         private void OnDestroy()
         {
             if (hpAnimator.playableGraph.IsValid())
                 hpAnimator.playableGraph.Destroy();
             if (hpBackgroundAnimator.playableGraph.IsValid())
                 hpBackgroundAnimator.playableGraph.Destroy();
+        }
+
+        public void BackToMainMenu()
+        {
+            SceneManager.LoadScene("Title");
+            Time.timeScale = 1;
+            pauseGroup.gameObject.SetActive(false);
+        }
+        
+        public void ShowPauseScreen()
+        {
+            SetActivePlayerHud(false);
+            Time.timeScale = 0;
+            pauseGroup.gameObject.SetActive(true);
+        }
+
+        public void ClosePauseScreen()
+        {
+            SetActivePlayerHud(true);
+            Time.timeScale = 1;
+            pauseGroup.gameObject.SetActive(false);
         }
 
         public void SetActivePlayerHud(bool value)

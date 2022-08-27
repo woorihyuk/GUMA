@@ -4596,8 +4596,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: cc155bd6608966444839fb17bfa1f9bc, type: 3}
-    m_FontSize: 270
+    m_Font: {fileID: 12800000, guid: b86b905f0cf935647be99615a0617a23, type: 3}
+    m_FontSize: 70
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -6210,8 +6210,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: cc155bd6608966444839fb17bfa1f9bc, type: 3}
-    m_FontSize: 57
+    m_Font: {fileID: 12800000, guid: b86b905f0cf935647be99615a0617a23, type: 3}
+    m_FontSize: 44
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -139621,7 +139621,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   jumpAttackCollider: {fileID: 0}
-  particleObj: {fileID: 0}
   cannonFirePoint: {fileID: 0}
 --- !u!114 &3031070240075619742
 MonoBehaviour:

@@ -52,7 +52,7 @@ public class AnimationEventCaller : MonoBehaviour
 
     public void OnDieEnd()
     {
-        player.IsDie();
+        player.OnDie();
     }
     public void ShootEnd()
     {
