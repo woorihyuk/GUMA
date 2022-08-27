@@ -12,5 +12,10 @@ namespace Game.GameOver
                 SceneManager.LoadScene("01");
             }
         }
+
+        public void OnClickExit()
+        {
+            SceneManager.LoadScene("Title");
+        }
     }
 }
