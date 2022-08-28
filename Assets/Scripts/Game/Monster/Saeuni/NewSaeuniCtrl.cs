@@ -65,7 +65,10 @@ namespace Game.Monster.Saeuni
             GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "새우니", (float)hp.Value / maxHp.Value);
             if (!_isAttack)
             {
-                Attack();
+                if (hp.Value>0)
+                {
+                    Attack();
+                }
             }
         }
 

@@ -9,14 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c202d323802bff4295cda7972090b85, type: 3}
-  m_Name: 01-Regions
+  m_Script: {fileID: 1726182683, guid: a4865f1ab4504ed8a368670db22f409c, type: 3}
+  m_Name: AOTGenerationConfig
   m_EditorClassIdentifier: 
-  regions:
-  - name: Region #0
-    area:
-      serializedVersion: 2
-      x: -14.339554
-      y: -7.944682
-      width: 176.87286
-      height: 17.01806
+  automateBeforeBuilds: 0
+  deleteDllAfterBuilds: 1
+  AutomateForAllAOTPlatforms: 1
+  automateForPlatforms: 0900000014000000
+  lastScan: 0
+  supportSerializedTypes: []
