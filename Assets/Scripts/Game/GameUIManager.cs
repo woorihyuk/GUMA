@@ -23,6 +23,7 @@ namespace Game
         public Animator hpAnimator, hpBackgroundAnimator;
         public Image hpBackgroundImage, hpImage;
         public Image[] inventorySlots;
+        public GameObject apple;
 
         public Transform saveStart, saveEnd;
         public TMP_Text saveText;
@@ -126,6 +127,10 @@ namespace Game
             PushHpBar(key, targetName);
             SetHpBarPercent(key, hpValue);
             return true;
+        }
+        public void ShowApple(bool i)
+        {
+            apple.SetActive(i); 
         }
     }
 }

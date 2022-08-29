@@ -102,11 +102,6 @@ namespace Game.Monster.Saeuni
                     _positionIndex = 2;
                     break;
                 case 2:
-                    transform.position = movePoint[3];
-                    _positionIndex = 3;
-                    break;
-
-                case 3:
                     switch (i)
                     {
                         case 0:
@@ -195,6 +190,7 @@ namespace Game.Monster.Saeuni
             vThunderEffect.attackContactFilter = _attackContactFilter;
             FxPoolManager.Instance.saeuniAttackEffectPool.Get(out var vAttackEffect);
             vAttackEffect.transform.position = transform.position;
+            vAttackEffect.transform.localScale = new Vector3((transform.position.x - lastTargetPlayer.player.transform.position.x > 0 ? -1 : 1), 1,1);
             AttackRange(attackRange, 15);
         }
 

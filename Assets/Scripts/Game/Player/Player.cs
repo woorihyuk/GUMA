@@ -33,6 +33,8 @@ namespace Game.Player
         public float groundCheckDistance = 4;
         private LevelPropertiesManager _levelProperties;
 
+        public GameObject apple;
+
         public Collider2D[] attackColliders;
         public FloatReactiveProperty hp;
 
@@ -55,7 +57,7 @@ namespace Game.Player
         private const float AccelerationTimeGrounded = 0.1f;
         private float _gravity, _jumpVelocity, _velocityXSmoothing;
         private float _sinceLastDashTime = 10f, _comboTime;
-        private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet;
+        private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet, _havApple;
         private bool _canPause = true;
         private Vector2 _input;
         private Vector3 _velocity;
@@ -307,6 +309,8 @@ namespace Game.Player
                     }
                 }
             }
+
+            
             
             _controller.Move(_velocity * Time.deltaTime);
         }
@@ -354,6 +358,14 @@ namespace Game.Player
                             GameManager.Instance.SaveGame(point.pointFlags, point.levelName, lastInputX);
                             GameUIManager.Instance.ShowSaveMsg();
                         }
+                        else if (iObj.objectType == InteractiveObjectType.Tree)
+                        {
+                            if (!_havApple)
+                            {
+                                GameUIManager.Instance.ShowApple(true);
+                                _havApple = true;  
+                            }
+                        }
                     }
                 }
             }
@@ -374,6 +386,15 @@ namespace Game.Player
                     }
                 }
                 
+            }
+
+            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                if (_havApple)
+                {
+                    hp.Value = maxHp;
+                    GameUIManager.Instance.ShowApple(false);
+                }
             }
         }
 

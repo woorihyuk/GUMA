@@ -29,10 +29,10 @@ namespace Game.Monster.Pig
 
         protected override void Start()
         {
-            base.Start();
             _animator = GetComponent<Animator>();
+            base.Start();
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
+            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 2, 1f, 2f));
             _moveStateSubscription = isMonsterMoving.DistinctUntilChanged()
                 .Subscribe(v => { _animator.SetBool(IsWalk, v); }).AddTo(gameObject);
             _attackContactFilter = new ContactFilter2D
@@ -74,7 +74,11 @@ namespace Game.Monster.Pig
             _isWait = true;
             yield return YieldInstructionCache.WaitForSeconds(i);
             _isWait = false;
-            Attack();
+            if (lastTargetPlayer!=null)
+            {
+                Attack();
+
+            }
         }
 
         private IEnumerator MoveToPlayer(int direction)
@@ -104,6 +108,7 @@ namespace Game.Monster.Pig
         private void OnDestroy()
         {
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
+            Destroy(gameObject);
         }
 
         protected override void OnPlayerFound()
@@ -131,6 +136,7 @@ namespace Game.Monster.Pig
                 }
                 else
                 {
+                    print("tlakf");
 
                     _animator.SetBool("Attack", true);
 
@@ -142,6 +148,10 @@ namespace Game.Monster.Pig
         protected override void OnPlayerLost()
         {
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
+            StopAllCoroutines();
+            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 2, 1f, 2f));
+            _moveStateSubscription = isMonsterMoving.DistinctUntilChanged()
+                .Subscribe(v => { _animator.SetBool(IsWalk, v); }).AddTo(gameObject);
         }
         #region 애니메이션 이벤트
 
