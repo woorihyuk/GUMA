@@ -12,6 +12,8 @@ namespace Game.Monster.Pig
         public LayerMask attackContactLayerMask;
         private IDisposable _moveStateSubscription;
         public Transform attackRangePos;
+        public Transform attackEffectPos;
+        public GameObject attackEffect;
         public BoxCollider2D attackRange;
         public float attackRangeCount;
 
@@ -170,6 +172,13 @@ namespace Game.Monster.Pig
             _animator.SetBool("Attack", false);
             _isAttack = false;
             StartCoroutine(Wait(1.5f));
+        }
+        
+        public void OnAttackEvent3()
+        {
+            attackEffect.SetActive(true);
+            attackEffect.transform.position = attackEffectPos.position;
+            attackEffect.transform.localScale = attackRangePos.localScale;
         }
         #endregion
     }
