@@ -138,6 +138,12 @@ namespace Game.Player
             SetPosition();
             lastInputX = GameManager.Instance.lastDirection;
             SetDirectionForce(lastInputX);
+            
+            if (GameManager.Instance.isEndWatched)
+            {
+                GameManager.Instance.isEndWatched = false;
+                transform.position = GameManager.Instance.lastPosition;
+            }
         }
 
         private void SetPosition()

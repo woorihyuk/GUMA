@@ -74,9 +74,18 @@ namespace Game
             }
         }
 
+        private bool _isEnd;
+
         private void Close()
         {
             DeactivateEndTriangle();
+
+            if (_isEnd)
+            {
+                _isEnd = false;
+                ActionEventManager.Instance.FadeInImage();
+            }
+            
             GameUIManager.Instance.dialogBackgroundImage.transform.DOLocalMoveY(GameUIManager.Instance.dialogBackgroundStartTf.localPosition.y, 0.5f);
             GameUIManager.Instance.dialogBackgroundImage.transform.DOScale(0, 0.5f);
             ((RectTransform)GameUIManager.Instance.letterBox.transform).DOSizeDelta(new Vector2(0, 260f), 0.7f)
@@ -109,6 +118,21 @@ namespace Game
             {
                 DeactivateCharacters();
                 GameUIManager.Instance.dialogCharacters[0].gameObject.SetActive(true);
+            }
+            else if (charTag == "es")
+            {
+                DeactivateCharacters();
+                GameUIManager.Instance.dialogCharacters[1].gameObject.SetActive(true);
+            }
+            else if (charTag == "om")
+            {
+                DeactivateCharacters();
+                GameUIManager.Instance.dialogCharacters[2].gameObject.SetActive(true);
+            }
+            else if (charTag == "of")
+            {
+                DeactivateCharacters();
+                GameUIManager.Instance.dialogCharacters[3].gameObject.SetActive(true);
             }
             else
             {
@@ -236,6 +260,14 @@ namespace Game
                 else if (str == "CameraShake")
                 {
                     _textSequence.AppendCallback(() => ActionEventManager.Instance.ImpulseRandom());
+                }
+                else if (str == "CloseToEgg")
+                {
+                    _textSequence.AppendCallback(() => ActionEventManager.Instance.CloseToEgg());
+                }
+                else if (str == "FadeInImage")
+                {
+                    _isEnd = true;
                 }
                 return true;
             }

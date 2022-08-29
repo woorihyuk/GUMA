@@ -14,6 +14,8 @@ namespace Game
         public HpBarController hpBarPrefab;
         public Transform hpBarGroup;
         public CanvasGroup letterBox;
+
+        public CanvasGroup endCg;
     
         public TMP_Text dialogText;
         public Image dialogBackgroundImage, endTriangle;
@@ -58,6 +60,12 @@ namespace Game
             SetActivePlayerHud(true);
             Time.timeScale = 1;
             pauseGroup.gameObject.SetActive(false);
+        }
+
+        public void ShowEndCg()
+        {
+            endCg.gameObject.SetActive(true);
+            endCg.DOFade(1, 0.5f);
         }
 
         public void SetActivePlayerHud(bool value)

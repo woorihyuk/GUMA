@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 namespace Game.Monster.Egg
@@ -29,6 +30,14 @@ namespace Game.Monster.Egg
 
         #endregion
 
+        private void Awake()
+        {
+            if (GameManager.Instance.isEndWatched)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
         protected override void Start()
         {
             base.Start();
@@ -47,6 +56,10 @@ namespace Game.Monster.Egg
         private void OnDestroy()
         {
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
+            var player = FindObjectOfType<Player.Player>();
+            GameManager.Instance.lastPosition = player.transform.position;
+            GameManager.Instance.lastDirection = player.lastInputX;
+            SceneManager.LoadScene("02");
         }
 
         protected override void OnHpDrown()

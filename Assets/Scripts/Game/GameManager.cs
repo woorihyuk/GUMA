@@ -6,6 +6,8 @@ public class GameManager : Singleton<GameManager>
     public int savePoint;
     public int positionFlags = -1;
     public float lastDirection;
+    public Vector3 lastPosition;
+    public bool isEndWatched;
     private bool _isSaveLoaded;
 
     protected override void Awake()
