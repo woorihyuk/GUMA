@@ -185,13 +185,13 @@ namespace Game.Monster.Saeuni
 
         public void OnAttackEvent1()
         {
+            AttackRange(attackRange, 15);
             FxPoolManager.Instance.saeuniThunderEffectRedPool.Get(out var vThunderEffect);
             vThunderEffect.transform.position = lightningPoint.position;
             vThunderEffect.attackContactFilter = _attackContactFilter;
             FxPoolManager.Instance.saeuniAttackEffectPool.Get(out var vAttackEffect);
             vAttackEffect.transform.position = transform.position;
-            vAttackEffect.transform.localScale = new Vector3((transform.position.x - lastTargetPlayer.player.transform.position.x > 0 ? -1 : 1), 1,1);
-            AttackRange(attackRange, 15);
+            vAttackEffect.transform.localScale = new Vector3(transform.position.x - lastTargetPlayer.player.transform.position.x > 0 ? -1 : 1, 1,1);
         }
 
         public void OnAttackEvent2()

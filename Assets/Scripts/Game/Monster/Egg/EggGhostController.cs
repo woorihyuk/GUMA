@@ -22,6 +22,8 @@ namespace Game.Monster.Egg
         public PolygonCollider2D[] attackColliders;
         private ContactFilter2D _attackContactFilter;
 
+        private bool _initialized;
+
         #region 애니메이터 해쉬
 
         private static readonly int IsWalk = Animator.StringToHash("isWalk");
@@ -35,12 +37,14 @@ namespace Game.Monster.Egg
             if (GameManager.Instance.isEndWatched)
             {
                 gameObject.SetActive(false);
+                _initialized = false;
             }
         }
 
         protected override void Start()
         {
             base.Start();
+            _initialized = true;
             _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
             StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
@@ -56,7 +60,7 @@ namespace Game.Monster.Egg
         private void OnDestroy()
         {
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
-            if (hp.Value <= 0)
+            if (hp.Value <= 0 && _initialized)
             {
                 var player = FindObjectOfType<Player.Player>();
                 GameManager.Instance.lastPosition = player.transform.position;
