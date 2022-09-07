@@ -16,7 +16,7 @@ namespace Game
         public CanvasGroup letterBox;
 
         public CanvasGroup endCg;
-    
+
         public TMP_Text dialogText;
         public Image dialogBackgroundImage, endTriangle;
         public Image[] dialogCharacters;
@@ -47,7 +47,7 @@ namespace Game
             Time.timeScale = 1;
             pauseGroup.gameObject.SetActive(false);
         }
-        
+
         public void ShowPauseScreen()
         {
             SetActivePlayerHud(false);
@@ -77,7 +77,7 @@ namespace Game
                 image.gameObject.SetActive(value);
             }
         }
-    
+
         public void ShowSaveMsg()
         {
             _saveTextSequence?.Kill(true);
@@ -86,14 +86,8 @@ namespace Game
                 .PrependCallback(() => saveText.gameObject.SetActive(true))
                 .Append(saveText.transform.DOMoveY(saveEnd.transform.position.y, 0.5f))
                 .Insert(2.5f, saveText.transform.DOMoveY(saveStart.transform.position.y, 0.5f).SetEase(Ease.InBack)
-                    .OnComplete(() =>
-                    {
-                        saveText.gameObject.SetActive(false);
-                    })
-                    .OnKill(() =>
-                    {
-                        saveText.gameObject.SetActive(false);
-                    }));
+                    .OnComplete(() => { saveText.gameObject.SetActive(false); })
+                    .OnKill(() => { saveText.gameObject.SetActive(false); }));
             _saveTextSequence.Restart();
         }
 
@@ -121,14 +115,14 @@ namespace Game
             PopHpBar(key);
             return true;
         }
-    
+
         public bool TryPushHpBar(string key, string targetName)
         {
             if (_hpBars.ContainsKey(key)) return false;
             PushHpBar(key, targetName);
             return true;
         }
-    
+
         public bool TryPushHpBar(string key, string targetName, float hpValue)
         {
             if (_hpBars.ContainsKey(key)) return false;
@@ -136,9 +130,10 @@ namespace Game
             SetHpBarPercent(key, hpValue);
             return true;
         }
+
         public void ShowApple(bool i)
         {
-            apple.SetActive(i); 
+            apple.SetActive(i);
         }
     }
 }

@@ -366,11 +366,8 @@ namespace Game.Player
                         }
                         else if (iObj.objectType == InteractiveObjectType.Tree)
                         {
-                            if (!_havApple)
-                            {
-                                GameUIManager.Instance.ShowApple(true);
-                                _havApple = true;  
-                            }
+                            _havApple = true;
+                            GameUIManager.Instance.ShowApple(_havApple);
                         }
                     }
                 }
@@ -399,7 +396,8 @@ namespace Game.Player
                 if (_havApple)
                 {
                     hp.Value = maxHp;
-                    GameUIManager.Instance.ShowApple(false);
+                    _havApple = false;
+                    GameUIManager.Instance.ShowApple(_havApple);
                 }
             }
         }
