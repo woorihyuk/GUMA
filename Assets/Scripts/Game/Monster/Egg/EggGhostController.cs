@@ -56,10 +56,13 @@ namespace Game.Monster.Egg
         private void OnDestroy()
         {
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
-            var player = FindObjectOfType<Player.Player>();
-            GameManager.Instance.lastPosition = player.transform.position;
-            GameManager.Instance.lastDirection = player.lastInputX;
-            SceneManager.LoadScene("02");
+            if (hp.Value <= 0)
+            {
+                var player = FindObjectOfType<Player.Player>();
+                GameManager.Instance.lastPosition = player.transform.position;
+                GameManager.Instance.lastDirection = player.lastInputX;
+                SceneManager.LoadScene("02");
+            }
         }
 
         protected override void OnHpDrown()
