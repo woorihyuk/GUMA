@@ -1,4 +1,5 @@
-﻿using Cinemachine;
+﻿using System;
+using Cinemachine;
 using DG.Tweening;
 using Game;
 using UnityEngine;
@@ -15,7 +16,7 @@ public class ActionEventManager : PrefabSingleton<ActionEventManager>
     protected override void Awake()
     {
         base.Awake();
-        _vCam01 = LevelPropertiesManager.Instance.playerCam;
+        _vCam01 = FindObjectOfType<LevelPropertiesManager>().playerCam;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _vCam01Framing = _vCam01.GetCinemachineComponent<CinemachineFramingTransposer>();
         _eggObj = GameObject.Find("dinamic_egg_0").transform;
@@ -41,6 +42,8 @@ public class ActionEventManager : PrefabSingleton<ActionEventManager>
 
     public void CloseToEgg()
     {
+        if (!_eggObj) _eggObj = GameObject.Find("dinamic_egg_0").transform;
+        if (!_vCam01) _vCam01 = FindObjectOfType<LevelPropertiesManager>().playerCam;
         _eggObj.GetComponent<Animator>().enabled = true;
         _vCam01.gameObject.SetActive(false);
     }
