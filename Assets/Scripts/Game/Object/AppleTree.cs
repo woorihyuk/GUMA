@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace InteractiveObjects
 {
-    public class Tree : InteractiveObject
+    public class AppleTree : InteractiveObject
     {
         public GameObject apple;
         public void SpawnApple()
