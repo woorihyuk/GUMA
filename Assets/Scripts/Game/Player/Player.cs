@@ -367,7 +367,7 @@ namespace Game.Player
                         else if (iObj.objectType == InteractiveObjectType.Tree)
                         {
                             _havApple = true;
-                            GameUIManager.Instance.ShowApple(_havApple);
+                            GameUIManager.Instance.AddItemToInventoryHotSlot(GameUIManager.ItemType.Apple);
                         }
                     }
                 }
@@ -393,11 +393,32 @@ namespace Game.Player
 
             else if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                if (_havApple)
+                if (GameUIManager.Instance.UseItemFromInventoryHotSlot(0, out var type))
                 {
-                    hp.Value = maxHp;
-                    _havApple = false;
-                    GameUIManager.Instance.ShowApple(_havApple);
+                    if (type == GameUIManager.ItemType.Apple)
+                    {
+                        hp.Value = maxHp;
+                    }
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                if (GameUIManager.Instance.UseItemFromInventoryHotSlot(1, out var type))
+                {
+                    if (type == GameUIManager.ItemType.Apple)
+                    {
+                        hp.Value = maxHp;
+                    }
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                if (GameUIManager.Instance.UseItemFromInventoryHotSlot(2, out var type))
+                {
+                    if (type == GameUIManager.ItemType.Apple)
+                    {
+                        hp.Value = maxHp;
+                    }
                 }
             }
         }
