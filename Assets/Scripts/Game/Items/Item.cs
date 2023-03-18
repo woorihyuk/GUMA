@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace Items
+﻿namespace Items
 {
-    [Serializable]
     public class ItemBase
     {
+        public int itemCode = -1;
         public string name;
         public string description;
         public int maxQuantity;
@@ -14,6 +12,7 @@ namespace Items
         {
             var newCopy = new ItemBase
             {
+                itemCode = itemCode,
                 name = name,
                 description = description,
                 maxQuantity = maxQuantity,

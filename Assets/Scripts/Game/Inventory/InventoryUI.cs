@@ -1,94 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using DG.Tweening;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class InventoryUI : MonoBehaviour
 {
-    public Transform itemGroup;
-    public ItemSelectableObject itemPrefab;
-    public List<ItemSelectableObject> spawnedButtons = new();
-
-    // For Tween
-    public CanvasGroup canvasGroup;
-    public Text inventoryText;
-    public Text goldText;
-
-    private Sequence _sequence;
-    private bool _canInput, _isOpen;
-
-    private void Start()
-    {
-        _canInput = true;
-    }
+    public Image background;
+    public Slot[] slots;
+    
+    private bool _canInput = true, _isOpen;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I) && _canInput)
+        if (Input.GetKeyDown(KeyCode.Q))
+            InventoryManager.Instance.AddItem("apple");
+        
+        if (Input.GetKeyDown(KeyCode.Tab) && _canInput)
         {
             if (_isOpen) Close();
             else Open();
         }
-    }
-
-    public void Open()
-    {
-        _canInput = false;
-
-        if (InventoryManager.Instance.hasChange)
+        else if (Input.GetKeyDown(KeyCode.Escape) && _isOpen && _canInput)
         {
-            var itemObjects = itemGroup.transform.GetComponentsInChildren<ItemSelectableObject>();
-            foreach (var itemObj in itemObjects)
-            {
-                Destroy(itemObj.gameObject);
-            }
-
-            foreach (var item in InventoryManager.Instance.items)
-            {
-                var itemSelectableObj = Instantiate(itemPrefab, itemGroup);
-                itemSelectableObj.SetData(item);
-            }
-
-            InventoryManager.Instance.hasChange = false;
+            Close();
         }
-
-        _sequence?.Kill();
-        canvasGroup.DOKill(true);
-        
-        inventoryText.DOFade(0, 0);
-        goldText.text = $"{InventoryManager.Instance.gold} 원";
-
-        canvasGroup.DOFade(1, 0.3f)
-            .OnComplete(() =>
-            {
-                _isOpen = true;
-                _canInput = true;
-                canvasGroup.blocksRaycasts = true;
-                
-                _sequence = DOTween.Sequence()
-                    .Append(inventoryText.DOFade(0, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(1, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(0, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(1, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(0, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(1, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(0, 0.05f).SetDelay(0.05f))
-                    .Append(inventoryText.DOFade(1, 0.05f).SetDelay(0.05f))
-                    .SetDelay(0.2f).Play();
-            });
     }
 
-    public void Close()
+    private void Open()
     {
-        _canInput = false;
+        background.gameObject.SetActive(true);
         
-        canvasGroup.DOFade(0, 0.3f)
-            .OnComplete(() =>
-            {
-                _isOpen = false;
-                _canInput = true;
-                canvasGroup.blocksRaycasts = false;
-            });
+        // 커서 표시
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        _isOpen = true;
+        _canInput = true;
+    }
+
+    private void Close()
+    {
+        background.gameObject.SetActive(false);
+        
+        // 커서 끄기
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        _isOpen = false;
+        _canInput = true;
     }
 }
