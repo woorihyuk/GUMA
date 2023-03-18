@@ -57,7 +57,7 @@ namespace Game.Player
         private const float AccelerationTimeGrounded = 0.1f;
         private float _gravity, _jumpVelocity, _velocityXSmoothing;
         private float _sinceLastDashTime = 10f, _comboTime;
-        private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet, _havApple;
+        private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet;
         private bool _canPause = true;
         private Vector2 _input;
         private Vector3 _velocity;
@@ -366,7 +366,6 @@ namespace Game.Player
                         }
                         else if (iObj.objectType == InteractiveObjectType.Tree)
                         {
-                            _havApple = true;
                             GameUIManager.Instance.AddItemToInventoryHotSlot(GameUIManager.ItemType.Apple);
                         }
                     }
