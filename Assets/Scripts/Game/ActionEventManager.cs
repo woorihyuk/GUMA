@@ -19,11 +19,13 @@ public class ActionEventManager : PrefabSingleton<ActionEventManager>
         _vCam01 = FindObjectOfType<LevelPropertiesManager>().playerCam;
         _impulseSource = GetComponent<CinemachineImpulseSource>();
         _vCam01Framing = _vCam01.GetCinemachineComponent<CinemachineFramingTransposer>();
-        _eggObj = GameObject.Find("dinamic_egg_0").transform;
+        _eggObj = GameObject.Find("dinamic_egg_0")?.transform;
     }
 
     public void CloseUpToPlayer(float duration)
     {
+        _vCam01 = FindObjectOfType<LevelPropertiesManager>().playerCam;
+        _vCam01Framing = _vCam01.GetCinemachineComponent<CinemachineFramingTransposer>();
         DOVirtual.Float(_vCam01Framing.m_TrackedObjectOffset.z, 1.25f, duration, value => _vCam01Framing.m_TrackedObjectOffset.z = value)
             .SetEase(Ease.Linear);
         // DOVirtual.Float(_vCam01.m_Lens.OrthographicSize, 5, 0.5f, value => _vCam01.m_Lens.OrthographicSize = value);
