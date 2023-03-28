@@ -1,5 +1,4 @@
-﻿using System;
-using Cinemachine;
+﻿using Cinemachine;
 using DG.Tweening;
 using Game;
 using UnityEngine;
@@ -44,7 +43,7 @@ public class ActionEventManager : PrefabSingleton<ActionEventManager>
 
     public void CloseToEgg()
     {
-        if (!_eggObj) _eggObj = GameObject.Find("dinamic_egg_0").transform;
+        if (!_eggObj) _eggObj = GameObject.Find("dynamic_egg_0").transform;
         if (!_vCam01) _vCam01 = FindObjectOfType<LevelPropertiesManager>().playerCam;
         _eggObj.GetComponent<Animator>().enabled = true;
         _vCam01.gameObject.SetActive(false);
