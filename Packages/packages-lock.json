@@ -9,6 +9,15 @@
       },
       "hash": "4791e813e5e0db23663e0f33d9741ef0ad1512cb"
     },
+    "com.bennykok.hierarchy-header": {
+      "version": "https://github.com/BennyKok/unity-hierarchy-header.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.settings-manager": "1.0.3"
+      },
+      "hash": "225224b9497292f815cdc951dcb069ab3cd26aaa"
+    },
     "com.unity.2d.animation": {
       "version": "7.0.10",
       "depth": 0,
@@ -198,6 +207,13 @@
     "com.unity.searcher": {
       "version": "4.9.1",
       "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.settings-manager": {
+      "version": "1.0.3",
+      "depth": 1,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"

@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.actioncode.cinemachine-regions": "https://bitbucket.org/nostgameteam/cinemachine-regions.git",
+    "com.bennykok.hierarchy-header": "https://github.com/BennyKok/unity-hierarchy-header.git",
     "com.unity.2d.animation": "7.0.10",
     "com.unity.2d.pixel-perfect": "5.0.3",
     "com.unity.2d.psdimporter": "6.0.7",
