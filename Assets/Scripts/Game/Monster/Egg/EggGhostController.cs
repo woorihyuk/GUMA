@@ -47,7 +47,7 @@ namespace Game.Monster.Egg
             _initialized = true;
             _animator = GetComponent<Animator>();
             _spriteRenderer = GetComponent<SpriteRenderer>();
-            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 2f));
+            StartCoroutineWithRunningCheck(ref _aiMoveCoroutine, AIMove(1, 3, 1f, 3.5f));
             _moveStateSubscription = isMonsterMoving.DistinctUntilChanged()
                 .Subscribe(v => { _animator.SetBool(IsWalk, v); }).AddTo(gameObject);
             _attackContactFilter = new ContactFilter2D

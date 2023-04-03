@@ -13,6 +13,8 @@ namespace Game.Monster
         private readonly List<Collider2D> _colliders = new();
         private ContactFilter2D _filter;
         public LayerMask contactLayerMask;
+        private int _groundLayerMask, _worldLayerMask;
+        private Collider2D _mainCollider;
         public BoolReactiveProperty isPlayerFounded, isMonsterMoving;
         public Collider2D hitBoxCollider;
         protected IDisposable PlayerFoundSubscription;
@@ -50,6 +52,10 @@ namespace Game.Monster
             }).AddTo(gameObject);
 
             hp.DistinctUntilChanged().Subscribe(_ => { RefreshHp(); }).AddTo(gameObject);
+
+            _groundLayerMask = LayerMask.GetMask("WorldGround");
+            _worldLayerMask = LayerMask.GetMask("WorldNotGround", "WorldGround");
+            _mainCollider = GetComponent<BoxCollider2D>();
         }
 
         protected virtual void Update()
@@ -165,6 +171,14 @@ namespace Game.Monster
                     // Debug.Log($"중간에 위치함 : {direction}");
                 }
 
+                if (!IsGroundForward(direction))
+                {
+                    direction *= -1;
+                }
+                else if (!IsNoWallForward(direction))
+                {
+                    direction *= -1;
+                }
                 OnDirectionSet(direction);
 
                 // 이동하기
@@ -172,35 +186,92 @@ namespace Game.Monster
                 // Debug.Log($"이동 시작 : {moveTime}");
                 isMonsterMoving.Value = true;
                 var timer = 0f;
+                var tf = transform;
 
                 while (moveTime > timer)
                 {
-                    Move(speed * Time.deltaTime, direction);
                     timer += Time.deltaTime;
-
-                    if (direction == -1)
+                    if (!IsGroundForward(direction)) yield return null;
+                    else if (!IsNoWallForward(direction)) yield return null;
+                    else
                     {
-                        var tf = transform;
-                        if (tf.position.x <= spawnedPosition.x - maxX)
+                        Move(speed * Time.deltaTime, direction);
+
+                        switch (direction)
                         {
-                            var pos = tf.position;
-                            pos.x = spawnedPosition.x - maxX;
-                            tf.position = pos;
-                        }
-                    }
-                    else if (transform.position.x >= spawnedPosition.x + maxX)
-                    {
-                        var tf = transform;
-                        var pos = tf.position;
-                        pos.x = spawnedPosition.x + maxX;
-                        tf.position = pos;
-                    }
+                            case < 0:
+                            {
+                                if (tf.position.x <= spawnedPosition.x - maxX)
+                                {
+                                    var pos = tf.position;
+                                    pos.x = spawnedPosition.x - maxX;
+                                    tf.position = pos;
+                                }
 
-                    yield return null;
+                                break;
+                            }
+                            case > 0:
+                            {
+                                if (tf.position.x >= spawnedPosition.x + maxX)
+                                {
+                                    var pos = tf.position;
+                                    pos.x = spawnedPosition.x + maxX;
+                                    tf.position = pos;
+                                }
+
+                                break;
+                            }
+                        }
+                        yield return null;
+                    }
                 }
 
                 // Debug.Log("이동 완료");
                 yield return null;
+            }
+        }
+
+        public bool IsGroundForward(int direction)
+        {
+            switch (direction)
+            {
+                case < 0:
+                {
+                    var vector = new Vector2(_mainCollider.bounds.min.x - 0.1f, _mainCollider.bounds.min.y - 0.2f);
+                    var ground = Physics2D.OverlapPoint(vector, _groundLayerMask);
+                    return ground;
+                }
+                case > 0:
+                {
+                    var vector = new Vector2(_mainCollider.bounds.max.x - 0.1f, _mainCollider.bounds.min.y - 0.2f);
+                    var ground = Physics2D.OverlapPoint(vector, _groundLayerMask);
+                    return ground;
+                }
+                default:
+                    throw new ArgumentException("direction은 0이 될 수 없습니다");
+            }
+        }
+
+        public bool IsNoWallForward(int direction)
+        {
+            switch (direction)
+            {
+                case < 0:
+                {
+                    var vector1 = new Vector2(_mainCollider.bounds.min.x, _mainCollider.bounds.min.y + 0.1f);
+                    var vector2 = new Vector2(_mainCollider.bounds.min.x - 0.05f, _mainCollider.bounds.max.y);
+                    var wall = Physics2D.OverlapArea(vector1, vector2, _worldLayerMask);
+                    return !wall;
+                }
+                case > 0:
+                {
+                    var vector1 = new Vector2(_mainCollider.bounds.max.x, _mainCollider.bounds.min.y + 0.1f);
+                    var vector2 = new Vector2(_mainCollider.bounds.max.x + 0.05f, _mainCollider.bounds.max.y);
+                    var wall = Physics2D.OverlapArea(vector1, vector2, _worldLayerMask);
+                    return !wall;
+                }
+                default:
+                    throw new ArgumentException("direction은 0이 될 수 없습니다");
             }
         }
 
