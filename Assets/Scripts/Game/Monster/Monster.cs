@@ -237,13 +237,15 @@ namespace Game.Monster
             {
                 case < 0:
                 {
-                    var vector = new Vector2(_mainCollider.bounds.min.x - 0.1f, _mainCollider.bounds.min.y - 0.2f);
+                    var bounds = _mainCollider.bounds;
+                    var vector = new Vector2(bounds.min.x - 0.1f, bounds.min.y - 0.2f);
                     var ground = Physics2D.OverlapPoint(vector, _groundLayerMask);
                     return ground;
                 }
                 case > 0:
                 {
-                    var vector = new Vector2(_mainCollider.bounds.max.x - 0.1f, _mainCollider.bounds.min.y - 0.2f);
+                    var bounds = _mainCollider.bounds;
+                    var vector = new Vector2(bounds.max.x - 0.1f, bounds.min.y - 0.2f);
                     var ground = Physics2D.OverlapPoint(vector, _groundLayerMask);
                     return ground;
                 }
@@ -258,15 +260,17 @@ namespace Game.Monster
             {
                 case < 0:
                 {
-                    var vector1 = new Vector2(_mainCollider.bounds.min.x, _mainCollider.bounds.min.y + 0.1f);
-                    var vector2 = new Vector2(_mainCollider.bounds.min.x - 0.05f, _mainCollider.bounds.max.y);
+                    var bounds = _mainCollider.bounds;
+                    var vector1 = new Vector2(bounds.min.x, bounds.min.y + 0.1f);
+                    var vector2 = new Vector2(bounds.min.x - 0.05f, bounds.max.y);
                     var wall = Physics2D.OverlapArea(vector1, vector2, _worldLayerMask);
                     return !wall;
                 }
                 case > 0:
                 {
-                    var vector1 = new Vector2(_mainCollider.bounds.max.x, _mainCollider.bounds.min.y + 0.1f);
-                    var vector2 = new Vector2(_mainCollider.bounds.max.x + 0.05f, _mainCollider.bounds.max.y);
+                    var bounds = _mainCollider.bounds;
+                    var vector1 = new Vector2(bounds.max.x, bounds.min.y + 0.1f);
+                    var vector2 = new Vector2(bounds.max.x + 0.05f, bounds.max.y);
                     var wall = Physics2D.OverlapArea(vector1, vector2, _worldLayerMask);
                     return !wall;
                 }
