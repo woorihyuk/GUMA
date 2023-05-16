@@ -433,7 +433,7 @@ namespace Game.Player
             // 레이어 마스크
             var mask = 1 << LayerMask.NameToLayer("WorldGround");
 
-            // 위 아레로 플레이어 보는 방향으로 레이 쏘기
+            // 위 아래로 플레이어 보는 방향으로 레이 쏘기
             var wallCheckRays = new RaycastHit2D[2];
             wallCheckRays[0] =
                 Physics2D.Raycast(wallRayCheckTfs[0].position, Vector3.right * (lastInputX * wallCheckDistance),
