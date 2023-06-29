@@ -103,7 +103,7 @@ namespace Game.Player
 
         private void Start()
         {
-            _managers = Managers.GetInstance();
+            _managers = Managers.Instance;
             _isAttackYet = true;
             _controller = GetComponent<Controller2D>();
 
