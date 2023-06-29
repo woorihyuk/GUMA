@@ -36,15 +36,23 @@ public class InteractiveObjectChecker : MonoBehaviour
     private void Update()
     {
         var counts = _collider.OverlapCollider(_filter, _colliders);
+        
         if (counts == 0)
         {
             _lastInteractiveObject?.interactiveObject.OnDeselect();
             _lastInteractiveObject = null;
             return;
         }
+
+        if (_lastInteractiveObject != null && !_lastInteractiveObject.interactiveObject)
+        {
+            _lastInteractiveObject = null;
+        }
+        
         foreach (var col in _colliders)
         {
-            var iObj = col.GetComponent<InteractiveObject>();
+            var result = col.TryGetComponent<InteractiveObject>(out var iObj);
+            if (!result) continue;
             if (iObj.objectType == InteractiveObjectType.None) continue;
 
             if (_lastInteractiveObject == null)
@@ -77,6 +85,13 @@ public class InteractiveObjectChecker : MonoBehaviour
             iObj = null;
             return false;
         }
+
+        if (!_lastInteractiveObject.interactiveObject)
+        {
+            iObj = null;
+            return false;
+        }
+        
         iObj = _lastInteractiveObject.interactiveObject;
         return true;
     }
