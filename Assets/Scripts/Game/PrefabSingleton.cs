@@ -24,6 +24,7 @@ public abstract class PrefabSingleton<T> : MonoBehaviour where T : Component
             if (_instance != null) return _instance;
             _instance = FindObjectOfType<T>();
             if (_instance != null) return _instance;
+            if (!Application.isPlaying) return null;
             _instance = Instantiate(Resources.Load<T>(typeof(T).Name));
 
             return _instance;

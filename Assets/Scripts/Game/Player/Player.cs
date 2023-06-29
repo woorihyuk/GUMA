@@ -33,8 +33,6 @@ namespace Game.Player
         public float groundCheckDistance = 4;
         private LevelPropertiesManager _levelProperties;
 
-        public GameObject apple;
-
         public Collider2D[] attackColliders;
         public FloatReactiveProperty hp;
 
@@ -73,6 +71,7 @@ namespace Game.Player
 
         public Transform cannonFirePoint;
         private static readonly int IsJumpAttack = Animator.StringToHash("IsJumpAttack");
+        private Managers _managers;
 
         private enum JumpMode
         {
@@ -104,6 +103,7 @@ namespace Game.Player
 
         private void Start()
         {
+            _managers = Managers.GetInstance();
             _isAttackYet = true;
             _controller = GetComponent<Controller2D>();
 
@@ -366,7 +366,11 @@ namespace Game.Player
                         }
                         else if (iObj.objectType == InteractiveObjectType.Tree)
                         {
-                            GameUIManager.Instance.AddItemToInventoryHotSlot(GameUIManager.ItemType.Apple);
+                            iObj.OnInteract();
+                        }
+                        else if (iObj.objectType == InteractiveObjectType.Item)
+                        {
+                            iObj.OnInteract();
                         }
                     }
                 }
@@ -392,33 +396,15 @@ namespace Game.Player
 
             else if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                if (GameUIManager.Instance.UseItemFromInventoryHotSlot(0, out var type))
-                {
-                    if (type == GameUIManager.ItemType.Apple)
-                    {
-                        hp.Value = maxHp;
-                    }
-                }
+                _managers.inventoryManager.UseItem(0);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                if (GameUIManager.Instance.UseItemFromInventoryHotSlot(1, out var type))
-                {
-                    if (type == GameUIManager.ItemType.Apple)
-                    {
-                        hp.Value = maxHp;
-                    }
-                }
+                _managers.inventoryManager.UseItem(1);
             }
             else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                if (GameUIManager.Instance.UseItemFromInventoryHotSlot(2, out var type))
-                {
-                    if (type == GameUIManager.ItemType.Apple)
-                    {
-                        hp.Value = maxHp;
-                    }
-                }
+                _managers.inventoryManager.UseItem(2);
             }
         }
 

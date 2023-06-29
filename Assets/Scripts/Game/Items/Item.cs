@@ -1,10 +1,9 @@
-﻿namespace Items
+﻿namespace Game.Items
 {
     public class ItemBase
     {
         public int itemCode = -1;
         public string name;
-        public string description;
         public int maxQuantity;
         public int currentQuantity;
 
@@ -14,16 +13,14 @@
             {
                 itemCode = itemCode,
                 name = name,
-                description = description,
                 maxQuantity = maxQuantity,
                 currentQuantity = currentQuantity
             };
             return newCopy;
         }
-    }
 
-    public interface IItemAction
-    {
-        public void Use();
+        public virtual void Use()
+        {
+        }
     }
 }

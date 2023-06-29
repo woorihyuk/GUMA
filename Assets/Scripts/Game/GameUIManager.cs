@@ -24,8 +24,6 @@ namespace Game
 
         public Animator hpAnimator, hpBackgroundAnimator;
         public Image hpBackgroundImage, hpImage;
-        public Image[] inventorySlots;
-        public GameObject apple;
 
         // 아이템 임시 등록
         public enum ItemType
@@ -94,10 +92,10 @@ namespace Game
         {
             hpBackgroundImage.gameObject.SetActive(value);
             hpImage.gameObject.SetActive(value);
-            foreach (var image in inventorySlots)
+            /*foreach (var image in inventorySlots)
             {
                 image.gameObject.SetActive(value);
-            }
+            }*/
         }
 
         public void ShowSaveMsg()
@@ -158,7 +156,7 @@ namespace Game
             return itemsImagesDb[(int)type];
         }
 
-        public void AddItemToInventoryHotSlot(ItemType type)
+        /*public void AddItemToInventoryHotSlot(ItemType type)
         {
             var result = false;
             
@@ -178,9 +176,9 @@ namespace Game
             {
                 Debug.LogWarning("[AddItemToInventory] Inventory Full!");
             }
-        }
+        }*/
 
-        public bool UseItemFromInventoryHotSlot(int index, out ItemType usedItem)
+        /*public bool UseItemFromInventoryHotSlot(int index, out ItemType usedItem)
         {
             if (itemsData[index] == ItemType.None)
             {
@@ -192,9 +190,9 @@ namespace Game
             itemsData[index] = ItemType.None;
             RefreshInventoryHotSlot();
             return true;
-        }
+        }*/
 
-        private void RefreshInventoryHotSlot()
+        /*private void RefreshInventoryHotSlot()
         {
             for (var i = 0; i < itemsData.Length; i++)
             {
@@ -226,11 +224,11 @@ namespace Game
                     itemsImage[i] = Instantiate(itemPrefab, inventorySlots[i].transform);
                 }
             }
-        }
+        }*/
 
-        public void ShowApple(bool i)
+        /*public void ShowApple(bool i)
         {
             apple.SetActive(i);
-        }
+        }*/
     }
 }

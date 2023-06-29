@@ -1,5 +1,5 @@
 using Game;
-using Items;
+using Game.Items;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.EventSystems;
