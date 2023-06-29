@@ -1,5 +1,4 @@
 ﻿using DG.Tweening;
-using UniRx;
 using UnityEngine;
 
 namespace Game.Object.Items
