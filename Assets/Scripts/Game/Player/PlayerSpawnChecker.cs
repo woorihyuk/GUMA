@@ -1,4 +1,4 @@
-using System;
+using Game.Level;
 using UnityEngine;
 
 namespace Game.Player
@@ -7,10 +7,14 @@ namespace Game.Player
     {
         private void Awake()
         {
-            if (FindAnyObjectByType<Player>() == null)
+            var player = FindAnyObjectByType<Player>();
+            if (player == null)
             {
-                Instantiate(Resources.Load<Player>("Player"));
+                player = Instantiate(Resources.Load<Player>("Player"));
             }
+
+            LevelPropertiesManager.Instance.playerCam.Follow = player.transform;
+            player.SetPositionFromLevelProperties();
         }
     }
 }

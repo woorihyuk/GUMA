@@ -93,12 +93,12 @@ namespace Game.Player
 
         private void OnEnable()
         {
-            GameEvents.OnLevelLoaded += SetPosition;
+            GameEvents.OnLevelLoaded += SetPositionFromLevelProperties;
         }
 
         private void OnDisable()
         {
-            GameEvents.OnLevelLoaded -= SetPosition;
+            GameEvents.OnLevelLoaded -= SetPositionFromLevelProperties;
         }
 
         private void Awake()
@@ -139,7 +139,7 @@ namespace Game.Player
                 transform.position = LevelPropertiesManager.Instance.savePoints[GameManager.Instance.savePoint].position;
             }
 
-            SetPosition();
+            SetPositionFromLevelProperties();
             lastInputX = GameManager.Instance.lastDirection;
             SetDirectionForce(lastInputX);
             
@@ -150,7 +150,7 @@ namespace Game.Player
             }
         }
 
-        private void SetPosition()
+        public void SetPositionFromLevelProperties()
         {
             if (LevelPropertiesManager.Instance.TryGetPositionOfLevel(out var pos))
             {
