@@ -43,6 +43,7 @@ namespace Game.Monster.Pig
                 useLayerMask = true
             };
         }
+
         public override void OnMonsterGetDamaged(int dmg)
         {
             if (hp.Value <= 0) return;
@@ -76,10 +77,9 @@ namespace Game.Monster.Pig
             _isWait = true;
             yield return YieldInstructionCache.WaitForSeconds(i);
             _isWait = false;
-            if (lastTargetPlayer!=null)
+            if (lastTargetPlayer != null)
             {
                 Attack();
-
             }
         }
 
@@ -87,18 +87,20 @@ namespace Game.Monster.Pig
         {
             _animator.SetBool("Walk", true);
             _animator.Play("Pig_Walking");
-            while (_distance>attackRangeCount)
+            while (_distance > attackRangeCount)
             {
-                if (lastTargetPlayer!=null)
+                if (lastTargetPlayer != null)
                 {
                     _distance = Vector2.Distance(lastTargetPlayer.player.transform.position, transform.position);
                 }
+
                 transform.position += new Vector3(speed * direction, 0) * Time.deltaTime;
                 yield return null;
             }
+
             _animator.SetBool("Attack", true);
             _isAttack = true;
-            yield return null;  
+            yield return null;
         }
 
         protected override void OnHpDrown()
@@ -109,13 +111,14 @@ namespace Game.Monster.Pig
 
         private void OnDestroy()
         {
+            if (!Application.isPlaying) return;
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
             Destroy(gameObject);
         }
 
         protected override void OnPlayerFound()
         {
-            GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "±›µ≈¡ˆ", (float)hp.Value / maxHp.Value);
+            GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "Í∏àÎèºÏßÄ", (float)hp.Value / maxHp.Value);
             RefreshHp();
             StopCoroutine(_aiMoveCoroutine);
             Attack();
@@ -141,12 +144,10 @@ namespace Game.Monster.Pig
                     print("tlakf");
 
                     _animator.SetBool("Attack", true);
-
                 }
             }
-
-
         }
+
         protected override void OnPlayerLost()
         {
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
@@ -155,7 +156,8 @@ namespace Game.Monster.Pig
             _moveStateSubscription = isMonsterMoving.DistinctUntilChanged()
                 .Subscribe(v => { _animator.SetBool(IsWalk, v); }).AddTo(gameObject);
         }
-        #region æ÷¥œ∏ﬁ¿Ãº« ¿Ã∫•∆Æ
+
+        #region Ïï†ÎãàÎ©îÏù¥ÏÖò Ïù¥Î≤§Ìä∏
 
         public void OnDieEnd()
         {
@@ -173,15 +175,14 @@ namespace Game.Monster.Pig
             _isAttack = false;
             StartCoroutine(Wait(1.5f));
         }
-        
+
         public void OnAttackEvent3()
         {
             attackEffect.SetActive(true);
             attackEffect.transform.position = attackEffectPos.position;
             attackEffect.transform.localScale = attackRangePos.localScale;
         }
+
         #endregion
     }
-
-
 }

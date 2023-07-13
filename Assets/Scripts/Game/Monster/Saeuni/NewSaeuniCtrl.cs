@@ -36,6 +36,7 @@ namespace Game.Monster.Saeuni
 
         private void OnDestroy()
         {
+            if (!Application.isPlaying) return;
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
         }
 
@@ -65,7 +66,7 @@ namespace Game.Monster.Saeuni
             GameUIManager.Instance.TryPushHpBar(GetInstanceID().ToString(), "새우니", (float)hp.Value / maxHp.Value);
             if (!_isAttack)
             {
-                if (hp.Value>0)
+                if (hp.Value > 0)
                 {
                     Attack();
                 }
@@ -191,7 +192,8 @@ namespace Game.Monster.Saeuni
             vThunderEffect.attackContactFilter = _attackContactFilter;
             FxPoolManager.Instance.saeuniAttackEffectPool.Get(out var vAttackEffect);
             vAttackEffect.transform.position = transform.position;
-            vAttackEffect.transform.localScale = new Vector3(transform.position.x - lastTargetPlayer.player.transform.position.x > 0 ? -1 : 1, 1,1);
+            vAttackEffect.transform.localScale =
+                new Vector3(transform.position.x - lastTargetPlayer.player.transform.position.x > 0 ? -1 : 1, 1, 1);
         }
 
         public void OnAttackEvent2()

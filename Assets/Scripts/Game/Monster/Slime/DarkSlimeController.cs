@@ -35,6 +35,7 @@ namespace Game.Monster.Slime
 
         private void OnDestroy()
         {
+            if (!Application.isPlaying) return;
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
         }
 

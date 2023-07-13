@@ -59,6 +59,7 @@ namespace Game.Monster.Egg
 
         private void OnDestroy()
         {
+            if (!Application.isPlaying) return;
             GameUIManager.Instance.TryPopHpBar(GetInstanceID().ToString());
             if (hp.Value <= 0 && _initialized)
             {
