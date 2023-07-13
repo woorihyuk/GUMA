@@ -2,28 +2,30 @@
 using Cinemachine;
 using UnityEngine;
 
-public class LevelPropertiesManager : MonoBehaviour
+namespace Game.Level
 {
-    public static LevelPropertiesManager Instance;
-    
-    public Transform[] positionSpots;
-    public Transform[] savePoints;
-    public CinemachineVirtualCamera playerCam;
-
-    private void Awake()
+    public class LevelPropertiesManager : MonoBehaviour
     {
-        Instance = this;
-    }
+        public static LevelPropertiesManager Instance;
+        public Transform[] positionSpots;
+        public Transform[] savePoints;
+        public CinemachineVirtualCamera playerCam;
 
-    public bool TryGetPositionOfLevel(out Vector3 position)
-    {
-        if (GameManager.Instance.positionFlags != -1)
+        private void Awake()
         {
-            position = positionSpots[GameManager.Instance.positionFlags].position;
-            return true;
+            Instance = this;
         }
 
-        position = Vector3.zero;
-        return false;
+        public bool TryGetPositionOfLevel(out Vector3 position)
+        {
+            if (GameManager.Instance.positionFlags != -1)
+            {
+                position = positionSpots[GameManager.Instance.positionFlags].position;
+                return true;
+            }
+
+            position = Vector3.zero;
+            return false;
+        }
     }
 }

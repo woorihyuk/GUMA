@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using Game.Level;
 using Game.State;
 using UniRx;
 using UnityEngine;
@@ -31,7 +32,6 @@ namespace Game.Player
         public SpriteRenderer sr;
         public Transform groundCheckTf;
         public float groundCheckDistance = 4;
-        private LevelPropertiesManager _levelProperties;
 
         public Collider2D[] attackColliders;
         public FloatReactiveProperty hp;
@@ -101,6 +101,11 @@ namespace Game.Player
             GameEvents.OnLevelLoaded -= SetPosition;
         }
 
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
         private void Start()
         {
             _managers = Managers.Instance;
@@ -129,10 +134,9 @@ namespace Game.Player
 
             _audio = GetComponent<AudioSource>();
             _interactiveObjectChecker = GetComponent<InteractiveObjectChecker>();
-            _levelProperties = FindObjectOfType<LevelPropertiesManager>();
             if (GameManager.Instance.CheckIsLoaded())
             {
-                transform.position = _levelProperties.savePoints[GameManager.Instance.savePoint].position;
+                transform.position = LevelPropertiesManager.Instance.savePoints[GameManager.Instance.savePoint].position;
             }
 
             SetPosition();
@@ -148,7 +152,7 @@ namespace Game.Player
 
         private void SetPosition()
         {
-            if (_levelProperties.TryGetPositionOfLevel(out var pos))
+            if (LevelPropertiesManager.Instance.TryGetPositionOfLevel(out var pos))
             {
                 transform.position = pos;
             }
