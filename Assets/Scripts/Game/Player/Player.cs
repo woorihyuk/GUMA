@@ -57,7 +57,6 @@ namespace Game.Player
         private float _sinceLastDashTime = 10f, _comboTime;
         private bool _isDash, _isAttack, _isWall, _isDoAttack, _isAttackYet;
         private bool _canPause = true;
-        private Vector2 _input;
         private Vector3 _velocity;
         private JumpMode _currentJump;
         private Controller2D _controller;
@@ -72,6 +71,7 @@ namespace Game.Player
         public Transform cannonFirePoint;
         private static readonly int IsJumpAttack = Animator.StringToHash("IsJumpAttack");
         private Managers _managers;
+        private Controls _controls;
 
         private enum JumpMode
         {
@@ -148,14 +148,24 @@ namespace Game.Player
                 GameManager.Instance.isEndWatched = false;
                 transform.position = GameManager.Instance.lastPosition;
             }
+
+            _controls = new Controls();
+            _controls.Enable();
+        }
+
+        private void OnDestroy()
+        {
+            _controls.Disable();
+            _controls.Dispose();
         }
 
         public void SetPositionFromLevelProperties()
         {
             if (LevelPropertiesManager.Instance.TryGetPositionOfLevel(out var pos))
             {
-                transform.position = pos;
+                
             }
+            transform.position = pos;
         }
 
         private void SetDirectionForce(float value)
@@ -208,9 +218,9 @@ namespace Game.Player
                 animator.Update(0);
             }
 
-            _input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            var horizontal = _controls.Player.Move.ReadValue<float>();
 
-            if (Input.GetButtonDown("Horizontal") || Input.GetButtonDown("Vertical"))
+            if (_controls.Player.Move.WasPressedThisFrame() || _controls.Player.Jump.WasPressedThisFrame())
             {
                 if (currentAttack != AttackMode.JumpAttack)
                 {
@@ -237,7 +247,7 @@ namespace Game.Player
                     {
                         if (dashCoolTime < _sinceLastDashTime)
                         {
-                            if (_input.x == 0)
+                            if (horizontal == 0)
                             {
                                 BackStep();
                             }
@@ -250,7 +260,7 @@ namespace Game.Player
                 }
             }
 
-            var targetVelocityX = _input.x * moveSpeed;
+            var targetVelocityX = horizontal * moveSpeed;
 
             if (_isDash)
             {
@@ -258,7 +268,7 @@ namespace Game.Player
             }
             else
             {
-                if (!_isAttack && _input.x != 0) lastInputX = _input.x;
+                if (!_isAttack && horizontal != 0) lastInputX = horizontal;
             }
 
             if (StateManager.Instance.currentState == StateType.None || currentAttack != AttackMode.JumpAttack)
@@ -319,8 +329,6 @@ namespace Game.Player
                     }
                 }
             }
-
-            
             
             _controller.Move(_velocity * Time.deltaTime);
         }
@@ -340,7 +348,7 @@ namespace Game.Player
 
         private void PlayerInteractions()
         {
-            if (Input.GetKeyDown(KeyCode.E) && !GameUIManager.Instance.pauseGroup.gameObject.activeSelf)
+            if (_controls.Player.Equip.WasPressedThisFrame() && !GameUIManager.Instance.pauseGroup.gameObject.activeSelf)
             {
                 if (StateManager.Instance.currentState == StateType.Talking)
                 {
@@ -379,7 +387,7 @@ namespace Game.Player
                     }
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.Escape) && StateManager.Instance.currentState == StateType.None)
+            else if (_controls.Player.Escape.WasPressedThisFrame() && StateManager.Instance.currentState == StateType.None)
             {
                 if (_canPause)
                 {
@@ -397,16 +405,15 @@ namespace Game.Player
                 }
                 
             }
-
-            else if (Input.GetKeyDown(KeyCode.Alpha1))
+            else if (_controls.Player.Use1.WasPressedThisFrame())
             {
                 _managers.inventoryManager.UseItem(0);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (_controls.Player.Use2.WasPressedThisFrame())
             {
                 _managers.inventoryManager.UseItem(1);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            else if (_controls.Player.Use3.WasPressedThisFrame())
             {
                 _managers.inventoryManager.UseItem(2);
             }
@@ -495,7 +502,7 @@ namespace Game.Player
             {
                 if (_isAttackYet)
                 {
-                    if (Input.GetMouseButtonDown(0))
+                    if (_controls.Player.Attack.WasPressedThisFrame())
                     {
                         _isDoAttack = true;
                         var mask = 1 << LayerMask.NameToLayer("WorldGround");
@@ -523,7 +530,7 @@ namespace Game.Player
         {
             if (_isAttackYet)
             {
-                if (Input.GetMouseButtonDown(0))
+                if (_controls.Player.Attack.WasPressedThisFrame())
                 {
                     if (currentAttack == AttackMode.Second || currentAttack == AttackMode.SecondShoot)
                     {
@@ -545,7 +552,7 @@ namespace Game.Player
 
                     _isDoAttack = true;
                 }
-                else if (Input.GetMouseButtonDown(1))
+                else if (_controls.Player.AttackAlt.WasPressedThisFrame())
                 {
                     if (currentAttack == AttackMode.None)
                     {
@@ -567,7 +574,7 @@ namespace Game.Player
 
         private void Jump()
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (_controls.Player.Jump.WasPressedThisFrame())
             {
                 switch (_currentJump)
                 {
@@ -625,7 +632,7 @@ namespace Game.Player
         {
             if (_currentJump == JumpMode.None && !_isDash)
             {
-                if (Input.GetKeyDown(KeyCode.LeftShift) && _controller.collisions.below)
+                if (_controls.Player.Dash.WasPressedThisFrame() && _controller.collisions.below)
                 {
                     _audio.PlayOneShot(clip[3]);
                     animator.SetBool(AnimIsBackStep, true);
@@ -641,7 +648,7 @@ namespace Game.Player
         {
             if (_currentJump == JumpMode.None && !_isDash)
             {
-                if (Input.GetKeyDown(KeyCode.LeftShift) && _controller.collisions.below)
+                if (_controls.Player.Dash.WasPressedThisFrame() && _controller.collisions.below)
                 {
                     _audio.PlayOneShot(clip[3]);
                     animator.SetBool(AnimIsDash, true);
